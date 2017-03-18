@@ -1,0 +1,20 @@
+version: '2'
+services:
+  fsm:
+    build:
+      context: .
+      args:
+        - NPM_TOKEN=${NPM_TOKEN}
+    image: trigo/fsm:latest
+    command: 'yarn run test'
+    environment:
+      - NODE_ENV=test
+      - NPM_TOKEN
+      - I_WANT_TEST_LOGGING=1
+    networks:
+      - pathfinder_test
+
+
+networks:
+  pathfinder_test:
+    driver: bridge
