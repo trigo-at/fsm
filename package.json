@@ -1,0 +1,23 @@
+{
+  "name": "@trigo/fsm",
+  "version": "0.0.0",
+  "description": "FSM - Finite State Machine",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --timeout 30000 specs/index.js",
+    "lint": "eslint '**/*.js'"
+  },
+  "author": "Christian Hubinger",
+  "license": "ISC",
+  "devDependencies": {
+    "@trigo/eslint-config-trigo": "^3.3.0",
+    "bluebird": "^3.5.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.17.1",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^4.9.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0"
+  }
+}
