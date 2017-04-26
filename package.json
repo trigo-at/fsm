@@ -4,7 +4,7 @@
   "description": "FSM - Finite State Machine",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --timeout 30000 specs/index.js",
+    "test": "NODE_ENV=test nyc mocha --timeout 30000 specs/index.js",
     "lint": "eslint '**/*.js'"
   },
   "author": "Christian Hubinger",
@@ -18,6 +18,23 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha": "^4.9.0",
     "mocha": "^3.2.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "nyc": "^10.2.0"
+  },
+  "nyc": {
+    "exclude": [
+      "cover",
+      "**/*.specs.js",
+      "specs/index.js"
+    ],
+    "check-coverage": true,
+    "lines": 99,
+    "statements": 99,
+    "functions": 99,
+    "branches": 99,
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
   }
 }

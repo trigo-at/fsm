@@ -20,7 +20,7 @@ function walk(dir) {
 
 function loadTests() {
 	const fileList = walk(path.join(__dirname, '..'))
-	.filter(file => file.indexOf('.specs.js') > -1 && file.indexOf('node_modules') === -1).forEach((file) => {
+	.filter(file => file.indexOf('.specs.js') === file.length - 9 && file.indexOf('node_modules') === -1).forEach((file) => {
 		require(file); // eslint-disable-line
 	});
 	return fileList;
