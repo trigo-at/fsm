@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/fsm.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/fsm.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+
+/* eslint no-unused-expressions: 0, class-methods-use-this: 0 */
+
+const toCamelCase = require(&apos;./to-camel-case&apos;);
+const compositState = require(&apos;./composit-state&apos;);
+const addToArray = require(&apos;./add-to-array&apos;);
+const parseTrasition = require(&apos;./parse-transition&apos;);
+const findCurrentTransition = require(&apos;./find-current-transition&apos;);
+const getAllTakenNames = require(&apos;./get-all-taken-names&apos;);
+
+const allStates = (transitions) =&gt; {
+	const states = [];
+	transitions.forEach((t) =&gt; {
+		[&apos;from&apos;, &apos;to&apos;].forEach((key) =&gt; {
+			addToArray(states, t[key]);
+		});
+	});
+	states.sort();
+	return states;
+};
+
+const validTransitions = (state, transitions) =&gt; {
+	const ts = [];
+
+	transitions.forEach((t) =&gt; {
+		const from = t.from;
+		if (from.indexOf(state) !== -1) {
+			addToArray(ts, t.name);
+		}
+	});
+
+	ts.sort();
+	return ts;
+};
+
+const callIfSet = async (handler, ctx, args) =&gt; {
+	if (handler &amp;&amp; typeof handler === &apos;function&apos;) {
+		const a = [ctx].concat(args);
+		return handler(...a);
+	}
+	return null;
+};
+
+/**
+ * Class representing a Finite State Machine
+ * @class
+ */
+class FSM {
+
+	/**
+	 * Returns the composit state tool used to parse and build state strings from objects
+	 *
+	 * @return {CompositState} the composit sate tool
+	 */
+	static get compositState() {
+		return compositState;
+	}
+
+	/**
+	 * Create a camelCase function name formthe given string. Used internally to convert transition names to function names
+	 *
+	 * @param {string} name the name to transform
+	 *
+	 * @return {string} camelCased version of the given name
+	 */
+	static toFunctionName(name) {
+		return toCamelCase(name);
+	}
+	/**
+     * Create a new state machine.
+     * @param {object} options the initalisation object.
+     * @param {object} options.initialState the state string used to initialize the state machine
+     * @param {Array.&lt;object&gt;} options.transitions array of defined transitions
+     * @param {object} options.data the data that is stored in the state machine
+     * @param {function} options.saveState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
+     * @param {function} options.willChangeState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
+     * @param {function} options.didChangeState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
+     * @param {function} options.willSaveState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
+     * @param {function} options.didSaveState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
+     * @param {object} options.eventHandler object containin hander for specific trasaction
+	 *	{ beforeTransName: async (ctx, args) =&gt; {...}, afterTransName: async (ctx, args) =&gt; {...}
+     */
+	constructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler }) {
+		this._state = &apos;__uninitialized__&apos;;
+		this._transitions = [];
+		this._saveState = saveState;
+		this._willChangeState = willChangeState;
+		this._didChangeState = didChangeState;
+		this._willSaveState = willSaveState;
+		this._didSaveState = didSaveState;
+		this._data = data;
+		this._eventHandler = eventHandler || {};
+		this._trasitionFunctionNames = [];
+
+		if (transitions) {
+			this.addTransition(transitions);
+		}
+
+		if (initialState) {
+			this.init(initialState);
+		}
+	}
+
+	/**
+	 * Initalize an existing state machine with the given state
+	 *
+	 * @param {string} state the state string to set. The string must be one of the existing
+	 * states of the state machine
+	 */
+	init(state) {
+		if (this.states().indexOf(state) === -1) {
+			throw new Error(`Invlaid state: &quot;${state}&quot; known states: ${this.states().join(&apos;, &apos;)}`);
+		}
+		this._state = state;
+		return this;
+	}
+
+	/**
+	 * Get the current state string
+	 *
+	 * @return {string} the state string
+	 */
+	get state() {
+		return this._state;
+	}
+
+	/**
+	 * @private
+	 */
+	set state(_) {
+		throw new Error(&apos;cannot set state&apos;);
+	}
+
+	/**
+	 * Get the data stored in the state machine
+	 *
+	 * @return {object} the stored data objec
+	 */
+	get data() {
+		return this._data;
+	}
+
+	/**
+	 * Set the data stored in the state machine
+	 *
+	 * @param {object} value the data object
+	 */
+	set data(value) {
+		this._data = value;
+	}
+
+	/**
+	 * Get all known states of the state machine
+	 *
+	 * @return {Array.&lt;string&gt;} array of state strings
+	 */
+	states() {
+		return allStates(this._transitions).filter(s =&gt; s !== &apos;*&apos;);
+	}
+
+	/**
+	 * Get all transitions that are valid for the current state of the state machine
+	 *
+	 * @return {Array.&lt;string&gt;} array of valid transitions name
+	 */
+	transitions() {
+		return validTransitions(this.state, this._transitions);
+	}
+
+	/**
+	 * Execute a transition
+	 *
+	 * @param {string} transition the name of the transition
+	 * @param {...any} args list of arguments passed to the event handlers during transition
+	 *
+	 * @return {object} object containing the results of the executed event handlers
+	 */
+	execute(transition, ...args) {
+		return this[FSM.toFunctionName(transition)](...args);
+	}
+
+
+	/**
+	 * Add a new transition to the state machine
+	 *
+	 * @param {object} transition the name of the transition&lt;br&gt;&lt;br&gt;
+	 * Suported syntax: (camelCasle, colon:case, snake_case, dash-case)&lt;br&gt;
+	 * myTransition, my:transition, my_transition, my-transition =&gt; will create function .myTransition()
+	 * @param {string} transition.name the name of the transition
+	 * @param {(string|object|Array.&lt;string&gt;|Array.&lt;object&gt;)} transition.form the states from which this
+	 * transition can be triggered.&lt;br&gt;&lt;br&gt;
+	 * Supported syntax:&lt;br&gt;
+	 * &apos;*&apos; =&gt; allow from any state
+	 * &apos;state1&apos; =&gt; allow only from state &apos;state1&apos;&lt;br&gt;
+	 * [&apos;state1&apos;, &apos;state2&apos;] =&gt; allow transition from state1 &amp; state2&lt;br&gt;
+	 * { state: [&apos;s1&apos;, &apos;s2&apos;], substate: [&apos;sub1&apos;, &apos;sub2&apos;] } =&gt; allow transition from all states creates by calculating all&lt;br&gt;
+	 * permutations of the given states. &apos;state:s2|substate:sub1&apos; &apos;state:s2|substate:sub1&apos; &apos;state:s2|substate:sub2&apos;
+	 * @param {(string|object} transition.form defines the state that is created after the transition&lt;br&gt;&lt;br&gt;
+	 * Supported syntax:&lt;br&gt;
+	 * &apos;*&apos; =&gt; do not change source state&lt;br&gt;
+	 * &apos;state1&apos; =&gt; sets target state to &apos;state1&apos;&lt;br&gt;
+	 * { state: &apos;s1&apos; } =&gt; sets the property &quot;state&quot; of the current state to &quot;s1&quot; eg. patches the existing state object representation
+	 */
+	addTransition(transition) {
+		const transitions = Array.isArray(transition) ? transition : [transition];
+		transitions.map(parseTrasition).forEach((transArray) =&gt; {
+			transArray.forEach((trans, index) =&gt; {
+				if (index === 0) {
+					if (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {
+						const conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];
+						throw new Error(`Ambigious transtion name: &quot;${trans.name}&quot; conflicts with existing transition: &quot;${conflicting}&quot;`);
+					}
+					if (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {
+						throw new Error(`Forbidden transition name: &quot;${trans.name}&quot; forbidden names: &quot;${Array.from(getAllTakenNames(this)).join(&apos;, &apos;)}&quot;`);
+					}
+				}
+				if (index === 0) {
+					this._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));
+				}
+
+				this._transitions.push(trans);
+				this._buildTransition(trans);
+			});
+		});
+		return this;
+	}
+
+	_buildTransition(trans) {
+		const transitionName = toCamelCase(trans.name);
+		if (this[transitionName]) return;
+
+		/**
+		 * Run-time created transition methods
+		 *
+		 * @param {...any} args the arguments that will be passed to event handlers
+		 *
+		 * @return {object} contains the result objects from the event handlers
+		 */
+		this[transitionName] = async (...args) =&gt; {
+			if (this.__inTransition) {
+				throw new Error(&apos;Cannot start transition when during running transition&apos;);
+			}
+			this.__inTransition = true;
+			try {
+				const currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);
+				// console.log(currentTransition);
+				const validNames = this.transitions().map(toCamelCase);
+				if (!currentTransition || (validNames.indexOf(&apos;*&apos;) === -1 &amp;&amp; validNames.indexOf(transitionName) === -1)) {
+					throw new Error(`Invalid transition: &quot;${transitionName}&quot; in state: &quot;${this.state}&quot;`);
+				}
+				const from = this.state;
+				const to = currentTransition.to === &apos;*&apos; ? from : currentTransition.to;
+				const ctx = {
+					transition: transitionName,
+					from,
+					to,
+					fsm: this,
+				};
+				if (this._data) {
+					ctx.data = this._data;
+				}
+				const beforeHandler = `before${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;
+				const afterHandler = `after${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;
+
+				const result = {};
+				ctx.results = result;
+				result.willChangeState = await callIfSet(this._willChangeState, ctx, args);
+				ctx.results = Object.assign({}, result);
+				result[beforeHandler] = await callIfSet(this._eventHandler[beforeHandler], ctx, args);
+			// console.log(`Change state: &quot;${from}&quot; =&gt; &quot;${to}&quot;`)
+				this._state = to;
+				ctx.results = Object.assign({}, result);
+				result[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);
+				ctx.results = Object.assign({}, result);
+				result.didChangeState = await callIfSet(this._didChangeState, ctx, args);
+
+				if (this._saveState &amp;&amp; typeof this._saveState === &apos;function&apos;) {
+					ctx.results = Object.assign({}, result);
+					result.willSaveState = await callIfSet(this._willSaveState, ctx, args);
+					ctx.results = Object.assign({}, result);
+					result.saveState = await this._saveState(ctx, args);
+					ctx.results = Object.assign({}, result);
+					result.didSaveState = await callIfSet(this._didSaveState, ctx, args);
+				}
+
+				this.__inTransition = false;
+				return result;
+			} catch (e) {
+				this.__inTransition = false;
+				throw e;
+			}
+		};
+	}
+}
+
+module.exports = FSM;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
 	"source": "./lib",
-	"destination": "./doc",
+	"destination": "./docs",
 	"experimentalProposal": {
 		"classProperties": true,
 		"objectRestSpread": true,
@@ -13,5 +13,7 @@
 	},
 	"plugins": [
 		{"name": "./esdoc-for-node.js"}
-	]
+	],
+	"coverage": true
+
 }

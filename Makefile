@@ -17,6 +17,10 @@ clean:
 test:
 	yarn test
 
+.PHONY: docs
+docs:
+	esdoc
+
 build: .
 	docker-compose -f docker-compose.test.yml build
 

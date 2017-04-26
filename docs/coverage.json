@@ -1,0 +1,17 @@
+{
+  "coverage": "100%",
+  "expectCount": 16,
+  "actualCount": 16,
+  "files": {
+    "lib/composit-state.js": {
+      "expectCount": 3,
+      "actualCount": 3,
+      "undocumentLines": []
+    },
+    "lib/fsm.js": {
+      "expectCount": 13,
+      "actualCount": 13,
+      "undocumentLines": []
+    }
+  }
+}
