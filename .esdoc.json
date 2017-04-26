@@ -1,0 +1,17 @@
+{
+	"source": "./lib",
+	"destination": "./doc",
+	"experimentalProposal": {
+		"classProperties": true,
+		"objectRestSpread": true,
+		"decorators": true,
+		"doExpressions": true,
+		"functionBind": true,
+		"asyncGenerators": true,
+		"exportExtensions": true,
+		"dynamicImport": true
+	},
+	"plugins": [
+		{"name": "./esdoc-for-node.js"}
+	]
+}
