@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -58,7 +59,7 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 			expect(() =&gt; parseTrasition({ name: &apos;trans&apos;, from: name, to: &apos;b&apos; })).to.throw();
 		});
 		it(`does not allow from state: &quot;[&apos;a&apos;, ${name}, &apos;b&apos;]&quot;`, () =&gt; {
-			expect(() =&gt; parseTrasition({ name: &apos;trans&apos;, from: [&apos;a&apos;, name, &apos;b&apos;], to: &apos;b&apos; })).to.throw(/Invalid transition from:/);
+			expect(() =&gt; parseTrasition({ name: &apos;trans&apos;, from: [&apos;a&apos;, name, &apos;b&apos;], to: &apos;b&apos; })).to.throw();
 		});
 		it(`does not allow to state: &quot;${name}&quot;`, () =&gt; {
 			expect(() =&gt; parseTrasition({ name: &apos;trans&apos;, from: &apos;a&apos;, to: name })).to.throw();
@@ -76,12 +77,6 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 			expect(parseTrasition(
 				{ name: &apos;trans&apos;, from: { a: &apos;b&apos;, c: &apos;d&apos; }, to: { a: &apos;x&apos; } })).to.eql([
 				{ name: &apos;trans&apos;, from: &apos;a:b|c:d&apos;, to: &apos;a:x|c:d&apos; },
-				]);
-		});
-		it(&apos;&quot;to&quot; in object notation replaces &quot;from&quot; in string notation&apos;, () =&gt; {
-			expect(parseTrasition(
-				{ name: &apos;trans&apos;, from: &apos;a:b|c:d&apos;, to: { a: &apos;x&apos; } })).to.eql([
-				{ name: &apos;trans&apos;, from: &apos;a:b|c:d&apos;, to: &apos;a:x&apos; },
 				]);
 		});
 
@@ -103,6 +98,19 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 			{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
 			{ name: &apos;trans&apos;, from: &apos;b&apos;, to: &apos;b&apos; },
 		]);
+	});
+	it(&apos;state values must match regex: /^([a-zA-Z0-9-_.#\\/@\\$%^!=&lt;&gt;+~?]+|\\*)$/&apos;, () =&gt; {
+		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a:1&apos;, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a|1&apos;, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: [&apos;a:1&apos;], to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: [&apos;a|1&apos;], to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: { s1: [&apos;a:1&apos;] }, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: { s1: [&apos;a|1&apos;] }, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
+
+		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a&apos;, to: &apos;a:1&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a&apos;, to: &apos;a|1&apos; })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a&apos;, to: { s1: &apos;a:1&apos; } })).to.throw(/Invalid state value!/);
+		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a&apos;, to: { s1: &apos;a|1&apos; } })).to.throw(/Invalid state value!/);
 	});
 });
 </code></pre>

@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@trigo/fsm/lib/is-valid-state-value.js~isvalidstatevalue",
+    "function/index.html#static-function-isvalidstatevalue",
+    "<span>isvalidstatevalue</span> <span class=\"search-result-import-path\">@trigo/fsm/lib/is-valid-state-value.js</span>",
+    "function"
+  ],
+  [
     "builtinexternal/ecmascriptexternal.js~array",
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
     "BuiltinExternal/ECMAScriptExternal.js~Array",
@@ -415,13 +421,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/fsm.js~fsm#data",
-    "class/lib/fsm.js~FSM.html#instance-set-data",
+    "class/lib/fsm.js~FSM.html#instance-get-data",
     "lib/fsm.js~FSM#data",
     "member"
   ],
   [
     "lib/fsm.js~fsm#data",
-    "class/lib/fsm.js~FSM.html#instance-get-data",
+    "class/lib/fsm.js~FSM.html#instance-set-data",
     "lib/fsm.js~FSM#data",
     "member"
   ],
@@ -477,6 +483,12 @@ window.esdocSearchIndex = [
     "lib/get-all-taken-names.js",
     "file/lib/get-all-taken-names.js.html",
     "lib/get-all-taken-names.js",
+    "file"
+  ],
+  [
+    "lib/is-valid-state-value.js",
+    "file/lib/is-valid-state-value.js.html",
+    "lib/is-valid-state-value.js",
     "file"
   ],
   [

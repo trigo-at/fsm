@@ -1,6 +1,6 @@
 {
-  "coverage": "100%",
-  "expectCount": 16,
+  "coverage": "94.11%",
+  "expectCount": 17,
   "actualCount": 16,
   "files": {
     "lib/composit-state.js": {
@@ -12,6 +12,13 @@
       "expectCount": 13,
       "actualCount": 13,
       "undocumentLines": []
+    },
+    "lib/is-valid-state-value.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        4
+      ]
     }
   }
 }

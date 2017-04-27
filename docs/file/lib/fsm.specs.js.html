@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -158,6 +159,7 @@ describe(&apos;FSM&apos;, () =&gt; {
 			expect(() =&gt; f.addTransition({ name: &apos;add:transition&apos;, from: &apos;a&apos;, to: &apos;b&apos; })).to.throw(/Forbidden transition name/);
 		});
 	});
+
 	describe(&apos;ctor, API &amp; state constrainsts&apos;, () =&gt; {
 		let fsm;
 		beforeEach(() =&gt; {

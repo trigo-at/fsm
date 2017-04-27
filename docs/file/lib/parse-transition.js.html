@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -42,6 +43,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
 const compositState = require(&apos;./composit-state.js&apos;);
+const isValidStateValue = require(&apos;./is-valid-state-value&apos;);
 
 const explodeKey = (froms, key) =&gt; {
 	const ret = [];
@@ -95,8 +97,8 @@ module.exports = (transition) =&gt; {
 
 	let froms = Array.isArray(trans.from) ? trans.from : [trans.from];
 	froms.forEach((from) =&gt; {
-		if (!from) {
-			throw new Error(`Invalid transition from: ${from}`);
+		if (!from || (typeof from === &apos;string&apos; &amp;&amp; !isValidStateValue(from))) {
+			throw new Error(`Invalid state value! from: ${from}`);
 		}
 	});
 	froms = createPermutations(froms);
@@ -106,6 +108,8 @@ module.exports = (transition) =&gt; {
 			to = compositState.build(Object.assign({}, from, trans.to));
 		} else if (typeof trans.to === &apos;object&apos;) {
 			to = compositState.build(trans.to);
+		} else if (typeof trans.to === &apos;string&apos; &amp;&amp; !isValidStateValue(trans.to)) {
+			throw new Error(`Invalid state value! to: ${trans.to}`);
 		}
 
 		const t = { name: trans.name, to };

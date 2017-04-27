@@ -107,7 +107,7 @@
     "__docId__": 5,
     "kind": "file",
     "name": "lib/composit-state.js",
-    "content": "'use strict';\n\nconst parse = (state) => {\n\tconst obj = {};\n\tstate.split('|').forEach((part) => {\n\t\tconst keyVal = part.split(':');\n\t\tobj[keyVal[0]] = keyVal[1];\n\t});\n\treturn obj;\n};\n\nconst build = (options) => {\n\tconst states = [];\n\tObject.keys(options).forEach((key) => {\n\t\tstates.push(`${key}:${options[key]}`);\n\t});\n\treturn states.sort().join('|');\n};\n\n/**\n *\n * Class to build, parse and manipulate composit states<br>\n *\n * State object in FSM are converted to string using this class<br>\n * The state object { a: 'val1', b: 'val2', c: 'val3' } is internaly stored<br>\n * in its string repreentation: \"a:val1|b:val2|c:val3\"\n *\n * This utillity class is available from {@link FSM#compositState} property\n *\n * @class\n */\nclass CompositState {\n\t/**\n\t * Build a state string from a javascript object\n\t *\n\t * @param {object} stateObj the state object\n\t *\n\t * @return {string} the string representation of the object\n\t */\n\tstatic build(stateObj) {\n\t\treturn build(stateObj);\n\t}\n\n\t/**\n\t * Build a state string from a javascript object\n\t *\n\t * @param {string} state the string representation of the object\n\t *\n\t * @return {object} the state object\n\t */\n\tstatic parse(state) {\n\t\treturn parse(state);\n\t}\n}\n\nmodule.exports = CompositState;\n",
+    "content": "'use strict';\n\nconst isValidStateValue = require('./is-valid-state-value');\n\nconst parse = (state) => {\n\tconst obj = {};\n\tstate.split('|').forEach((part) => {\n\t\tconst keyVal = part.split(':');\n\t\tobj[keyVal[0]] = keyVal[1];\n\t});\n\treturn obj;\n};\n\nconst build = (options) => {\n\tconst states = [];\n\tObject.keys(options).forEach((key) => {\n\t\tif (!isValidStateValue(options[key])) {\n\t\t\tthrow new Error(`Invalid state value! from: ${options[key]}`);\n\t\t}\n\t\tstates.push(`${key}:${options[key]}`);\n\t});\n\treturn states.sort().join('|');\n};\n\n/**\n *\n * Class to build, parse and manipulate composit states<br>\n *\n * State object in FSM are converted to string using this class<br>\n * The state object { a: 'val1', b: 'val2', c: 'val3' } is internaly stored<br>\n * in its string repreentation: \"a:val1|b:val2|c:val3\"\n *\n * This utillity class is available from {@link FSM#compositState} property\n *\n * @class\n */\nclass CompositState {\n\t/**\n\t * Build a state string from a javascript object\n\t *\n\t * @param {object} stateObj the state object\n\t *\n\t * @return {string} the string representation of the object\n\t */\n\tstatic build(stateObj) {\n\t\treturn build(stateObj);\n\t}\n\n\t/**\n\t * Build a state string from a javascript object\n\t *\n\t * @param {string} state the string representation of the object\n\t *\n\t * @return {object} the state object\n\t */\n\tstatic parse(state) {\n\t\treturn parse(state);\n\t}\n}\n\nmodule.exports = CompositState;\n",
     "static": true,
     "longname": "lib/composit-state.js",
     "access": null,
@@ -116,6 +116,32 @@
   },
   {
     "__docId__": 6,
+    "kind": "variable",
+    "name": "isValidStateValue",
+    "memberof": "lib/composit-state.js",
+    "static": true,
+    "longname": "lib/composit-state.js~isValidStateValue",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/composit-state.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
     "kind": "function",
     "name": "parse",
     "memberof": "lib/composit-state.js",
@@ -128,7 +154,7 @@
     "importPath": "@trigo/fsm/lib/composit-state.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 5,
     "undocument": true,
     "unknown": [
       {
@@ -151,7 +177,7 @@
     }
   },
   {
-    "__docId__": 7,
+    "__docId__": 8,
     "kind": "function",
     "name": "build",
     "memberof": "lib/composit-state.js",
@@ -164,7 +190,7 @@
     "importPath": "@trigo/fsm/lib/composit-state.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 14,
     "undocument": true,
     "unknown": [
       {
@@ -187,7 +213,7 @@
     }
   },
   {
-    "__docId__": 8,
+    "__docId__": 9,
     "kind": "class",
     "name": "CompositState",
     "memberof": "lib/composit-state.js",
@@ -198,7 +224,7 @@
     "importPath": "@trigo/fsm/lib/composit-state.js",
     "importStyle": "CompositState",
     "description": "\nClass to build, parse and manipulate composit states<br>\n\nState object in FSM are converted to string using this class<br>\nThe state object { a: 'val1', b: 'val2', c: 'val3' } is internaly stored<br>\nin its string repreentation: \"a:val1|b:val2|c:val3\"\n\nThis utillity class is available from {@link FSM#compositState} property",
-    "lineNumber": 32,
+    "lineNumber": 37,
     "unknown": [
       {
         "tagName": "@class",
@@ -208,7 +234,7 @@
     "interface": false
   },
   {
-    "__docId__": 9,
+    "__docId__": 10,
     "kind": "method",
     "name": "build",
     "memberof": "lib/composit-state.js~CompositState",
@@ -218,7 +244,7 @@
     "longname": "lib/composit-state.js~CompositState.build",
     "access": null,
     "description": "Build a state string from a javascript object",
-    "lineNumber": 40,
+    "lineNumber": 45,
     "params": [
       {
         "nullable": null,
@@ -241,7 +267,7 @@
     }
   },
   {
-    "__docId__": 10,
+    "__docId__": 11,
     "kind": "method",
     "name": "parse",
     "memberof": "lib/composit-state.js~CompositState",
@@ -251,7 +277,7 @@
     "longname": "lib/composit-state.js~CompositState.parse",
     "access": null,
     "description": "Build a state string from a javascript object",
-    "lineNumber": 51,
+    "lineNumber": 56,
     "params": [
       {
         "nullable": null,
@@ -274,7 +300,7 @@
     }
   },
   {
-    "__docId__": 11,
+    "__docId__": 12,
     "kind": "file",
     "name": "lib/composit-state.specs.js",
     "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst CompositState = require('./composit-state');\nconst { expect } = require('chai');\n\ndescribe('compositState', () => {\n\tdescribe('compositState.build({ ... })', () => {\n\t\tit('single state string', () => {\n\t\t\texpect(CompositState.build({ event: 'draft' })).to.equal('event:draft');\n\t\t});\n\t\tit('multi state string', () => {\n\t\t\texpect(CompositState.build({ event: 'draft', hotel: 'requested', venue: 'reserved' })).to.equal('event:draft|hotel:requested|venue:reserved');\n\t\t});\n\t});\n\n\tdescribe('compositState.parse(str)', () => {\n\t\tit('converts to object', () => {\n\t\t\texpect(CompositState.parse('event:draft|hotel:requested|venue:reserved')).to.eql({ event: 'draft', hotel: 'requested', venue: 'reserved' });\n\t\t});\n\t});\n});\n",
@@ -285,7 +311,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 12,
+    "__docId__": 13,
     "kind": "variable",
     "name": "CompositState",
     "memberof": "lib/composit-state.specs.js",
@@ -311,7 +337,7 @@
     }
   },
   {
-    "__docId__": 13,
+    "__docId__": 14,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/composit-state.specs.js",
@@ -337,7 +363,7 @@
     }
   },
   {
-    "__docId__": 14,
+    "__docId__": 15,
     "kind": "file",
     "name": "lib/find-current-transition.js",
     "content": "'use strict';\n\nconst toCamelCase = require('./to-camel-case');\n\n/** @private */\nmodule.exports = (transitionName, state, transitions) => {\n\tconst matches = transitions.filter(t => toCamelCase(t.name) === transitionName)\n\t\t.filter(t => Array.isArray(t.from) ? t.from.indexOf(state) !== -1 : t.from === state); //eslint-disable-line\n\n\tif (matches.length > 1) {\n\t\tthrow new Error(`Ambigious transitions found: ${matches.map(m => JSON.stringify(m)).join(' ')}`);\n\t}\n\treturn matches[0];\n};\n",
@@ -348,7 +374,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 15,
+    "__docId__": 16,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/find-current-transition.js",
@@ -374,7 +400,7 @@
     }
   },
   {
-    "__docId__": 16,
+    "__docId__": 17,
     "kind": "function",
     "name": "findcurrenttransition",
     "memberof": "lib/find-current-transition.js",
@@ -415,7 +441,7 @@
     }
   },
   {
-    "__docId__": 17,
+    "__docId__": 18,
     "kind": "file",
     "name": "lib/find-current-transition.specs.js",
     "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst findCurrentTransition = require('./find-current-transition');\nconst { expect } = require('chai');\n\nconst t = { name: 'method:name', from: 'x', to: 'b' };\nconst t1 = { name: 'method:name', from: 'a', to: 'b' };\nconst t2 = { name: 'method:name', from: ['b', 'c'], to: 'b' };\nconst tConflict = { name: 'method:name', from: 'c', to: 'b' };\n\ndescribe('findCurrentTransition', () => {\n\tit('returns matching tarnsiton using toCacemCase', () => {\n\t\texpect(findCurrentTransition('methodName', 'a', [t, t1, t2])).to.eql(t1);\n\t});\n\n\tit('works with arrayed to', () => {\n\t\texpect(findCurrentTransition('methodName', 'b', [t, t1, t2])).to.eql(t2);\n\t});\n\n\tit('throws with abigious transtitins', () => {\n\t\texpect(() => findCurrentTransition('methodName', 'c', [t, t1, t2, tConflict])).to.throw(/Ambigious transitions found/);\n\t});\n});\n",
@@ -426,7 +452,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 18,
+    "__docId__": 19,
     "kind": "variable",
     "name": "findCurrentTransition",
     "memberof": "lib/find-current-transition.specs.js",
@@ -452,7 +478,7 @@
     }
   },
   {
-    "__docId__": 19,
+    "__docId__": 20,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/find-current-transition.specs.js",
@@ -478,7 +504,7 @@
     }
   },
   {
-    "__docId__": 20,
+    "__docId__": 21,
     "kind": "variable",
     "name": "t",
     "memberof": "lib/find-current-transition.specs.js",
@@ -504,7 +530,7 @@
     }
   },
   {
-    "__docId__": 21,
+    "__docId__": 22,
     "kind": "variable",
     "name": "t1",
     "memberof": "lib/find-current-transition.specs.js",
@@ -530,7 +556,7 @@
     }
   },
   {
-    "__docId__": 22,
+    "__docId__": 23,
     "kind": "variable",
     "name": "t2",
     "memberof": "lib/find-current-transition.specs.js",
@@ -556,7 +582,7 @@
     }
   },
   {
-    "__docId__": 23,
+    "__docId__": 24,
     "kind": "variable",
     "name": "tConflict",
     "memberof": "lib/find-current-transition.specs.js",
@@ -582,7 +608,7 @@
     }
   },
   {
-    "__docId__": 24,
+    "__docId__": 25,
     "kind": "file",
     "name": "lib/fsm.js",
     "content": "'use strict';\n\n/* eslint no-unused-expressions: 0, class-methods-use-this: 0 */\n\nconst toCamelCase = require('./to-camel-case');\nconst compositState = require('./composit-state');\nconst addToArray = require('./add-to-array');\nconst parseTrasition = require('./parse-transition');\nconst findCurrentTransition = require('./find-current-transition');\nconst getAllTakenNames = require('./get-all-taken-names');\n\nconst allStates = (transitions) => {\n\tconst states = [];\n\ttransitions.forEach((t) => {\n\t\t['from', 'to'].forEach((key) => {\n\t\t\taddToArray(states, t[key]);\n\t\t});\n\t});\n\tstates.sort();\n\treturn states;\n};\n\nconst validTransitions = (state, transitions) => {\n\tconst ts = [];\n\n\ttransitions.forEach((t) => {\n\t\tconst from = t.from;\n\t\tif (from.indexOf(state) !== -1) {\n\t\t\taddToArray(ts, t.name);\n\t\t}\n\t});\n\n\tts.sort();\n\treturn ts;\n};\n\nconst callIfSet = async (handler, ctx, args) => {\n\tif (handler && typeof handler === 'function') {\n\t\tconst a = [ctx].concat(args);\n\t\treturn handler(...a);\n\t}\n\treturn null;\n};\n\n/**\n * Class representing a Finite State Machine\n * @class\n */\nclass FSM {\n\n\t/**\n\t * Returns the composit state tool used to parse and build state strings from objects\n\t *\n\t * @return {CompositState} the composit sate tool\n\t */\n\tstatic get compositState() {\n\t\treturn compositState;\n\t}\n\n\t/**\n\t * Create a camelCase function name formthe given string. Used internally to convert transition names to function names\n\t *\n\t * @param {string} name the name to transform\n\t *\n\t * @return {string} camelCased version of the given name\n\t */\n\tstatic toFunctionName(name) {\n\t\treturn toCamelCase(name);\n\t}\n\t/**\n     * Create a new state machine.\n     * @param {object} options the initalisation object.\n     * @param {object} options.initialState the state string used to initialize the state machine\n     * @param {Array.<object>} options.transitions array of defined transitions\n     * @param {object} options.data the data that is stored in the state machine\n     * @param {function} options.saveState function with signature \"async (ctx, arg1, arg2...) => {...}\"\n     * @param {function} options.willChangeState function with signature \"async (ctx, arg1, arg2...) => {...}\"\n     * @param {function} options.didChangeState function with signature \"async (ctx, arg1, arg2...) => {...}\"\n     * @param {function} options.willSaveState function with signature \"async (ctx, arg1, arg2...) => {...}\"\n     * @param {function} options.didSaveState function with signature \"async (ctx, arg1, arg2...) => {...}\"\n     * @param {object} options.eventHandler object containin hander for specific trasaction\n\t *\t{ beforeTransName: async (ctx, args) => {...}, afterTransName: async (ctx, args) => {...}\n     */\n\tconstructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler }) {\n\t\tthis._state = '__uninitialized__';\n\t\tthis._transitions = [];\n\t\tthis._saveState = saveState;\n\t\tthis._willChangeState = willChangeState;\n\t\tthis._didChangeState = didChangeState;\n\t\tthis._willSaveState = willSaveState;\n\t\tthis._didSaveState = didSaveState;\n\t\tthis._data = data;\n\t\tthis._eventHandler = eventHandler || {};\n\t\tthis._trasitionFunctionNames = [];\n\n\t\tif (transitions) {\n\t\t\tthis.addTransition(transitions);\n\t\t}\n\n\t\tif (initialState) {\n\t\t\tthis.init(initialState);\n\t\t}\n\t}\n\n\t/**\n\t * Initalize an existing state machine with the given state\n\t *\n\t * @param {string} state the state string to set. The string must be one of the existing\n\t * states of the state machine\n\t */\n\tinit(state) {\n\t\tif (this.states().indexOf(state) === -1) {\n\t\t\tthrow new Error(`Invlaid state: \"${state}\" known states: ${this.states().join(', ')}`);\n\t\t}\n\t\tthis._state = state;\n\t\treturn this;\n\t}\n\n\t/**\n\t * Get the current state string\n\t *\n\t * @return {string} the state string\n\t */\n\tget state() {\n\t\treturn this._state;\n\t}\n\n\t/**\n\t * @private\n\t */\n\tset state(_) {\n\t\tthrow new Error('cannot set state');\n\t}\n\n\t/**\n\t * Get the data stored in the state machine\n\t *\n\t * @return {object} the stored data objec\n\t */\n\tget data() {\n\t\treturn this._data;\n\t}\n\n\t/**\n\t * Set the data stored in the state machine\n\t *\n\t * @param {object} value the data object\n\t */\n\tset data(value) {\n\t\tthis._data = value;\n\t}\n\n\t/**\n\t * Get all known states of the state machine\n\t *\n\t * @return {Array.<string>} array of state strings\n\t */\n\tstates() {\n\t\treturn allStates(this._transitions).filter(s => s !== '*');\n\t}\n\n\t/**\n\t * Get all transitions that are valid for the current state of the state machine\n\t *\n\t * @return {Array.<string>} array of valid transitions name\n\t */\n\ttransitions() {\n\t\treturn validTransitions(this.state, this._transitions);\n\t}\n\n\t/**\n\t * Execute a transition\n\t *\n\t * @param {string} transition the name of the transition\n\t * @param {...any} args list of arguments passed to the event handlers during transition\n\t *\n\t * @return {object} object containing the results of the executed event handlers\n\t */\n\texecute(transition, ...args) {\n\t\treturn this[FSM.toFunctionName(transition)](...args);\n\t}\n\n\n\t/**\n\t * Add a new transition to the state machine\n\t *\n\t * @param {object} transition the name of the transition<br><br>\n\t * Suported syntax: (camelCasle, colon:case, snake_case, dash-case)<br>\n\t * myTransition, my:transition, my_transition, my-transition => will create function .myTransition()\n\t * @param {string} transition.name the name of the transition\n\t * @param {(string|object|Array.<string>|Array.<object>)} transition.form the states from which this\n\t * transition can be triggered.<br><br>\n\t * Supported syntax:<br>\n\t * '*' => allow from any state\n\t * 'state1' => allow only from state 'state1'<br>\n\t * ['state1', 'state2'] => allow transition from state1 & state2<br>\n\t * { state: ['s1', 's2'], substate: ['sub1', 'sub2'] } => allow transition from all states creates by calculating all<br>\n\t * permutations of the given states. 'state:s2|substate:sub1' 'state:s2|substate:sub1' 'state:s2|substate:sub2'\n\t * @param {(string|object} transition.form defines the state that is created after the transition<br><br>\n\t * Supported syntax:<br>\n\t * '*' => do not change source state<br>\n\t * 'state1' => sets target state to 'state1'<br>\n\t * { state: 's1' } => sets the property \"state\" of the current state to \"s1\" eg. patches the existing state object representation\n\t */\n\taddTransition(transition) {\n\t\tconst transitions = Array.isArray(transition) ? transition : [transition];\n\t\ttransitions.map(parseTrasition).forEach((transArray) => {\n\t\t\ttransArray.forEach((trans, index) => {\n\t\t\t\tif (index === 0) {\n\t\t\t\t\tif (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {\n\t\t\t\t\t\tconst conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];\n\t\t\t\t\t\tthrow new Error(`Ambigious transtion name: \"${trans.name}\" conflicts with existing transition: \"${conflicting}\"`);\n\t\t\t\t\t}\n\t\t\t\t\tif (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {\n\t\t\t\t\t\tthrow new Error(`Forbidden transition name: \"${trans.name}\" forbidden names: \"${Array.from(getAllTakenNames(this)).join(', ')}\"`);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tif (index === 0) {\n\t\t\t\t\tthis._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));\n\t\t\t\t}\n\n\t\t\t\tthis._transitions.push(trans);\n\t\t\t\tthis._buildTransition(trans);\n\t\t\t});\n\t\t});\n\t\treturn this;\n\t}\n\n\t_buildTransition(trans) {\n\t\tconst transitionName = toCamelCase(trans.name);\n\t\tif (this[transitionName]) return;\n\n\t\t/**\n\t\t * Run-time created transition methods\n\t\t *\n\t\t * @param {...any} args the arguments that will be passed to event handlers\n\t\t *\n\t\t * @return {object} contains the result objects from the event handlers\n\t\t */\n\t\tthis[transitionName] = async (...args) => {\n\t\t\tif (this.__inTransition) {\n\t\t\t\tthrow new Error('Cannot start transition when during running transition');\n\t\t\t}\n\t\t\tthis.__inTransition = true;\n\t\t\ttry {\n\t\t\t\tconst currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);\n\t\t\t\t// console.log(currentTransition);\n\t\t\t\tconst validNames = this.transitions().map(toCamelCase);\n\t\t\t\tif (!currentTransition || (validNames.indexOf('*') === -1 && validNames.indexOf(transitionName) === -1)) {\n\t\t\t\t\tthrow new Error(`Invalid transition: \"${transitionName}\" in state: \"${this.state}\"`);\n\t\t\t\t}\n\t\t\t\tconst from = this.state;\n\t\t\t\tconst to = currentTransition.to === '*' ? from : currentTransition.to;\n\t\t\t\tconst ctx = {\n\t\t\t\t\ttransition: transitionName,\n\t\t\t\t\tfrom,\n\t\t\t\t\tto,\n\t\t\t\t\tfsm: this,\n\t\t\t\t};\n\t\t\t\tif (this._data) {\n\t\t\t\t\tctx.data = this._data;\n\t\t\t\t}\n\t\t\t\tconst beforeHandler = `before${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\t\t\t\tconst afterHandler = `after${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\n\t\t\t\tconst result = {};\n\t\t\t\tctx.results = result;\n\t\t\t\tresult.willChangeState = await callIfSet(this._willChangeState, ctx, args);\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[beforeHandler] = await callIfSet(this._eventHandler[beforeHandler], ctx, args);\n\t\t\t// console.log(`Change state: \"${from}\" => \"${to}\"`)\n\t\t\t\tthis._state = to;\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult.didChangeState = await callIfSet(this._didChangeState, ctx, args);\n\n\t\t\t\tif (this._saveState && typeof this._saveState === 'function') {\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.willSaveState = await callIfSet(this._willSaveState, ctx, args);\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.saveState = await this._saveState(ctx, args);\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.didSaveState = await callIfSet(this._didSaveState, ctx, args);\n\t\t\t\t}\n\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\treturn result;\n\t\t\t} catch (e) {\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\tthrow e;\n\t\t\t}\n\t\t};\n\t}\n}\n\nmodule.exports = FSM;\n",
@@ -593,7 +619,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 25,
+    "__docId__": 26,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/fsm.js",
@@ -619,7 +645,7 @@
     }
   },
   {
-    "__docId__": 26,
+    "__docId__": 27,
     "kind": "variable",
     "name": "compositState",
     "memberof": "lib/fsm.js",
@@ -645,7 +671,7 @@
     }
   },
   {
-    "__docId__": 27,
+    "__docId__": 28,
     "kind": "variable",
     "name": "addToArray",
     "memberof": "lib/fsm.js",
@@ -671,7 +697,7 @@
     }
   },
   {
-    "__docId__": 28,
+    "__docId__": 29,
     "kind": "variable",
     "name": "parseTrasition",
     "memberof": "lib/fsm.js",
@@ -697,7 +723,7 @@
     }
   },
   {
-    "__docId__": 29,
+    "__docId__": 30,
     "kind": "variable",
     "name": "findCurrentTransition",
     "memberof": "lib/fsm.js",
@@ -723,7 +749,7 @@
     }
   },
   {
-    "__docId__": 30,
+    "__docId__": 31,
     "kind": "variable",
     "name": "getAllTakenNames",
     "memberof": "lib/fsm.js",
@@ -749,7 +775,7 @@
     }
   },
   {
-    "__docId__": 31,
+    "__docId__": 32,
     "kind": "function",
     "name": "allStates",
     "memberof": "lib/fsm.js",
@@ -785,7 +811,7 @@
     }
   },
   {
-    "__docId__": 32,
+    "__docId__": 33,
     "kind": "function",
     "name": "validTransitions",
     "memberof": "lib/fsm.js",
@@ -827,7 +853,7 @@
     }
   },
   {
-    "__docId__": 33,
+    "__docId__": 34,
     "kind": "function",
     "name": "callIfSet",
     "memberof": "lib/fsm.js",
@@ -875,7 +901,7 @@
     }
   },
   {
-    "__docId__": 34,
+    "__docId__": 35,
     "kind": "class",
     "name": "FSM",
     "memberof": "lib/fsm.js",
@@ -896,7 +922,7 @@
     "interface": false
   },
   {
-    "__docId__": 35,
+    "__docId__": 36,
     "kind": "get",
     "name": "compositState",
     "memberof": "lib/fsm.js~FSM",
@@ -922,7 +948,7 @@
     }
   },
   {
-    "__docId__": 36,
+    "__docId__": 37,
     "kind": "method",
     "name": "toFunctionName",
     "memberof": "lib/fsm.js~FSM",
@@ -955,7 +981,7 @@
     }
   },
   {
-    "__docId__": 37,
+    "__docId__": 38,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "lib/fsm.js~FSM",
@@ -1070,7 +1096,7 @@
     ]
   },
   {
-    "__docId__": 38,
+    "__docId__": 39,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -1093,7 +1119,7 @@
     }
   },
   {
-    "__docId__": 39,
+    "__docId__": 40,
     "kind": "member",
     "name": "_transitions",
     "memberof": "lib/fsm.js~FSM",
@@ -1116,7 +1142,7 @@
     }
   },
   {
-    "__docId__": 40,
+    "__docId__": 41,
     "kind": "member",
     "name": "_saveState",
     "memberof": "lib/fsm.js~FSM",
@@ -1139,7 +1165,7 @@
     }
   },
   {
-    "__docId__": 41,
+    "__docId__": 42,
     "kind": "member",
     "name": "_willChangeState",
     "memberof": "lib/fsm.js~FSM",
@@ -1162,7 +1188,7 @@
     }
   },
   {
-    "__docId__": 42,
+    "__docId__": 43,
     "kind": "member",
     "name": "_didChangeState",
     "memberof": "lib/fsm.js~FSM",
@@ -1185,7 +1211,7 @@
     }
   },
   {
-    "__docId__": 43,
+    "__docId__": 44,
     "kind": "member",
     "name": "_willSaveState",
     "memberof": "lib/fsm.js~FSM",
@@ -1208,7 +1234,7 @@
     }
   },
   {
-    "__docId__": 44,
+    "__docId__": 45,
     "kind": "member",
     "name": "_didSaveState",
     "memberof": "lib/fsm.js~FSM",
@@ -1231,7 +1257,7 @@
     }
   },
   {
-    "__docId__": 45,
+    "__docId__": 46,
     "kind": "member",
     "name": "_data",
     "memberof": "lib/fsm.js~FSM",
@@ -1254,7 +1280,7 @@
     }
   },
   {
-    "__docId__": 46,
+    "__docId__": 47,
     "kind": "member",
     "name": "_eventHandler",
     "memberof": "lib/fsm.js~FSM",
@@ -1277,7 +1303,7 @@
     }
   },
   {
-    "__docId__": 47,
+    "__docId__": 48,
     "kind": "member",
     "name": "_trasitionFunctionNames",
     "memberof": "lib/fsm.js~FSM",
@@ -1300,7 +1326,7 @@
     }
   },
   {
-    "__docId__": 48,
+    "__docId__": 49,
     "kind": "method",
     "name": "init",
     "memberof": "lib/fsm.js~FSM",
@@ -1330,7 +1356,7 @@
     }
   },
   {
-    "__docId__": 49,
+    "__docId__": 50,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -1353,7 +1379,7 @@
     }
   },
   {
-    "__docId__": 50,
+    "__docId__": 51,
     "kind": "get",
     "name": "state",
     "memberof": "lib/fsm.js~FSM",
@@ -1379,7 +1405,7 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 52,
     "kind": "set",
     "name": "state",
     "memberof": "lib/fsm.js~FSM",
@@ -1397,7 +1423,7 @@
     }
   },
   {
-    "__docId__": 52,
+    "__docId__": 53,
     "kind": "get",
     "name": "data",
     "memberof": "lib/fsm.js~FSM",
@@ -1423,7 +1449,7 @@
     }
   },
   {
-    "__docId__": 53,
+    "__docId__": 54,
     "kind": "set",
     "name": "data",
     "memberof": "lib/fsm.js~FSM",
@@ -1453,7 +1479,7 @@
     }
   },
   {
-    "__docId__": 54,
+    "__docId__": 55,
     "kind": "member",
     "name": "_data",
     "memberof": "lib/fsm.js~FSM",
@@ -1476,7 +1502,7 @@
     }
   },
   {
-    "__docId__": 55,
+    "__docId__": 56,
     "kind": "method",
     "name": "states",
     "memberof": "lib/fsm.js~FSM",
@@ -1498,7 +1524,7 @@
     }
   },
   {
-    "__docId__": 56,
+    "__docId__": 57,
     "kind": "method",
     "name": "transitions",
     "memberof": "lib/fsm.js~FSM",
@@ -1520,7 +1546,7 @@
     }
   },
   {
-    "__docId__": 57,
+    "__docId__": 58,
     "kind": "method",
     "name": "execute",
     "memberof": "lib/fsm.js~FSM",
@@ -1563,7 +1589,7 @@
     }
   },
   {
-    "__docId__": 58,
+    "__docId__": 59,
     "kind": "method",
     "name": "addTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -1627,7 +1653,7 @@
     }
   },
   {
-    "__docId__": 59,
+    "__docId__": 60,
     "kind": "method",
     "name": "_buildTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -1655,7 +1681,7 @@
     ]
   },
   {
-    "__docId__": 60,
+    "__docId__": 61,
     "kind": "member",
     "name": "[transitionName]",
     "memberof": "lib/fsm.js~FSM",
@@ -1691,7 +1717,7 @@
     }
   },
   {
-    "__docId__": 61,
+    "__docId__": 62,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -1714,7 +1740,7 @@
     }
   },
   {
-    "__docId__": 62,
+    "__docId__": 63,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -1737,7 +1763,7 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 64,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -1760,7 +1786,7 @@
     }
   },
   {
-    "__docId__": 64,
+    "__docId__": 65,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -1783,10 +1809,10 @@
     }
   },
   {
-    "__docId__": 65,
+    "__docId__": 66,
     "kind": "file",
     "name": "lib/fsm.specs.js",
-    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\n\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\nconst compositState = require('./composit-state');\n\ndescribe('FSM', () => {\n\tdescribe('statics', () => {\n\t\tit('exposes compositState tool', () => {\n\t\t\texpect(FSM.compositState).to.equal(compositState);\n\t\t});\n\n\t\tit('cannot set compositState', () => {\n\t\t\texpect(() => { FSM.compositState = () => {}; }).to.throw();\n\t\t});\n\n\t\tit('exposes toFunctionName() helper', () => {\n\t\t\texpect(FSM.toFunctionName('test:transition:oida')).to.equal('testTransitionOida');\n\t\t});\n\t});\n\n\tdescribe('can use state Objects (compositState)', () => {\n\t\tit('can define state as object { namespace: \"default\", namespace2: \"planning\" }', () => {\n\t\t\tconst f = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: 'b' },\n\t\t\t\t\t{ name: 't2', from: [{ ns1: 'd2', ns2: 'd3' }, { ns1: 'd3', ns2: 'd4' }], to: 'x' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\texpect(f.states()).to.eql(['ns1:def|ns2:fe', 'b', 'ns1:d2|ns2:d3', 'ns1:d3|ns2:d4', 'x'].sort());\n\t\t});\n\n\t\tit('to in object notation patches from stat', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'ns1:def|ns2:fe',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: { ns1: 'b' } },\n\t\t\t\t],\n\t\t\t});\n\t\t\texpect(f.states()).to.eql(['ns1:def|ns2:fe', 'ns1:b|ns2:fe'].sort());\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('ns1:b|ns2:fe');\n\t\t});\n\n\t\tit('creates state permutation with object notation', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'k1:k11|k2:k21',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { k1: ['k11', 'k12'], k2: ['k21', 'k22'] }, to: '*' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\texpect(f.states()).to.eql([\n\t\t\t\t'k1:k11|k2:k21',\n\t\t\t\t'k1:k12|k2:k21',\n\t\t\t\t'k1:k11|k2:k22',\n\t\t\t\t'k1:k12|k2:k22',\n\t\t\t].sort());\n\t\t\tf.init('k1:k11|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k21');\n\t\t\tf.init('k1:k12|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k21');\n\t\t\tf.init('k1:k11|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k22');\n\t\t\tf.init('k1:k12|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k22');\n\t\t});\n\t});\n\n\tdescribe('fluent build API', () => {\n\t\tit('can add transition', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'trans', from: 'a', to: 'b' })\n\t\t\t\t.addTransition({ name: 'trans2', from: ['a', 'b'], to: 'c' })\n\t\t\t\t.init('a');\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\n\t\tit('can add transition array', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition([{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t\t{ name: 'trans2', from: ['a', 'b'], to: 'c' }])\n\t\t\t\t.init('a');\n\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\t\tit('validates transitions', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({})).to.throw(/Invalid transition/);\n\t\t});\n\n\t\tit('does not allow trasition name clashes', () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'a-to-b', from: 'a', to: 'b' });\n\t\t\texpect(() => f.addTransition({ name: 'a:to:b', from: 'a', to: 'b' })).to.throw(/Ambigious transtion name/);\n\t\t});\n\n\t\tit('does not allow transiion named like native FSM methods', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({ name: 'execute', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t\texpect(() => f.addTransition({ name: 'add:transition', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t});\n\t});\n\tdescribe('ctor, API & state constrainsts', () => {\n\t\tlet fsm;\n\t\tbeforeEach(() => {\n\t\t\tfsm = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'a-to-b', from: 'a', to: 'b' },\n\t\t\t\t\t{ name: 'no:op', from: 'a', to: '*' },\n\t\t\t\t\t{ name: 'b-to-c', from: 'b', to: 'c' }],\n\t\t\t});\n\t\t\tfsm.init('a');\n\t\t});\n\n\t\tit('can create empty FSM', () => {\n\t\t\tnew FSM({}); //eslint-disable-line\n\t\t});\n\t\tit('uninitialized: state == \"__uninitialized__\"', () => {\n\t\t\texpect(new FSM({ transitions: [] }).state).to.equal('__uninitialized__');\n\t\t});\n\n\t\tit('validates transitions', () => {\n\t\t\texpect(() => new FSM({ transitions: [{}] })).to.throw(/Invalid transition/);\n\t\t});\n\t\tit('init(state)', () => {\n\t\t\tfsm.init('a');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('init(state) - checks if valid state', () => {\n\t\t\texpect(() => fsm.init('rya')).to.throw(/Invlaid state: \"rya\" known states/);\n\t\t});\n\n\t\tit('cannot set \"state: property', () => {\n\t\t\texpect(() => {\n\t\t\t\tfsm.state = 'test';\n\t\t\t}).to.throw('cannot set state');\n\t\t});\n\n\t\tit('can access \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({ data: dataObj });\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('can set \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({});\n\t\t\tf.data = dataObj;\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('creates transition methods', () => {\n\t\t\texpect(fsm.aToB).to.be.instanceof(Function);\n\t\t\texpect(fsm.noOp).to.be.instanceof(Function);\n\t\t\texpect(fsm.bToC).to.be.instanceof(Function);\n\t\t});\n\n\t\tit('changes state when calling transition method', async () => {\n\t\t\tawait fsm.aToB();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnition:name)\"', async () => {\n\t\t\tawait fsm.execute('a-to-b', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnitionName)\"', async () => {\n\t\t\tawait fsm.execute('aToB', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('keeps state when \"to\" === \"*\"', async () => {\n\t\t\tawait fsm.noOp();\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('can list valid transitions', async () => {\n\t\t\texpect(fsm.transitions()).to.eql(['a-to-b', 'no:op']);\n\t\t});\n\n\t\tit('cannot run invalid transition', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.bToC();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"bToC\" in state: \"a\"');\n\t\t});\n\n\t\tit('can list allStates', () => {\n\t\t\texpect(fsm.states()).to.eql(['a', 'b', 'c']);\n\t\t});\n\t});\n\n\tdescribe('transition definitions', () => {\n\t\tit('can use array in from clause', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1', from: ['a', 'b', 'c'], to: 'd' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('b');\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('c');\n\t\t\tawait fsm.trans1();\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"trans1\" in state: \"d\"');\n\t\t});\n\t});\n\n\tdescribe('saveState', () => {\n\t\tit('can use async \"saveState\"', async () => {\n\t\t\tlet saved;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: async (ctx) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tsaved = ctx.fsm.state;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans();\n\t\t\texpect(saved).to.equal('b');\n\t\t});\n\t\tit('can use sync \"saveState\"', async () => {\n\t\t\tlet ctx, args;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: (c, a) => {\n\t\t\t\t\tctx = c;\n\t\t\t\t\targs = a;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: null,\n\t\t\t\t\tbeforeTrans: null,\n\t\t\t\t\tafterTrans: null,\n\t\t\t\t\tdidChangeState: null,\n\t\t\t\t\twillSaveState: null,\n\t\t\t\t\tsaveState: undefined,\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('throw when exection is throw in sync \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: () => {\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t\tit('throw when exection is throw in async \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: async () => {\n\t\t\t\t\t\tawait bb.delay(20);\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t});\n\n\tdescribe('transiton events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tconst data = { test: 'data' };\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\tdata,\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => 'saveState',\n\t\t\t\twillChangeState: async (ctx, a1, a2) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args: [a1, a2] });\n\t\t\t\t\treturn 'willChangeState';\n\t\t\t\t},\n\t\t\t\tdidChangeState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t\treturn 'didChangeState';\n\t\t\t\t},\n\t\t\t\twillSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t\treturn 'willSaveState';\n\t\t\t\t},\n\t\t\t\tdidSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t\treturn 'didSaveState';\n\t\t\t\t},\n\t\t\t\teventHandler: {\n\t\t\t\t\tbeforeTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'beforeTrans', ctx, args });\n\t\t\t\t\t\treturn 'beforeTrans';\n\t\t\t\t\t},\n\t\t\t\t\tafterTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'afterTrans', ctx, args });\n\t\t\t\t\t\treturn 'afterTrans';\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('with \"execute(trasnition)\" calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.execute('trans', 42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('afterTrans');\n\t\t\texpect(ts[3].name).to.equal('didChangeState');\n\t\t\texpect(ts[4].name).to.equal('willSaveState');\n\t\t\texpect(ts[5].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('returns all transitionHanlder results', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst result = await fsm.trans();\n\t\t\texpect(result).to.eql({\n\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\tsaveState: 'saveState',\n\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t});\n\t\t});\n\n\t\tit('throw error when beforeTransiton handler fails does not change state', async () => {\n\t\t\tcfg.eventHandler.beforeTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts.length).to.equal(1);\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when afterTransiton handler fails changes state', async () => {\n\t\t\tcfg.eventHandler.afterTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('global transition events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\twillSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts[2].name).to.equal('willSaveState');\n\t\t\texpect(ts[3].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('calls will & didSaveState only called when saveState is defined', async () => {\n\t\t\tdelete cfg.saveState;\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t});\n\n\t\tit('throw error when willChangeState & state does not change', async () => {\n\t\t\tcfg.willChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when didChangeState & state changes', async () => {\n\t\t\tcfg.didChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('race conditions', () => {\n\t\tlet fsm, cfg;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: ['a', 'b'], to: 'b' }, { name: 'trans2', from: ['a', 'b'], to: 'a' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t};\n\t\t});\n\n\t\tit('cannot start transition while anothr one is running', (done) => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tfsm.trans();\n\t\t\tfsm.trans2().then(() => done(new Error('should have failed'))).catch((err) => {\n\t\t\t\texpect(err.message).to.equal('Cannot start transition when during running transition');\n\t\t\t\tdone();\n\t\t\t});\n\t\t});\n\t\tit('can run transition sequential', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\tawait fsm.trans2();\n\t\t});\n\n\t\tit('can run transtition after a trasition was abourted', async () => {\n\t\t\tcfg.eventHandler = {\n\t\t\t\tbeforeTrans: async () => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tthrow new Error('uuppps');\n\t\t\t\t},\n\t\t\t};\n\t\t\tfsm = new FSM(cfg);\n\t\t\ttry {\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {}\n\t\t\tawait fsm.trans2();\n\t\t});\n\t});\n});\n",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\n\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\nconst compositState = require('./composit-state');\n\ndescribe('FSM', () => {\n\tdescribe('statics', () => {\n\t\tit('exposes compositState tool', () => {\n\t\t\texpect(FSM.compositState).to.equal(compositState);\n\t\t});\n\n\t\tit('cannot set compositState', () => {\n\t\t\texpect(() => { FSM.compositState = () => {}; }).to.throw();\n\t\t});\n\n\t\tit('exposes toFunctionName() helper', () => {\n\t\t\texpect(FSM.toFunctionName('test:transition:oida')).to.equal('testTransitionOida');\n\t\t});\n\t});\n\n\tdescribe('can use state Objects (compositState)', () => {\n\t\tit('can define state as object { namespace: \"default\", namespace2: \"planning\" }', () => {\n\t\t\tconst f = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: 'b' },\n\t\t\t\t\t{ name: 't2', from: [{ ns1: 'd2', ns2: 'd3' }, { ns1: 'd3', ns2: 'd4' }], to: 'x' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\texpect(f.states()).to.eql(['ns1:def|ns2:fe', 'b', 'ns1:d2|ns2:d3', 'ns1:d3|ns2:d4', 'x'].sort());\n\t\t});\n\n\t\tit('to in object notation patches from stat', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'ns1:def|ns2:fe',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: { ns1: 'b' } },\n\t\t\t\t],\n\t\t\t});\n\t\t\texpect(f.states()).to.eql(['ns1:def|ns2:fe', 'ns1:b|ns2:fe'].sort());\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('ns1:b|ns2:fe');\n\t\t});\n\n\t\tit('creates state permutation with object notation', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'k1:k11|k2:k21',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { k1: ['k11', 'k12'], k2: ['k21', 'k22'] }, to: '*' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\texpect(f.states()).to.eql([\n\t\t\t\t'k1:k11|k2:k21',\n\t\t\t\t'k1:k12|k2:k21',\n\t\t\t\t'k1:k11|k2:k22',\n\t\t\t\t'k1:k12|k2:k22',\n\t\t\t].sort());\n\t\t\tf.init('k1:k11|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k21');\n\t\t\tf.init('k1:k12|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k21');\n\t\t\tf.init('k1:k11|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k22');\n\t\t\tf.init('k1:k12|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k22');\n\t\t});\n\t});\n\n\tdescribe('fluent build API', () => {\n\t\tit('can add transition', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'trans', from: 'a', to: 'b' })\n\t\t\t\t.addTransition({ name: 'trans2', from: ['a', 'b'], to: 'c' })\n\t\t\t\t.init('a');\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\n\t\tit('can add transition array', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition([{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t\t{ name: 'trans2', from: ['a', 'b'], to: 'c' }])\n\t\t\t\t.init('a');\n\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\t\tit('validates transitions', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({})).to.throw(/Invalid transition/);\n\t\t});\n\n\t\tit('does not allow trasition name clashes', () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'a-to-b', from: 'a', to: 'b' });\n\t\t\texpect(() => f.addTransition({ name: 'a:to:b', from: 'a', to: 'b' })).to.throw(/Ambigious transtion name/);\n\t\t});\n\n\t\tit('does not allow transiion named like native FSM methods', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({ name: 'execute', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t\texpect(() => f.addTransition({ name: 'add:transition', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t});\n\t});\n\n\tdescribe('ctor, API & state constrainsts', () => {\n\t\tlet fsm;\n\t\tbeforeEach(() => {\n\t\t\tfsm = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'a-to-b', from: 'a', to: 'b' },\n\t\t\t\t\t{ name: 'no:op', from: 'a', to: '*' },\n\t\t\t\t\t{ name: 'b-to-c', from: 'b', to: 'c' }],\n\t\t\t});\n\t\t\tfsm.init('a');\n\t\t});\n\n\t\tit('can create empty FSM', () => {\n\t\t\tnew FSM({}); //eslint-disable-line\n\t\t});\n\t\tit('uninitialized: state == \"__uninitialized__\"', () => {\n\t\t\texpect(new FSM({ transitions: [] }).state).to.equal('__uninitialized__');\n\t\t});\n\n\t\tit('validates transitions', () => {\n\t\t\texpect(() => new FSM({ transitions: [{}] })).to.throw(/Invalid transition/);\n\t\t});\n\t\tit('init(state)', () => {\n\t\t\tfsm.init('a');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('init(state) - checks if valid state', () => {\n\t\t\texpect(() => fsm.init('rya')).to.throw(/Invlaid state: \"rya\" known states/);\n\t\t});\n\n\t\tit('cannot set \"state: property', () => {\n\t\t\texpect(() => {\n\t\t\t\tfsm.state = 'test';\n\t\t\t}).to.throw('cannot set state');\n\t\t});\n\n\t\tit('can access \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({ data: dataObj });\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('can set \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({});\n\t\t\tf.data = dataObj;\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('creates transition methods', () => {\n\t\t\texpect(fsm.aToB).to.be.instanceof(Function);\n\t\t\texpect(fsm.noOp).to.be.instanceof(Function);\n\t\t\texpect(fsm.bToC).to.be.instanceof(Function);\n\t\t});\n\n\t\tit('changes state when calling transition method', async () => {\n\t\t\tawait fsm.aToB();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnition:name)\"', async () => {\n\t\t\tawait fsm.execute('a-to-b', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnitionName)\"', async () => {\n\t\t\tawait fsm.execute('aToB', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('keeps state when \"to\" === \"*\"', async () => {\n\t\t\tawait fsm.noOp();\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('can list valid transitions', async () => {\n\t\t\texpect(fsm.transitions()).to.eql(['a-to-b', 'no:op']);\n\t\t});\n\n\t\tit('cannot run invalid transition', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.bToC();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"bToC\" in state: \"a\"');\n\t\t});\n\n\t\tit('can list allStates', () => {\n\t\t\texpect(fsm.states()).to.eql(['a', 'b', 'c']);\n\t\t});\n\t});\n\n\tdescribe('transition definitions', () => {\n\t\tit('can use array in from clause', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1', from: ['a', 'b', 'c'], to: 'd' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('b');\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('c');\n\t\t\tawait fsm.trans1();\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"trans1\" in state: \"d\"');\n\t\t});\n\t});\n\n\tdescribe('saveState', () => {\n\t\tit('can use async \"saveState\"', async () => {\n\t\t\tlet saved;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: async (ctx) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tsaved = ctx.fsm.state;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans();\n\t\t\texpect(saved).to.equal('b');\n\t\t});\n\t\tit('can use sync \"saveState\"', async () => {\n\t\t\tlet ctx, args;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: (c, a) => {\n\t\t\t\t\tctx = c;\n\t\t\t\t\targs = a;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: null,\n\t\t\t\t\tbeforeTrans: null,\n\t\t\t\t\tafterTrans: null,\n\t\t\t\t\tdidChangeState: null,\n\t\t\t\t\twillSaveState: null,\n\t\t\t\t\tsaveState: undefined,\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('throw when exection is throw in sync \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: () => {\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t\tit('throw when exection is throw in async \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: async () => {\n\t\t\t\t\t\tawait bb.delay(20);\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t});\n\n\tdescribe('transiton events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tconst data = { test: 'data' };\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\tdata,\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => 'saveState',\n\t\t\t\twillChangeState: async (ctx, a1, a2) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args: [a1, a2] });\n\t\t\t\t\treturn 'willChangeState';\n\t\t\t\t},\n\t\t\t\tdidChangeState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t\treturn 'didChangeState';\n\t\t\t\t},\n\t\t\t\twillSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t\treturn 'willSaveState';\n\t\t\t\t},\n\t\t\t\tdidSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t\treturn 'didSaveState';\n\t\t\t\t},\n\t\t\t\teventHandler: {\n\t\t\t\t\tbeforeTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'beforeTrans', ctx, args });\n\t\t\t\t\t\treturn 'beforeTrans';\n\t\t\t\t\t},\n\t\t\t\t\tafterTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'afterTrans', ctx, args });\n\t\t\t\t\t\treturn 'afterTrans';\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('with \"execute(trasnition)\" calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.execute('trans', 42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('afterTrans');\n\t\t\texpect(ts[3].name).to.equal('didChangeState');\n\t\t\texpect(ts[4].name).to.equal('willSaveState');\n\t\t\texpect(ts[5].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('returns all transitionHanlder results', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst result = await fsm.trans();\n\t\t\texpect(result).to.eql({\n\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\tsaveState: 'saveState',\n\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t});\n\t\t});\n\n\t\tit('throw error when beforeTransiton handler fails does not change state', async () => {\n\t\t\tcfg.eventHandler.beforeTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts.length).to.equal(1);\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when afterTransiton handler fails changes state', async () => {\n\t\t\tcfg.eventHandler.afterTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('global transition events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\twillSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts[2].name).to.equal('willSaveState');\n\t\t\texpect(ts[3].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('calls will & didSaveState only called when saveState is defined', async () => {\n\t\t\tdelete cfg.saveState;\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t});\n\n\t\tit('throw error when willChangeState & state does not change', async () => {\n\t\t\tcfg.willChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when didChangeState & state changes', async () => {\n\t\t\tcfg.didChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('race conditions', () => {\n\t\tlet fsm, cfg;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: ['a', 'b'], to: 'b' }, { name: 'trans2', from: ['a', 'b'], to: 'a' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t};\n\t\t});\n\n\t\tit('cannot start transition while anothr one is running', (done) => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tfsm.trans();\n\t\t\tfsm.trans2().then(() => done(new Error('should have failed'))).catch((err) => {\n\t\t\t\texpect(err.message).to.equal('Cannot start transition when during running transition');\n\t\t\t\tdone();\n\t\t\t});\n\t\t});\n\t\tit('can run transition sequential', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\tawait fsm.trans2();\n\t\t});\n\n\t\tit('can run transtition after a trasition was abourted', async () => {\n\t\t\tcfg.eventHandler = {\n\t\t\t\tbeforeTrans: async () => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tthrow new Error('uuppps');\n\t\t\t\t},\n\t\t\t};\n\t\t\tfsm = new FSM(cfg);\n\t\t\ttry {\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {}\n\t\t\tawait fsm.trans2();\n\t\t});\n\t});\n});\n",
     "static": true,
     "longname": "lib/fsm.specs.js",
     "access": null,
@@ -1794,7 +1820,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 66,
+    "__docId__": 67,
     "kind": "variable",
     "name": "bb",
     "memberof": "lib/fsm.specs.js",
@@ -1820,7 +1846,7 @@
     }
   },
   {
-    "__docId__": 67,
+    "__docId__": 68,
     "kind": "variable",
     "name": "FSM",
     "memberof": "lib/fsm.specs.js",
@@ -1846,7 +1872,7 @@
     }
   },
   {
-    "__docId__": 68,
+    "__docId__": 69,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/fsm.specs.js",
@@ -1872,7 +1898,7 @@
     }
   },
   {
-    "__docId__": 69,
+    "__docId__": 70,
     "kind": "variable",
     "name": "compositState",
     "memberof": "lib/fsm.specs.js",
@@ -1898,7 +1924,7 @@
     }
   },
   {
-    "__docId__": 70,
+    "__docId__": 71,
     "kind": "file",
     "name": "lib/get-all-taken-names.js",
     "content": "'use strict';\n\n/** @private */\nmodule.exports = (obj) => {\n\tconst methods = new Set();\n\twhile (obj = Reflect.getPrototypeOf(obj)) { // eslint-disable-line\n\t\tconst keys = Reflect.ownKeys(obj);\n\t\tkeys.forEach(k => methods.add(k));\n\t}\n\treturn methods;\n};\n",
@@ -1909,7 +1935,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 71,
+    "__docId__": 72,
     "kind": "function",
     "name": "getalltakennames",
     "memberof": "lib/get-all-taken-names.js",
@@ -1938,10 +1964,78 @@
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 73,
+    "kind": "file",
+    "name": "lib/is-valid-state-value.js",
+    "content": "'use strict';\n\nconst STATE_KEY_REGEX = /^([a-zA-Z0-9-_.#/@$%^!=<>+~?]+|\\*)$/;\nmodule.exports = value => value.match(STATE_KEY_REGEX);\n",
+    "static": true,
+    "longname": "lib/is-valid-state-value.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 74,
+    "kind": "variable",
+    "name": "STATE_KEY_REGEX",
+    "memberof": "lib/is-valid-state-value.js",
+    "static": true,
+    "longname": "lib/is-valid-state-value.js~STATE_KEY_REGEX",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/is-valid-state-value.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "undefined"
+      ]
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "function",
+    "name": "isvalidstatevalue",
+    "memberof": "lib/is-valid-state-value.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/is-valid-state-value.js~isvalidstatevalue",
+    "access": null,
+    "export": true,
+    "importPath": "@trigo/fsm/lib/is-valid-state-value.js",
+    "importStyle": "isvalidstatevalue",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 76,
     "kind": "file",
     "name": "lib/parse-transition.js",
-    "content": "'use strict';\n\nconst compositState = require('./composit-state.js');\n\nconst explodeKey = (froms, key) => {\n\tconst ret = [];\n\tfroms.forEach((from) => {\n\t\tfrom[key].forEach((val) => {\n\t\t\tconst patch = {};\n\t\t\tpatch[key] = val;\n\t\t\tret.push(Object.assign({}, from, patch));\n\t\t});\n\t});\n\treturn ret;\n};\n\nconst explode = (from) => {\n\tconst keys = Object.keys(from);\n\tlet froms = [from];\n\tfor (let i = 0; i < keys.length; i++) {\n\t\tconst key = keys[i];\n\t\tif (Array.isArray(from[key])) {\n\t\t\tfroms = explodeKey(froms, key);\n\t\t}\n\t}\n\treturn froms;\n};\n\nconst createPermutations = (froms) => {\n\tconst sets = froms.map(explode);\n\tconst flat = [];\n\tsets.forEach((set) => {\n\t\tset.forEach((line) => {\n\t\t\tflat.push(line);\n\t\t});\n\t});\n\n\treturn flat;\n};\n\n/** @private */\nmodule.exports = (transition) => {\n\tconst trans = Object.assign({}, transition);\n\tif (!trans.name || !trans.name.replace(/ /g, '') || trans.name === '__uninitialized__') {\n\t\tthrow new Error(`Invalid transition name: ${trans.name}`);\n\t}\n\n\tif (!trans.to) throw new Error(`Invalid transition to: ${trans.to}`);\n\tif (typeof trans.to === 'string') {\n\t\tif (!trans.to || !trans.to.replace(/ /g, '') || trans.to === '__uninitialized__') {\n\t\t\tthrow new Error(`Invalid transition to: ${trans.to}`);\n\t\t}\n\t}\n\n\tlet froms = Array.isArray(trans.from) ? trans.from : [trans.from];\n\tfroms.forEach((from) => {\n\t\tif (!from) {\n\t\t\tthrow new Error(`Invalid transition from: ${from}`);\n\t\t}\n\t});\n\tfroms = createPermutations(froms);\n\treturn trans.from = froms.map((from) => {// eslint-disable-line\n\t\tlet to = trans.to;\n\t\tif (typeof trans.to === 'object' && typeof from === 'object') {\n\t\t\tto = compositState.build(Object.assign({}, from, trans.to));\n\t\t} else if (typeof trans.to === 'object') {\n\t\t\tto = compositState.build(trans.to);\n\t\t}\n\n\t\tconst t = { name: trans.name, to };\n\t\tif (from && typeof from === 'object') {\n\t\t\tt.from = compositState.build(from); // eslint-disable-line\n\t\t} else {\n\t\t\tt.from = from;\n\t\t}\n\n\t\tif (!t.from || !t.from.replace(/ /g, '') || t.from === '__uninitialized__') {\n\t\t\tthrow new Error(`Invalid transition from: ${t.from}`);\n\t\t}\n\t\treturn t;\n\t});\n};\n",
+    "content": "'use strict';\n\nconst compositState = require('./composit-state.js');\nconst isValidStateValue = require('./is-valid-state-value');\n\nconst explodeKey = (froms, key) => {\n\tconst ret = [];\n\tfroms.forEach((from) => {\n\t\tfrom[key].forEach((val) => {\n\t\t\tconst patch = {};\n\t\t\tpatch[key] = val;\n\t\t\tret.push(Object.assign({}, from, patch));\n\t\t});\n\t});\n\treturn ret;\n};\n\nconst explode = (from) => {\n\tconst keys = Object.keys(from);\n\tlet froms = [from];\n\tfor (let i = 0; i < keys.length; i++) {\n\t\tconst key = keys[i];\n\t\tif (Array.isArray(from[key])) {\n\t\t\tfroms = explodeKey(froms, key);\n\t\t}\n\t}\n\treturn froms;\n};\n\nconst createPermutations = (froms) => {\n\tconst sets = froms.map(explode);\n\tconst flat = [];\n\tsets.forEach((set) => {\n\t\tset.forEach((line) => {\n\t\t\tflat.push(line);\n\t\t});\n\t});\n\n\treturn flat;\n};\n\n/** @private */\nmodule.exports = (transition) => {\n\tconst trans = Object.assign({}, transition);\n\tif (!trans.name || !trans.name.replace(/ /g, '') || trans.name === '__uninitialized__') {\n\t\tthrow new Error(`Invalid transition name: ${trans.name}`);\n\t}\n\n\tif (!trans.to) throw new Error(`Invalid transition to: ${trans.to}`);\n\tif (typeof trans.to === 'string') {\n\t\tif (!trans.to || !trans.to.replace(/ /g, '') || trans.to === '__uninitialized__') {\n\t\t\tthrow new Error(`Invalid transition to: ${trans.to}`);\n\t\t}\n\t}\n\n\tlet froms = Array.isArray(trans.from) ? trans.from : [trans.from];\n\tfroms.forEach((from) => {\n\t\tif (!from || (typeof from === 'string' && !isValidStateValue(from))) {\n\t\t\tthrow new Error(`Invalid state value! from: ${from}`);\n\t\t}\n\t});\n\tfroms = createPermutations(froms);\n\treturn trans.from = froms.map((from) => {// eslint-disable-line\n\t\tlet to = trans.to;\n\t\tif (typeof trans.to === 'object' && typeof from === 'object') {\n\t\t\tto = compositState.build(Object.assign({}, from, trans.to));\n\t\t} else if (typeof trans.to === 'object') {\n\t\t\tto = compositState.build(trans.to);\n\t\t} else if (typeof trans.to === 'string' && !isValidStateValue(trans.to)) {\n\t\t\tthrow new Error(`Invalid state value! to: ${trans.to}`);\n\t\t}\n\n\t\tconst t = { name: trans.name, to };\n\t\tif (from && typeof from === 'object') {\n\t\t\tt.from = compositState.build(from); // eslint-disable-line\n\t\t} else {\n\t\t\tt.from = from;\n\t\t}\n\n\t\tif (!t.from || !t.from.replace(/ /g, '') || t.from === '__uninitialized__') {\n\t\t\tthrow new Error(`Invalid transition from: ${t.from}`);\n\t\t}\n\t\treturn t;\n\t});\n};\n",
     "static": true,
     "longname": "lib/parse-transition.js",
     "access": null,
@@ -1949,7 +2043,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 73,
+    "__docId__": 77,
     "kind": "variable",
     "name": "compositState",
     "memberof": "lib/parse-transition.js",
@@ -1975,7 +2069,33 @@
     }
   },
   {
-    "__docId__": 74,
+    "__docId__": 78,
+    "kind": "variable",
+    "name": "isValidStateValue",
+    "memberof": "lib/parse-transition.js",
+    "static": true,
+    "longname": "lib/parse-transition.js~isValidStateValue",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/parse-transition.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 79,
     "kind": "function",
     "name": "explodeKey",
     "memberof": "lib/parse-transition.js",
@@ -1988,7 +2108,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 6,
     "undocument": true,
     "unknown": [
       {
@@ -2017,7 +2137,7 @@
     }
   },
   {
-    "__docId__": 75,
+    "__docId__": 80,
     "kind": "function",
     "name": "explode",
     "memberof": "lib/parse-transition.js",
@@ -2030,7 +2150,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "undocument": true,
     "unknown": [
       {
@@ -2053,7 +2173,7 @@
     }
   },
   {
-    "__docId__": 76,
+    "__docId__": 81,
     "kind": "function",
     "name": "createPermutations",
     "memberof": "lib/parse-transition.js",
@@ -2066,7 +2186,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 30,
     "undocument": true,
     "unknown": [
       {
@@ -2089,7 +2209,7 @@
     }
   },
   {
-    "__docId__": 77,
+    "__docId__": 82,
     "kind": "function",
     "name": "parsetransition",
     "memberof": "lib/parse-transition.js",
@@ -2102,7 +2222,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition.js",
     "importStyle": "parsetransition",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 43,
     "params": [
       {
         "name": "transition",
@@ -2118,10 +2238,10 @@
     }
   },
   {
-    "__docId__": 78,
+    "__docId__": 83,
     "kind": "file",
     "name": "lib/parse-transition.specs.js",
-    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst parseTrasition = require('./parse-transition');\nconst { expect } = require('chai');\n\ndescribe('parseTransition', () => {\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow trasition name: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name, from: 'a', to: 'b' })).to.throw();\n\t\t});\n\t});\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow from state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: name, to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow from state: \"['a', ${name}, 'b']\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: ['a', name, 'b'], to: 'b' })).to.throw(/Invalid transition from:/);\n\t\t});\n\t\tit(`does not allow to state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: 'a', to: name })).to.throw();\n\t\t});\n\t});\n\n\tdescribe('state object notation', () => {\n\t\tit('converts state objects to string representation', () => {\n\t\t\texpect(parseTrasition({ name: 'trans', from: { a: 'b', c: 'd' }, to: 'b' })).to.eql([\n\t\t\t{ name: 'trans', from: 'a:b|c:d', to: 'b' },\n\t\t\t]);\n\t\t});\n\n\t\tit('\"to\" in object notation patches \"from\" state object', () => {\n\t\t\texpect(parseTrasition(\n\t\t\t\t{ name: 'trans', from: { a: 'b', c: 'd' }, to: { a: 'x' } })).to.eql([\n\t\t\t\t{ name: 'trans', from: 'a:b|c:d', to: 'a:x|c:d' },\n\t\t\t\t]);\n\t\t});\n\t\tit('\"to\" in object notation replaces \"from\" in string notation', () => {\n\t\t\texpect(parseTrasition(\n\t\t\t\t{ name: 'trans', from: 'a:b|c:d', to: { a: 'x' } })).to.eql([\n\t\t\t\t{ name: 'trans', from: 'a:b|c:d', to: 'a:x' },\n\t\t\t\t]);\n\t\t});\n\n\t\tit('can use arrays in \"from\" clause values to create state permutations', () => {\n\t\t\texpect(parseTrasition(\n\t\t\t\t{ name: 'trans', from: { k1: ['k1_v1', 'k1_v2', 'k1_v3'], k2: 'k2_v1', k3: ['k3_v1', 'k3_v2'] }, to: 'x' })).to.eql([\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v1|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v1|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v2|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v2|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v3|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v3|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t]);\n\t\t});\n\t});\n\n\tit('expand array from clause to multiple transitins', () => {\n\t\texpect(parseTrasition({ name: 'trans', from: ['a', 'b'], to: 'b' })).to.eql([\n\t\t\t{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t{ name: 'trans', from: 'b', to: 'b' },\n\t\t]);\n\t});\n});\n",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst parseTrasition = require('./parse-transition');\nconst { expect } = require('chai');\n\ndescribe('parseTransition', () => {\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow trasition name: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name, from: 'a', to: 'b' })).to.throw();\n\t\t});\n\t});\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow from state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: name, to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow from state: \"['a', ${name}, 'b']\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: ['a', name, 'b'], to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow to state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: 'a', to: name })).to.throw();\n\t\t});\n\t});\n\n\tdescribe('state object notation', () => {\n\t\tit('converts state objects to string representation', () => {\n\t\t\texpect(parseTrasition({ name: 'trans', from: { a: 'b', c: 'd' }, to: 'b' })).to.eql([\n\t\t\t{ name: 'trans', from: 'a:b|c:d', to: 'b' },\n\t\t\t]);\n\t\t});\n\n\t\tit('\"to\" in object notation patches \"from\" state object', () => {\n\t\t\texpect(parseTrasition(\n\t\t\t\t{ name: 'trans', from: { a: 'b', c: 'd' }, to: { a: 'x' } })).to.eql([\n\t\t\t\t{ name: 'trans', from: 'a:b|c:d', to: 'a:x|c:d' },\n\t\t\t\t]);\n\t\t});\n\n\t\tit('can use arrays in \"from\" clause values to create state permutations', () => {\n\t\t\texpect(parseTrasition(\n\t\t\t\t{ name: 'trans', from: { k1: ['k1_v1', 'k1_v2', 'k1_v3'], k2: 'k2_v1', k3: ['k3_v1', 'k3_v2'] }, to: 'x' })).to.eql([\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v1|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v1|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v2|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v2|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v3|k2:k2_v1|k3:k3_v1', to: 'x' },\n\t\t\t\t{ name: 'trans', from: 'k1:k1_v3|k2:k2_v1|k3:k3_v2', to: 'x' },\n\t\t\t\t]);\n\t\t});\n\t});\n\n\tit('expand array from clause to multiple transitins', () => {\n\t\texpect(parseTrasition({ name: 'trans', from: ['a', 'b'], to: 'b' })).to.eql([\n\t\t\t{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t{ name: 'trans', from: 'b', to: 'b' },\n\t\t]);\n\t});\n\tit('state values must match regex: /^([a-zA-Z0-9-_.#\\\\/@\\\\$%^!=<>+~?]+|\\\\*)$/', () => {\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a:1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a|1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: ['a:1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: ['a|1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: { s1: ['a:1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: { s1: ['a|1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: 'a:1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: 'a|1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: { s1: 'a:1' } })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: { s1: 'a|1' } })).to.throw(/Invalid state value!/);\n\t});\n});\n",
     "static": true,
     "longname": "lib/parse-transition.specs.js",
     "access": null,
@@ -2129,7 +2249,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 79,
+    "__docId__": 84,
     "kind": "variable",
     "name": "parseTrasition",
     "memberof": "lib/parse-transition.specs.js",
@@ -2155,7 +2275,7 @@
     }
   },
   {
-    "__docId__": 80,
+    "__docId__": 85,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/parse-transition.specs.js",
@@ -2181,7 +2301,7 @@
     }
   },
   {
-    "__docId__": 81,
+    "__docId__": 86,
     "kind": "file",
     "name": "lib/to-camel-case.js",
     "content": "'use strict';\n\n/** @private */\nmodule.exports = (str) => {\n\tconst words = str.split(/[_-]|:/);\n\tlet result = words[0];\n\tfor (let n = 1; n < words.length; n++) {\n\t\tresult = result + words[n].charAt(0).toUpperCase() + words[n].substring(1);\n\t}\n\treturn result;\n};\n",
@@ -2192,7 +2312,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 82,
+    "__docId__": 87,
     "kind": "function",
     "name": "tocamelcase",
     "memberof": "lib/to-camel-case.js",
@@ -2221,7 +2341,7 @@
     }
   },
   {
-    "__docId__": 83,
+    "__docId__": 88,
     "kind": "file",
     "name": "lib/to-camel-case.specs.js",
     "content": "'use strict';\n\nconst { expect } = require('chai');\nconst toCamelCase = require('./to-camel-case');\n\ndescribe('toCamelCase', () => {\n\tit('worsWith \"_\" delimiter', () => {\n\t\texpect(toCamelCase('test_func_name')).to.equal('testFuncName');\n\t});\n\tit('worsWith \"-\" delimiter', () => {\n\t\texpect(toCamelCase('test-func-name')).to.equal('testFuncName');\n\t});\n\tit('worsWith \":\" delimiter', () => {\n\t\texpect(toCamelCase('test:func:name')).to.equal('testFuncName');\n\t});\n});\n",
@@ -2232,7 +2352,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 84,
+    "__docId__": 89,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/to-camel-case.specs.js",
@@ -2258,7 +2378,7 @@
     }
   },
   {
-    "__docId__": 85,
+    "__docId__": 90,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/to-camel-case.specs.js",
@@ -2284,7 +2404,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 92,
     "kind": "external",
     "name": "Infinity",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
@@ -2296,7 +2416,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
+    "__docId__": 93,
     "kind": "external",
     "name": "NaN",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
@@ -2308,7 +2428,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
+    "__docId__": 94,
     "kind": "external",
     "name": "undefined",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
@@ -2320,7 +2440,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
+    "__docId__": 95,
     "kind": "external",
     "name": "null",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
@@ -2332,7 +2452,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
+    "__docId__": 96,
     "kind": "external",
     "name": "Object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -2344,7 +2464,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
+    "__docId__": 97,
     "kind": "external",
     "name": "object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -2356,7 +2476,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
+    "__docId__": 98,
     "kind": "external",
     "name": "Function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -2368,7 +2488,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
+    "__docId__": 99,
     "kind": "external",
     "name": "function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -2380,7 +2500,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
+    "__docId__": 100,
     "kind": "external",
     "name": "Boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -2392,7 +2512,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
+    "__docId__": 101,
     "kind": "external",
     "name": "boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -2404,7 +2524,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
+    "__docId__": 102,
     "kind": "external",
     "name": "Symbol",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
@@ -2416,7 +2536,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
+    "__docId__": 103,
     "kind": "external",
     "name": "Error",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
@@ -2428,7 +2548,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
+    "__docId__": 104,
     "kind": "external",
     "name": "EvalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
@@ -2440,7 +2560,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
+    "__docId__": 105,
     "kind": "external",
     "name": "InternalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
@@ -2452,7 +2572,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
+    "__docId__": 106,
     "kind": "external",
     "name": "RangeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
@@ -2464,7 +2584,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
+    "__docId__": 107,
     "kind": "external",
     "name": "ReferenceError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
@@ -2476,7 +2596,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
+    "__docId__": 108,
     "kind": "external",
     "name": "SyntaxError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
@@ -2488,7 +2608,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
+    "__docId__": 109,
     "kind": "external",
     "name": "TypeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
@@ -2500,7 +2620,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
+    "__docId__": 110,
     "kind": "external",
     "name": "URIError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
@@ -2512,7 +2632,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
+    "__docId__": 111,
     "kind": "external",
     "name": "Number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -2524,7 +2644,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
+    "__docId__": 112,
     "kind": "external",
     "name": "number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -2536,7 +2656,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
+    "__docId__": 113,
     "kind": "external",
     "name": "Date",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
@@ -2548,7 +2668,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
+    "__docId__": 114,
     "kind": "external",
     "name": "String",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -2560,7 +2680,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
+    "__docId__": 115,
     "kind": "external",
     "name": "string",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -2572,7 +2692,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
+    "__docId__": 116,
     "kind": "external",
     "name": "RegExp",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
@@ -2584,7 +2704,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
+    "__docId__": 117,
     "kind": "external",
     "name": "Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
@@ -2596,7 +2716,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
+    "__docId__": 118,
     "kind": "external",
     "name": "Int8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
@@ -2608,7 +2728,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
+    "__docId__": 119,
     "kind": "external",
     "name": "Uint8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
@@ -2620,7 +2740,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
+    "__docId__": 120,
     "kind": "external",
     "name": "Uint8ClampedArray",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
@@ -2632,7 +2752,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
+    "__docId__": 121,
     "kind": "external",
     "name": "Int16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
@@ -2644,7 +2764,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
+    "__docId__": 122,
     "kind": "external",
     "name": "Uint16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
@@ -2656,7 +2776,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
+    "__docId__": 123,
     "kind": "external",
     "name": "Int32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
@@ -2668,7 +2788,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
+    "__docId__": 124,
     "kind": "external",
     "name": "Uint32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
@@ -2680,7 +2800,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
+    "__docId__": 125,
     "kind": "external",
     "name": "Float32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
@@ -2692,7 +2812,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
+    "__docId__": 126,
     "kind": "external",
     "name": "Float64Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
@@ -2704,7 +2824,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
+    "__docId__": 127,
     "kind": "external",
     "name": "Map",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
@@ -2716,7 +2836,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
+    "__docId__": 128,
     "kind": "external",
     "name": "Set",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
@@ -2728,7 +2848,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
+    "__docId__": 129,
     "kind": "external",
     "name": "WeakMap",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
@@ -2740,7 +2860,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
+    "__docId__": 130,
     "kind": "external",
     "name": "WeakSet",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
@@ -2752,7 +2872,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
+    "__docId__": 131,
     "kind": "external",
     "name": "ArrayBuffer",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
@@ -2764,7 +2884,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
+    "__docId__": 132,
     "kind": "external",
     "name": "DataView",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
@@ -2776,7 +2896,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
+    "__docId__": 133,
     "kind": "external",
     "name": "JSON",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
@@ -2788,7 +2908,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 129,
+    "__docId__": 134,
     "kind": "external",
     "name": "Promise",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
@@ -2800,7 +2920,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
+    "__docId__": 135,
     "kind": "external",
     "name": "Generator",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
@@ -2812,7 +2932,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 136,
     "kind": "external",
     "name": "GeneratorFunction",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
@@ -2824,7 +2944,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 137,
     "kind": "external",
     "name": "Reflect",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
@@ -2836,7 +2956,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 138,
     "kind": "external",
     "name": "Proxy",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
@@ -2849,7 +2969,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
+    "__docId__": 140,
     "kind": "external",
     "name": "CanvasRenderingContext2D",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
@@ -2861,7 +2981,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
+    "__docId__": 141,
     "kind": "external",
     "name": "DocumentFragment",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
@@ -2873,7 +2993,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 137,
+    "__docId__": 142,
     "kind": "external",
     "name": "Element",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
@@ -2885,7 +3005,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
+    "__docId__": 143,
     "kind": "external",
     "name": "Event",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
@@ -2897,7 +3017,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 139,
+    "__docId__": 144,
     "kind": "external",
     "name": "Node",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
@@ -2909,7 +3029,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 140,
+    "__docId__": 145,
     "kind": "external",
     "name": "NodeList",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
@@ -2921,7 +3041,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 141,
+    "__docId__": 146,
     "kind": "external",
     "name": "XMLHttpRequest",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
@@ -2933,7 +3053,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 142,
+    "__docId__": 147,
     "kind": "external",
     "name": "AudioContext",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
