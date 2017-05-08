@@ -1,0 +1,116 @@
+SHELL=/bin/bash
+
+TEST_DEPENDENCIES_BASE_DIR?=..
+
+.PHONY: start-testservices kill-testservices install-testservices checkout-testservices pull-testservices build clean run-dev test ci-test lint ci-lint
+
+DOCKER_IMAGE:=$(DOCKER_REGISTRY)/$(PROJECT_PREFIX)/$(SERVICE)
+
+install: clean
+	@yarn install
+
+clean:
+	@rm -rf node_modules/
+	@rm -rf __testservices/
+	@rm -rf coverage/
+
+all:
+	@yarn start
+
+test: start-testservices
+	@yarn test; test_exit=$$?; $(MAKE) kill-testservices; exit $$test_exit
+	@echo
+	@echo "So long, and thanks for all the 🐠"
+	@echo
+
+cover: start-testservices
+	@yarn cover; test_exit=$$?; $(MAKE) kill-testservices; exit $$test_exit
+	@echo
+	@echo "So long, and thanks for all the 🐠"
+	@echo
+
+lint:
+	@yarn lint
+
+ci-lint: build
+	docker-compose -f docker-compose.test.yml run --rm $(SERVICE) yarn lint; \
+		test_exit=$$?; \
+		docker-compose -f docker-compose.test.yml down; \
+		exit $$test_exit
+
+build: .
+	docker-compose -f docker-compose.test.yml build
+
+ci-test: build pull-test-dependencies
+	docker-compose -f docker-compose.test.yml run --rm $(SERVICE); \
+		test_exit=$$?; \
+		docker-compose -f docker-compose.test.yml down; \
+		exit $$test_exit
+
+docker-build:
+	@docker build --build-arg NPM_TOKEN -t $(DOCKER_IMAGE) .
+
+run-dev:
+	yarn start:dev
+
+docker-gusch:
+	docker stop $$(docker ps -q) || echo 'No containers running anyway ;)'
+
+
+dev-inf-up:
+	COMPOSE_PROJECT_NAME=$(PROJECT_PREFIX) \
+		docker-compose -f docker-compose.dev-inf.yml up -d
+
+dev-inf-down:
+	COMPOSE_PROJECT_NAME=$(PROJECT_PREFIX) \
+		docker-compose -f docker-compose.dev-inf.yml down
+
+drop-db:
+	@yarn drop:db
+
+pull-test-dependency-%:
+	docker pull $(DOCKER_REGISTRY)/$(PROJECT_PREFIX)/$*
+
+pull-test-dependencies: $(addprefix pull-test-dependency-, $(TEST_DEPENDENCIES))
+	# Do not remove
+
+checkout-testservice-%:
+	@mkdir -p __testservices
+	@cd $(TEST_DEPENDENCIES_BASE_DIR) && ([[ -d $(PROJECT_PREFIX)-$* ]] ||  git clone $(REPO_BASE)/$(PROJECT_PREFIX)-$*.git)
+
+checkout-testservices: $(addprefix checkout-testservice-, $(TEST_DEPENDENCIES))
+	@# Do not remove
+
+install-testservice-%:
+	@$(MAKE) checkout-testservice-$*
+	@cd $(TEST_DEPENDENCIES_BASE_DIR) && (cd $(PROJECT_PREFIX)-$* && ([[ -d node_modules ]] || yarn install)) || echo "$(PROJECT_PREFIX)-$*: yarn install failed!"
+
+install-testservices: $(addprefix install-testservice-, $(TEST_DEPENDENCIES))
+	# Do not remove
+
+start-testservices-int: $(addprefix start-testservice-, $(TEST_DEPENDENCIES))
+	@#Do not remove
+
+start-testservice-%:
+	@$(eval ENV := $(shell sed ':a;N;$!ba;s/\n/ /g' $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*/test-env.sh | sed 's/export //g'))
+	@mkdir -p $(TEST_DEPENDENCIES_BASE_DIR)/logs
+	@echo "#############################################################"
+	@echo "Starting  testservice \"$*\". Logs are written to: \"$(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.[out|err].log\""
+	$(ENV) forever \
+		-p $(TEST_DEPENDENCIES_BASE_DIR)/logs \
+		-o $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.out.log  \
+		-e $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.err.log  \
+		-a --minUptime=1000 --spinSleepTime=1000 \
+		--uid "$(PROJECT_PREFIX)-$*" \
+		start $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*
+
+start-testservices: install-testservices
+	@(echo "Starting all testservices" && source test-env.sh && $(MAKE) -j10 start-testservices-int) &
+
+kill-testservices: $(addprefix kill-testservice-, $(TEST_DEPENDENCIES))
+kill-testservice-%:
+	@echo "===> Killing testservice $*... (make error messages can safely be ignore)"
+	forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*
+
+list-running-testservices:
+	@forever list
