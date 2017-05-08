@@ -18,7 +18,7 @@ all:
 	@yarn start
 
 test: start-testservices
-	@yarn test; test_exit=$$?; $(MAKE) kill-testservices; exit $$test_exit
+	@source test-env.sh; yarn test; test_exit=$$?; $(MAKE) kill-testservices; exit $$test_exit
 	@echo
 	@echo "So long, and thanks for all the 🐠"
 	@echo
@@ -51,7 +51,7 @@ docker-build:
 	@docker build --build-arg NPM_TOKEN -t $(DOCKER_IMAGE) .
 
 run-dev:
-	yarn start:dev
+	@source test-env.sh; yarn start:dev
 
 docker-gusch:
 	docker stop $$(docker ps -q) || echo 'No containers running anyway ;)'
