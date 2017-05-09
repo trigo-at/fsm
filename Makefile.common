@@ -1,4 +1,5 @@
 SHELL=/bin/bash
+export PATH := node_modules/.bin:$(PATH)
 
 TEST_DEPENDENCIES_BASE_DIR?=..
 
