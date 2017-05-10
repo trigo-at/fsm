@@ -110,8 +110,8 @@ start-testservices: install-testservices
 
 kill-testservices: $(addprefix kill-testservice-, $(TEST_DEPENDENCIES))
 kill-testservice-%:
-	@echo "===> Killing testservice $*... (make error messages can safely be ignore)"
-	forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*
+	@echo "===> Killing testservice $*..."
+	@(forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; echo "===> He's dead Jim ☠️ ☠️ ")
 
 list-running-testservices:
 	@forever list
