@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@trigo/fsm/lib/find-possible-transitions.js~findpossibletransitions",
+    "function/index.html#static-function-findpossibletransitions",
+    "<span>findpossibletransitions</span> <span class=\"search-result-import-path\">@trigo/fsm/lib/find-possible-transitions.js</span>",
+    "function"
+  ],
+  [
     "@trigo/fsm/lib/is-valid-state-value.js~isvalidstatevalue",
     "function/index.html#static-function-isvalidstatevalue",
     "<span>isvalidstatevalue</span> <span class=\"search-result-import-path\">@trigo/fsm/lib/is-valid-state-value.js</span>",
@@ -396,6 +402,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/find-possible-transitions.js",
+    "file/lib/find-possible-transitions.js.html",
+    "lib/find-possible-transitions.js",
+    "file"
+  ],
+  [
+    "lib/find-possible-transitions.specs.js",
+    "file/lib/find-possible-transitions.specs.js.html",
+    "lib/find-possible-transitions.specs.js",
+    "file"
+  ],
+  [
     "lib/fsm.js",
     "file/lib/fsm.js.html",
     "lib/fsm.js",
@@ -448,12 +466,6 @@ window.esdocSearchIndex = [
     "class/lib/fsm.js~FSM.html#instance-get-state",
     "lib/fsm.js~FSM#state",
     "member"
-  ],
-  [
-    "lib/fsm.js~fsm#states",
-    "class/lib/fsm.js~FSM.html#instance-method-states",
-    "lib/fsm.js~FSM#states",
-    "method"
   ],
   [
     "lib/fsm.js~fsm#transitions",

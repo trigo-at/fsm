@@ -1,7 +1,7 @@
 {
-  "coverage": "94.11%",
+  "coverage": "88.23%",
   "expectCount": 17,
-  "actualCount": 16,
+  "actualCount": 15,
   "files": {
     "lib/composit-state.js": {
       "expectCount": 3,
@@ -9,9 +9,16 @@
       "undocumentLines": []
     },
     "lib/fsm.js": {
-      "expectCount": 13,
-      "actualCount": 13,
+      "expectCount": 12,
+      "actualCount": 12,
       "undocumentLines": []
+    },
+    "lib/find-possible-transitions.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        36
+      ]
     },
     "lib/is-valid-state-value.js": {
       "expectCount": 1,

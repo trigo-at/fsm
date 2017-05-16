@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
@@ -46,35 +47,10 @@
 
 const toCamelCase = require(&apos;./to-camel-case&apos;);
 const compositState = require(&apos;./composit-state&apos;);
-const addToArray = require(&apos;./add-to-array&apos;);
 const parseTrasition = require(&apos;./parse-transition&apos;);
 const findCurrentTransition = require(&apos;./find-current-transition&apos;);
+const findPossibleTransitions = require(&apos;./find-possible-transitions&apos;);
 const getAllTakenNames = require(&apos;./get-all-taken-names&apos;);
-
-const allStates = (transitions) =&gt; {
-	const states = [];
-	transitions.forEach((t) =&gt; {
-		[&apos;from&apos;, &apos;to&apos;].forEach((key) =&gt; {
-			addToArray(states, t[key]);
-		});
-	});
-	states.sort();
-	return states;
-};
-
-const validTransitions = (state, transitions) =&gt; {
-	const ts = [];
-
-	transitions.forEach((t) =&gt; {
-		const from = t.from;
-		if (from.indexOf(state) !== -1) {
-			addToArray(ts, t.name);
-		}
-	});
-
-	ts.sort();
-	return ts;
-};
 
 const callIfSet = async (handler, ctx, args) =&gt; {
 	if (handler &amp;&amp; typeof handler === &apos;function&apos;) {
@@ -151,9 +127,6 @@ class FSM {
 	 * states of the state machine
 	 */
 	init(state) {
-		if (this.states().indexOf(state) === -1) {
-			throw new Error(`Invlaid state: &quot;${state}&quot; known states: ${this.states().join(&apos;, &apos;)}`);
-		}
 		this._state = state;
 		return this;
 	}
@@ -193,21 +166,12 @@ class FSM {
 	}
 
 	/**
-	 * Get all known states of the state machine
-	 *
-	 * @return {Array.&lt;string&gt;} array of state strings
-	 */
-	states() {
-		return allStates(this._transitions).filter(s =&gt; s !== &apos;*&apos;);
-	}
-
-	/**
 	 * Get all transitions that are valid for the current state of the state machine
 	 *
 	 * @return {Array.&lt;string&gt;} array of valid transitions name
 	 */
 	transitions() {
-		return validTransitions(this.state, this._transitions);
+		return findPossibleTransitions(this.state, this._transitions).map(t =&gt; t.name);
 	}
 
 	/**
@@ -246,25 +210,20 @@ class FSM {
 	 */
 	addTransition(transition) {
 		const transitions = Array.isArray(transition) ? transition : [transition];
-		transitions.map(parseTrasition).forEach((transArray) =&gt; {
-			transArray.forEach((trans, index) =&gt; {
-				if (index === 0) {
-					if (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {
-						const conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];
-						throw new Error(`Ambigious transtion name: &quot;${trans.name}&quot; conflicts with existing transition: &quot;${conflicting}&quot;`);
-					}
-					if (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {
-						throw new Error(`Forbidden transition name: &quot;${trans.name}&quot; forbidden names: &quot;${Array.from(getAllTakenNames(this)).join(&apos;, &apos;)}&quot;`);
-					}
+		transitions.map(parseTrasition)
+			.forEach((trans) =&gt; {
+				if (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {
+					const conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];
+					throw new Error(`Ambigious transtion name: &quot;${trans.name}&quot; conflicts with existing transition: &quot;${conflicting}&quot;`);
 				}
-				if (index === 0) {
-					this._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));
+				if (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {
+					throw new Error(`Forbidden transition name: &quot;${trans.name}&quot; forbidden names: &quot;${Array.from(getAllTakenNames(this)).join(&apos;, &apos;)}&quot;`);
 				}
+				this._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));
 
 				this._transitions.push(trans);
 				this._buildTransition(trans);
 			});
-		});
 		return this;
 	}
 
@@ -286,13 +245,22 @@ class FSM {
 			this.__inTransition = true;
 			try {
 				const currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);
-				// console.log(currentTransition);
 				const validNames = this.transitions().map(toCamelCase);
 				if (!currentTransition || (validNames.indexOf(&apos;*&apos;) === -1 &amp;&amp; validNames.indexOf(transitionName) === -1)) {
 					throw new Error(`Invalid transition: &quot;${transitionName}&quot; in state: &quot;${this.state}&quot;`);
 				}
 				const from = this.state;
-				const to = currentTransition.to === &apos;*&apos; ? from : currentTransition.to;
+				let to = from;
+				if (currentTransition.to !== &apos;*&apos;) {
+					if (typeof currentTransition.to === &apos;string&apos;) {
+						to = currentTransition.to;
+					} else if (typeof currentTransition.to === &apos;object&apos;) {
+						const stateObj = FSM.compositState.parse(from);
+						const newStateObj = Object.assign({}, stateObj, currentTransition.to);
+						to = FSM.compositState.build(newStateObj);
+					}
+				}
+
 				const ctx = {
 					transition: transitionName,
 					from,

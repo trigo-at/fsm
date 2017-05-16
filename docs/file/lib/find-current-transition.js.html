@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
@@ -43,11 +44,11 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
 const toCamelCase = require(&apos;./to-camel-case&apos;);
+const findPossibleTransitions = require(&apos;./find-possible-transitions&apos;);
 
 /** @private */
 module.exports = (transitionName, state, transitions) =&gt; {
-	const matches = transitions.filter(t =&gt; toCamelCase(t.name) === transitionName)
-		.filter(t =&gt; Array.isArray(t.from) ? t.from.indexOf(state) !== -1 : t.from === state); //eslint-disable-line
+	const matches = findPossibleTransitions(state, transitions.filter(t =&gt; toCamelCase(t.name) === transitionName));
 
 	if (matches.length &gt; 1) {
 		throw new Error(`Ambigious transitions found: ${matches.map(m =&gt; JSON.stringify(m)).join(&apos; &apos;)}`);

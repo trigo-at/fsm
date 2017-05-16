@@ -1,6 +1,6 @@
 {
   "name": "@trigo/fsm",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "FSM - Finite State Machine",
   "main": "index.js",
   "scripts": {
@@ -29,10 +29,10 @@
       "specs/index.js"
     ],
     "check-coverage": true,
-    "lines": 99,
-    "statements": 99,
-    "functions": 99,
-    "branches": 99,
+    "lines": 90,
+    "statements": 90,
+    "functions": 90,
+    "branches": 90,
     "reporter": [
       "lcov",
       "text-summary"

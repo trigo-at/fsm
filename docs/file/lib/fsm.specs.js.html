@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
@@ -67,17 +68,6 @@ describe(&apos;FSM&apos;, () =&gt; {
 	});
 
 	describe(&apos;can use state Objects (compositState)&apos;, () =&gt; {
-		it(&apos;can define state as object { namespace: &quot;default&quot;, namespace2: &quot;planning&quot; }&apos;, () =&gt; {
-			const f = new FSM({
-				transitions: [
-					{ name: &apos;t1&apos;, from: { ns1: &apos;def&apos;, ns2: &apos;fe&apos; }, to: &apos;b&apos; },
-					{ name: &apos;t2&apos;, from: [{ ns1: &apos;d2&apos;, ns2: &apos;d3&apos; }, { ns1: &apos;d3&apos;, ns2: &apos;d4&apos; }], to: &apos;x&apos; },
-				],
-			});
-
-			expect(f.states()).to.eql([&apos;ns1:def|ns2:fe&apos;, &apos;b&apos;, &apos;ns1:d2|ns2:d3&apos;, &apos;ns1:d3|ns2:d4&apos;, &apos;x&apos;].sort());
-		});
-
 		it(&apos;to in object notation patches from stat&apos;, async () =&gt; {
 			const f = new FSM({
 				initialState: &apos;ns1:def|ns2:fe&apos;,
@@ -85,7 +75,7 @@ describe(&apos;FSM&apos;, () =&gt; {
 					{ name: &apos;t1&apos;, from: { ns1: &apos;def&apos;, ns2: &apos;fe&apos; }, to: { ns1: &apos;b&apos; } },
 				],
 			});
-			expect(f.states()).to.eql([&apos;ns1:def|ns2:fe&apos;, &apos;ns1:b|ns2:fe&apos;].sort());
+			// expect(f.states()).to.eql([&apos;ns1:def|ns2:fe&apos;, &apos;ns1:b|ns2:fe&apos;].sort());
 			await f.t1();
 			expect(f.state).to.equal(&apos;ns1:b|ns2:fe&apos;);
 		});
@@ -98,12 +88,6 @@ describe(&apos;FSM&apos;, () =&gt; {
 				],
 			});
 
-			expect(f.states()).to.eql([
-				&apos;k1:k11|k2:k21&apos;,
-				&apos;k1:k12|k2:k21&apos;,
-				&apos;k1:k11|k2:k22&apos;,
-				&apos;k1:k12|k2:k22&apos;,
-			].sort());
 			f.init(&apos;k1:k11|k2:k21&apos;);
 			await f.t1();
 			expect(f.state).to.equal(&apos;k1:k11|k2:k21&apos;);
@@ -160,6 +144,37 @@ describe(&apos;FSM&apos;, () =&gt; {
 		});
 	});
 
+	describe(&apos;large machine&apos;, () =&gt; {
+		const transitions = [];
+		const cntSubstate = 100;
+		const cntValue = 100;
+		const cntTransiotions = 100;
+		before(() =&gt; {
+			const state = {};
+			for (let i = 0; i &lt; cntSubstate; i++) {
+				state[`substate_${i}`] = [];
+				for (let j = 0; j &lt; cntValue; j++) {
+					state[`substate_${i}`].push(`value_${i}_${j}`);
+				}
+			}
+			for (let t = 0; t &lt; cntTransiotions; t++) {
+				transitions.push({
+					name: `trans:${t}`,
+					from: state,
+					to: &apos;*&apos;,
+				});
+			}
+		});
+		it(&apos;initialize large FSM&apos;, async () =&gt; {
+			const d1 = new Date();
+			const test = new FSM({ transitions });
+			const d2 = new Date();
+			const ms = d2.getTime() - d1.getTime();
+			expect(ms).to.lt(1000);
+			expect(test).to.exist;
+		});
+	});
+
 	describe(&apos;ctor, API &amp; state constrainsts&apos;, () =&gt; {
 		let fsm;
 		beforeEach(() =&gt; {
@@ -185,10 +200,6 @@ describe(&apos;FSM&apos;, () =&gt; {
 		it(&apos;init(state)&apos;, () =&gt; {
 			fsm.init(&apos;a&apos;);
 			expect(fsm.state).to.equal(&apos;a&apos;);
-		});
-
-		it(&apos;init(state) - checks if valid state&apos;, () =&gt; {
-			expect(() =&gt; fsm.init(&apos;rya&apos;)).to.throw(/Invlaid state: &quot;rya&quot; known states/);
 		});
 
 		it(&apos;cannot set &quot;state: property&apos;, () =&gt; {
@@ -249,10 +260,6 @@ describe(&apos;FSM&apos;, () =&gt; {
 			}
 			expect(error).to.exist;
 			expect(error.message).to.equal(&apos;Invalid transition: &quot;bToC&quot; in state: &quot;a&quot;&apos;);
-		});
-
-		it(&apos;can list allStates&apos;, () =&gt; {
-			expect(fsm.states()).to.eql([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]);
 		});
 	});
 

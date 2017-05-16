@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
@@ -66,39 +67,6 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 		});
 	});
 
-	describe(&apos;state object notation&apos;, () =&gt; {
-		it(&apos;converts state objects to string representation&apos;, () =&gt; {
-			expect(parseTrasition({ name: &apos;trans&apos;, from: { a: &apos;b&apos;, c: &apos;d&apos; }, to: &apos;b&apos; })).to.eql([
-			{ name: &apos;trans&apos;, from: &apos;a:b|c:d&apos;, to: &apos;b&apos; },
-			]);
-		});
-
-		it(&apos;&quot;to&quot; in object notation patches &quot;from&quot; state object&apos;, () =&gt; {
-			expect(parseTrasition(
-				{ name: &apos;trans&apos;, from: { a: &apos;b&apos;, c: &apos;d&apos; }, to: { a: &apos;x&apos; } })).to.eql([
-				{ name: &apos;trans&apos;, from: &apos;a:b|c:d&apos;, to: &apos;a:x|c:d&apos; },
-				]);
-		});
-
-		it(&apos;can use arrays in &quot;from&quot; clause values to create state permutations&apos;, () =&gt; {
-			expect(parseTrasition(
-				{ name: &apos;trans&apos;, from: { k1: [&apos;k1_v1&apos;, &apos;k1_v2&apos;, &apos;k1_v3&apos;], k2: &apos;k2_v1&apos;, k3: [&apos;k3_v1&apos;, &apos;k3_v2&apos;] }, to: &apos;x&apos; })).to.eql([
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v1|k2:k2_v1|k3:k3_v1&apos;, to: &apos;x&apos; },
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v1|k2:k2_v1|k3:k3_v2&apos;, to: &apos;x&apos; },
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v2|k2:k2_v1|k3:k3_v1&apos;, to: &apos;x&apos; },
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v2|k2:k2_v1|k3:k3_v2&apos;, to: &apos;x&apos; },
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v3|k2:k2_v1|k3:k3_v1&apos;, to: &apos;x&apos; },
-				{ name: &apos;trans&apos;, from: &apos;k1:k1_v3|k2:k2_v1|k3:k3_v2&apos;, to: &apos;x&apos; },
-				]);
-		});
-	});
-
-	it(&apos;expand array from clause to multiple transitins&apos;, () =&gt; {
-		expect(parseTrasition({ name: &apos;trans&apos;, from: [&apos;a&apos;, &apos;b&apos;], to: &apos;b&apos; })).to.eql([
-			{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
-			{ name: &apos;trans&apos;, from: &apos;b&apos;, to: &apos;b&apos; },
-		]);
-	});
 	it(&apos;state values must match regex: /^([a-zA-Z0-9-_.#\\/@\\$%^!=&lt;&gt;+~?]+|\\*)$/&apos;, () =&gt; {
 		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a:1&apos;, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a|1&apos;, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
@@ -106,7 +74,6 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: [&apos;a|1&apos;], to: &apos;a&apos; })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: { s1: [&apos;a:1&apos;] }, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: { s1: [&apos;a|1&apos;] }, to: &apos;a&apos; })).to.throw(/Invalid state value!/);
-
 		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a&apos;, to: &apos;a:1&apos; })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a&apos;, to: &apos;a|1&apos; })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a&apos;, to: { s1: &apos;a:1&apos; } })).to.throw(/Invalid state value!/);

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/find-possible-transitions.specs.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/find-possible-transitions.specs.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+
+/* eslint-env node, mocha */
+/* eslint no-unused-expressions: 0, arrow-body-style: 0 */
+
+const { expect } = require(&apos;chai&apos;);
+const findPossibleTransitions = require(&apos;./find-possible-transitions&apos;);
+
+const tMatchAll = { name: &apos;tMatchAll&apos;, from: &apos;*&apos;, to: &apos;*&apos; };
+const tSingleString = { name: &apos;tSingleString&apos;, from: &apos;test&apos;, to: &apos;*&apos; };
+const tMultiString = { name: &apos;tMultiString&apos;, from: [&apos;test&apos;, &apos;test2&apos;], to: &apos;*&apos; };
+const tSingleObject = { name: &apos;tSingleObject&apos;, from: { k1: &apos;v1&apos;, k2: &apos;v2&apos; }, to: &apos;*&apos; };
+const tMultiObject = { name: &apos;tMultiObject&apos;, from: [{ k1: &apos;v1&apos;, k2: &apos;v2&apos; }, { k1: &apos;v11&apos;, k2: &apos;v22&apos; }], to: &apos;*&apos; };
+const tSingleObjectMultiValue = { name: &apos;tSingleObjectMultiValue&apos;, from: { k1: [&apos;v1&apos;, &apos;v111&apos;], k2: [&apos;v2&apos;, &apos;v222&apos;] }, to: &apos;*&apos; };
+const tMultiObjectMultiValue = { name: &apos;tMultiObjectMultiValue&apos;,
+	from: [
+		{ k1: [&apos;v1&apos;, &apos;v111&apos;], k2: [&apos;v2&apos;, &apos;v222&apos;] },
+		{ k1: [&apos;v1111&apos;, &apos;v11111&apos;], k2: [&apos;v2222&apos;, &apos;v22222&apos;] },
+	],
+	to: &apos;*&apos; };
+
+const allTrans = [
+	tMatchAll,
+	tSingleString,
+	tMultiString,
+	tSingleObject,
+	tMultiObject,
+	tSingleObjectMultiValue,
+	tMultiObjectMultiValue,
+];
+
+describe(&apos;Match all transtion&apos;, () =&gt; {
+	it(&apos;Match All: for state &quot;asgasdg&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;asgasdg&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.length).to.equal(1);
+	});
+
+	it(&apos;Match All: for state: &quot;kk1:v1|kk2:v2&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;kk1:v1|kk2:v2&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.length).to.equal(1);
+	});
+
+	it(&apos;Single String: for state &quot;test&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;test&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tSingleString&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiString&apos;)).to.exist;
+		expect(res.length).to.equal(3);
+	});
+
+	it(&apos;Multi String: for state &quot;test2&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;test2&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiString&apos;)).to.exist;
+		expect(res.length).to.equal(2);
+	});
+
+	it(&apos;Single Object: for state &quot;k1:v1|k2:v2&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;k1:v1|k2:v2&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tSingleObject&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiObject&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tSingleObjectMultiValue&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiObjectMultiValue&apos;)).to.exist;
+		expect(res.length).to.equal(5);
+	});
+
+	it(&apos;Multi Object: for state &quot;k1:v11|k2:v22&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;k1:v11|k2:v22&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiObject&apos;)).to.exist;
+		expect(res.length).to.equal(2);
+	});
+
+	it(&apos;Single Object Multi Value: for state &quot;k1:v111|k2:v222&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;k1:v111|k2:v222&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tSingleObjectMultiValue&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiObjectMultiValue&apos;)).to.exist;
+		expect(res.length).to.equal(3);
+	});
+
+	it(&apos;Multi Object Multi Value: for state &quot;k1:v11111|k2:v22222&quot;&apos;, () =&gt; {
+		const res = findPossibleTransitions(&apos;k1:v11111|k2:v22222&apos;, allTrans);
+		expect(res.find(t =&gt; t.name === &apos;tMatchAll&apos;)).to.exist;
+		expect(res.find(t =&gt; t.name === &apos;tMultiObjectMultiValue&apos;)).to.exist;
+		expect(res.length).to.equal(2);
+	});
+});
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

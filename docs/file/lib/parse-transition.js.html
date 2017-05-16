@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
@@ -42,43 +43,24 @@
 <div class="content" data-ice="content"><h1 data-ice="title">lib/parse-transition.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
-const compositState = require(&apos;./composit-state.js&apos;);
 const isValidStateValue = require(&apos;./is-valid-state-value&apos;);
 
-const explodeKey = (froms, key) =&gt; {
-	const ret = [];
+const validateFromTo = (fromTo) =&gt; {
+	const froms = Array.isArray(fromTo) ? fromTo : [fromTo];
 	froms.forEach((from) =&gt; {
-		from[key].forEach((val) =&gt; {
-			const patch = {};
-			patch[key] = val;
-			ret.push(Object.assign({}, from, patch));
-		});
-	});
-	return ret;
-};
-
-const explode = (from) =&gt; {
-	const keys = Object.keys(from);
-	let froms = [from];
-	for (let i = 0; i &lt; keys.length; i++) {
-		const key = keys[i];
-		if (Array.isArray(from[key])) {
-			froms = explodeKey(froms, key);
+		if (!from || (typeof from === &apos;string&apos; &amp;&amp; (!isValidStateValue(from) || from === &apos;__uninitialized__&apos;))) {
+			throw new Error(`Invalid state value! from: ${from}`);
+		} else if (typeof from === &apos;object&apos;) {
+			Object.keys(from).forEach((fromKey) =&gt; {
+				const fromVal = Array.isArray(from[fromKey]) ? from[fromKey] : [from[fromKey]];
+				fromVal.forEach((val) =&gt; {
+					if (!isValidStateValue(val) || from === &apos;__uninitialized__&apos;) {
+						throw new Error(`Invalid state value! from: ${from}`);
+					}
+				});
+			});
 		}
-	}
-	return froms;
-};
-
-const createPermutations = (froms) =&gt; {
-	const sets = froms.map(explode);
-	const flat = [];
-	sets.forEach((set) =&gt; {
-		set.forEach((line) =&gt; {
-			flat.push(line);
-		});
 	});
-
-	return flat;
 };
 
 /** @private */
@@ -87,43 +69,10 @@ module.exports = (transition) =&gt; {
 	if (!trans.name || !trans.name.replace(/ /g, &apos;&apos;) || trans.name === &apos;__uninitialized__&apos;) {
 		throw new Error(`Invalid transition name: ${trans.name}`);
 	}
+	validateFromTo(trans.from);
+	validateFromTo(trans.to);
 
-	if (!trans.to) throw new Error(`Invalid transition to: ${trans.to}`);
-	if (typeof trans.to === &apos;string&apos;) {
-		if (!trans.to || !trans.to.replace(/ /g, &apos;&apos;) || trans.to === &apos;__uninitialized__&apos;) {
-			throw new Error(`Invalid transition to: ${trans.to}`);
-		}
-	}
-
-	let froms = Array.isArray(trans.from) ? trans.from : [trans.from];
-	froms.forEach((from) =&gt; {
-		if (!from || (typeof from === &apos;string&apos; &amp;&amp; !isValidStateValue(from))) {
-			throw new Error(`Invalid state value! from: ${from}`);
-		}
-	});
-	froms = createPermutations(froms);
-	return trans.from = froms.map((from) =&gt; {// eslint-disable-line
-		let to = trans.to;
-		if (typeof trans.to === &apos;object&apos; &amp;&amp; typeof from === &apos;object&apos;) {
-			to = compositState.build(Object.assign({}, from, trans.to));
-		} else if (typeof trans.to === &apos;object&apos;) {
-			to = compositState.build(trans.to);
-		} else if (typeof trans.to === &apos;string&apos; &amp;&amp; !isValidStateValue(trans.to)) {
-			throw new Error(`Invalid state value! to: ${trans.to}`);
-		}
-
-		const t = { name: trans.name, to };
-		if (from &amp;&amp; typeof from === &apos;object&apos;) {
-			t.from = compositState.build(from); // eslint-disable-line
-		} else {
-			t.from = from;
-		}
-
-		if (!t.from || !t.from.replace(/ /g, &apos;&apos;) || t.from === &apos;__uninitialized__&apos;) {
-			throw new Error(`Invalid transition from: ${t.from}`);
-		}
-		return t;
-	});
+	return trans;
 };
 </code></pre>
 
