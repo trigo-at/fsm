@@ -95,15 +95,18 @@ start-testservices-int: $(addprefix start-testservice-, $(TEST_DEPENDENCIES))
 start-testservice-%:
 	@$(eval ENV := $(shell sed ':a;N;$!ba;s/\n/ /g' $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*/test-env.sh | sed 's/export //g'))
 	@mkdir -p $(TEST_DEPENDENCIES_BASE_DIR)/logs
-	@echo "#############################################################"
-	@echo "Starting  testservice \"$*\". Logs are written to: \"$(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.[out|err].log\""
-	$(ENV) forever \
-		-p $(TEST_DEPENDENCIES_BASE_DIR)/logs \
-		-o $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.out.log  \
-		-e $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.err.log  \
-		-a --minUptime=1000 --spinSleepTime=1000 \
-		--uid "$(PROJECT_PREFIX)-$*" \
-		start $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*
+	@echo "===> Starting testservice \"$*\". Logs are written to: \"$(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.[out|err].log\""
+	@if [[ $$(forever list | grep $(PROJECT_PREFIX)-$*) == "" ]]; then \
+		$(ENV) forever \
+			-p $(TEST_DEPENDENCIES_BASE_DIR)/logs \
+			-o $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.out.log  \
+			-e $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.err.log  \
+			-a --minUptime=1000 --spinSleepTime=1000 \
+			--uid "$(PROJECT_PREFIX)-$*" \
+			start $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; \
+	else \
+		echo "===> $(PROJECT_PREFIX)-$* already running..."; \
+	fi
 
 start-testservices: install-testservices
 	@(echo "Starting all testservices" && source test-env.sh && $(MAKE) -j10 start-testservices-int) &
@@ -111,7 +114,7 @@ start-testservices: install-testservices
 kill-testservices: $(addprefix kill-testservice-, $(TEST_DEPENDENCIES))
 kill-testservice-%:
 	@echo "===> Killing testservice $*..."
-	@(forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; echo "===> He's dead Jim ☠️ ☠️ ")
+	@(forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; echo "===> He's dead Jim ☠️")
 
 list-running-testservices:
 	@forever list
