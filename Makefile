@@ -9,23 +9,23 @@ info:
 	@echo "Published:             $$(npm show @trigo/$(PACKAGE) version)"
 
 install:
-	yarn install
+	@yarn install
 
 clean:
-	rm -rf node_modules/
+	@rm -rf node_modules/
 
 test:
-	yarn test
+	@yarn test
 
 .PHONY: docs
 docs:
-	esdoc
+	@esdoc
 
 build: .
-	docker-compose -f docker-compose.test.yml build
+	@docker-compose -f docker-compose.test.yml build
 
 lint:
-	yarn lint
+	@yarn lint
 
 ci-lint: build
 	@docker-compose -f docker-compose.test.yml run --rm $(PACKAGE) yarn lint; \
@@ -52,8 +52,8 @@ publish: build
 
 
 dev-inf-up:
-	docker-compose -f docker-compose.dev-inf.yml up -d
+	@docker-compose -f docker-compose.dev-inf.yml up -d
 
 dev-inf-down:
-	docker-compose -f docker-compose.dev-inf.yml down
+	@docker-compose -f docker-compose.dev-inf.yml down
 :
