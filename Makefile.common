@@ -2,6 +2,7 @@ SHELL=/bin/bash
 export PATH := node_modules/.bin:$(PATH)
 
 TEST_DEPENDENCIES_BASE_DIR?=..
+REPO_PREFIX?=pathfinder
 
 .PHONY: start-testservices kill-testservices install-testservices checkout-testservices pull-testservices build clean run-dev test ci-test lint ci-lint
 
@@ -77,14 +78,14 @@ pull-test-dependencies: $(addprefix pull-test-dependency-, $(TEST_DEPENDENCIES))
 
 checkout-testservice-%:
 	@mkdir -p __testservices
-	@cd $(TEST_DEPENDENCIES_BASE_DIR) && ([[ -d $(PROJECT_PREFIX)-$* ]] ||  git clone $(REPO_BASE)/$(PROJECT_PREFIX)-$*.git)
+	@cd $(TEST_DEPENDENCIES_BASE_DIR) && ([[ -d $(REPO_PREFIX)-$* ]] ||  git clone $(REPO_BASE)/$(REPO_PREFIX)-$*.git)
 
 checkout-testservices: $(addprefix checkout-testservice-, $(TEST_DEPENDENCIES))
 	@# Do not remove
 
 install-testservice-%:
 	@$(MAKE) checkout-testservice-$*
-	@cd $(TEST_DEPENDENCIES_BASE_DIR) && (cd $(PROJECT_PREFIX)-$* && ([[ -d node_modules ]] || yarn install)) || echo "$(PROJECT_PREFIX)-$*: yarn install failed!"
+	@cd $(TEST_DEPENDENCIES_BASE_DIR) && (cd $(REPO_PREFIX)-$* && ([[ -d node_modules ]] || yarn install)) || echo "$(REPO_PREFIX)-$*: yarn install failed!"
 
 install-testservices: $(addprefix install-testservice-, $(TEST_DEPENDENCIES))
 	# Do not remove
@@ -93,19 +94,19 @@ start-testservices-int: $(addprefix start-testservice-, $(TEST_DEPENDENCIES))
 	@#Do not remove
 
 start-testservice-%:
-	@$(eval ENV := $(shell sed ':a;N;$!ba;s/\n/ /g' $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*/test-env.sh | sed 's/export //g'))
+	@$(eval ENV := $(shell sed ':a;N;$!ba;s/\n/ /g' $(TEST_DEPENDENCIES_BASE_DIR)/$(REPO_PREFIX)-$*/test-env.sh | sed 's/export //g'))
 	@mkdir -p $(TEST_DEPENDENCIES_BASE_DIR)/logs
 	@echo "===> Starting testservice \"$*\". Logs are written to: \"$(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.[out|err].log\""
-	@if [[ $$(forever list | grep $(PROJECT_PREFIX)-$*) == "" ]]; then \
+	@if [[ $$(forever list | grep $(REPO_PREFIX)-$*) == "" ]]; then \
 		$(ENV) forever \
 			-p $(TEST_DEPENDENCIES_BASE_DIR)/logs \
 			-o $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.out.log  \
 			-e $(TEST_DEPENDENCIES_BASE_DIR)/logs/$*.err.log  \
 			-a --minUptime=1000 --spinSleepTime=1000 \
 			--uid "$(PROJECT_PREFIX)-$*" \
-			start $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; \
+			start $(TEST_DEPENDENCIES_BASE_DIR)/$(REPO_PREFIX)-$*; \
 	else \
-		echo "===> $(PROJECT_PREFIX)-$* already running..."; \
+		echo "===> $(REPO_PREFIX)-$* already running..."; \
 	fi
 
 start-testservices: install-testservices
@@ -114,7 +115,8 @@ start-testservices: install-testservices
 kill-testservices: $(addprefix kill-testservice-, $(TEST_DEPENDENCIES))
 kill-testservice-%:
 	@echo "===> Killing testservice $*..."
-	@(forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(PROJECT_PREFIX)-$*; echo "===> He's dead Jim ☠️")
+	@(forever stop -p $(TEST_DEPENDENCIES_BASE_DIR) $(TEST_DEPENDENCIES_BASE_DIR)/$(REPO_PREFIX)-$*; echo "===> He's dead Jim ☠️")
 
 list-running-testservices:
 	@forever list
+
