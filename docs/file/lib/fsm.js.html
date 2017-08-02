@@ -51,6 +51,7 @@ const parseTrasition = require(&apos;./parse-transition&apos;);
 const findCurrentTransition = require(&apos;./find-current-transition&apos;);
 const findPossibleTransitions = require(&apos;./find-possible-transitions&apos;);
 const getAllTakenNames = require(&apos;./get-all-taken-names&apos;);
+const parseTrasitionApi = require(&apos;./parse-transition-api&apos;);
 
 const callIfSet = async (handler, ctx, args) =&gt; {
 	if (handler &amp;&amp; typeof handler === &apos;function&apos;) {
@@ -65,7 +66,6 @@ const callIfSet = async (handler, ctx, args) =&gt; {
  * @class
  */
 class FSM {
-
 	/**
 	 * Returns the composit state tool used to parse and build state strings from objects
 	 *
@@ -85,6 +85,7 @@ class FSM {
 	static toFunctionName(name) {
 		return toCamelCase(name);
 	}
+
 	/**
      * Create a new state machine.
      * @param {object} options the initalisation object.
@@ -97,9 +98,29 @@ class FSM {
      * @param {function} options.willSaveState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
      * @param {function} options.didSaveState function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;
      * @param {object} options.eventHandler object containin hander for specific trasaction
-	 *	{ beforeTransName: async (ctx, args) =&gt; {...}, afterTransName: async (ctx, args) =&gt; {...}
+	 *	```
+	 *	{
+	 *		beforeTransName: async (ctx, args) =&gt; {...},
+	 *		afterTransName: async (ctx, args) =&gt; {...},
+	 *	}
+	 *	```
+	 * @param {object} options.api object containing global REST API data:
+	 *	```
+	 *	{
+	 *		self: {
+	 *			path: &apos;/{entityName}/{id}&apos;
+	 *		},
+	 *		params: {
+	 *			id: &apos;data.event.id&apos;,
+	 *			entityName: &apos;api.data.entityName&apos;
+	 *		},
+	 *		data: {
+	 *			entityName: &apos;events&apos;
+	 *		}
+	 *	}
+	 *	```
      */
-	constructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler }) {
+	constructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler, api }) {
 		this._state = &apos;__uninitialized__&apos;;
 		this._transitions = [];
 		this._saveState = saveState;
@@ -110,6 +131,7 @@ class FSM {
 		this._data = data;
 		this._eventHandler = eventHandler || {};
 		this._trasitionFunctionNames = [];
+		this._api = api || {};
 
 		if (transitions) {
 			this.addTransition(transitions);
@@ -172,6 +194,52 @@ class FSM {
 	 */
 	transitions() {
 		return findPossibleTransitions(this.state, this._transitions).map(t =&gt; t.name);
+	}
+
+	/**
+	 * Get rest API links for all currently available transitions than define the
+	 * @return {object} &quot;restApi&quot; object.
+	 * ```javascript
+	 * // example output:
+	 * {
+	 *		self: {
+	 *			href: &apos;/events/42&apos;,
+	 *			method: &apos;get&apos;
+	 *		},
+	 *		&apos;transition:name:1&apos;: {
+	 *			href: &apos;/events/42/transition/{param1}&apos;,
+	 *			method: &apos;put&apos;,
+	 *			params: {
+	 *				param1: true,
+	 *			}
+	 *		}
+	 * }
+	 * ```
+	 */
+	restApi() {
+		const api = {};
+		if (this._api &amp;&amp; this._api.self) {
+			api.self = parseTrasitionApi({
+				api: this._api.self,
+				ctx: {
+					data: this._data,
+					api: this._api,
+				},
+			});
+		}
+		findPossibleTransitions(this.state, this._transitions)
+			.filter(t =&gt; t.api)
+			.forEach((t) =&gt; {
+				api[t.name] = parseTrasitionApi({
+					api: t.api,
+					ctx: {
+						data: this._data,
+						api: this._api,
+					},
+				});
+			});
+
+		return api;
 	}
 
 	/**
@@ -276,23 +344,27 @@ class FSM {
 				const result = {};
 				ctx.results = result;
 				result.willChangeState = await callIfSet(this._willChangeState, ctx, args);
+
 				ctx.results = Object.assign({}, result);
 				result[beforeHandler] = await callIfSet(this._eventHandler[beforeHandler], ctx, args);
-			// console.log(`Change state: &quot;${from}&quot; =&gt; &quot;${to}&quot;`)
+				// console.log(`Change state: &quot;${from}&quot; =&gt; &quot;${to}&quot;`)
 				this._state = to;
-				ctx.results = Object.assign({}, result);
-				result[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);
+
 				ctx.results = Object.assign({}, result);
 				result.didChangeState = await callIfSet(this._didChangeState, ctx, args);
 
 				if (this._saveState &amp;&amp; typeof this._saveState === &apos;function&apos;) {
 					ctx.results = Object.assign({}, result);
 					result.willSaveState = await callIfSet(this._willSaveState, ctx, args);
+
 					ctx.results = Object.assign({}, result);
 					result.saveState = await this._saveState(ctx, args);
+
 					ctx.results = Object.assign({}, result);
 					result.didSaveState = await callIfSet(this._didSaveState, ctx, args);
 				}
+				ctx.results = Object.assign({}, result);
+				result[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);
 
 				this.__inTransition = false;
 				return result;

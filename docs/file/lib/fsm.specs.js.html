@@ -321,9 +321,9 @@ describe(&apos;FSM&apos;, () =&gt; {
 				results: {
 					willChangeState: null,
 					beforeTrans: null,
-					afterTrans: null,
 					didChangeState: null,
 					willSaveState: null,
+					didSaveState: null,
 					saveState: undefined,
 				},
 			});
@@ -424,9 +424,9 @@ describe(&apos;FSM&apos;, () =&gt; {
 				results: {
 					willChangeState: &apos;willChangeState&apos;,
 					beforeTrans: &apos;beforeTrans&apos;,
-					afterTrans: &apos;afterTrans&apos;,
 					didChangeState: &apos;didChangeState&apos;,
 					willSaveState: &apos;willSaveState&apos;,
+					didSaveState: &apos;didSaveState&apos;,
 					saveState: &apos;saveState&apos;,
 				},
 			});
@@ -445,9 +445,9 @@ describe(&apos;FSM&apos;, () =&gt; {
 				results: {
 					willChangeState: &apos;willChangeState&apos;,
 					beforeTrans: &apos;beforeTrans&apos;,
-					afterTrans: &apos;afterTrans&apos;,
 					didChangeState: &apos;didChangeState&apos;,
 					willSaveState: &apos;willSaveState&apos;,
+					didSaveState: &apos;didSaveState&apos;,
 					saveState: &apos;saveState&apos;,
 				},
 			});
@@ -459,10 +459,10 @@ describe(&apos;FSM&apos;, () =&gt; {
 			await fsm.trans();
 			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
 			expect(ts[1].name).to.equal(&apos;beforeTrans&apos;);
-			expect(ts[2].name).to.equal(&apos;afterTrans&apos;);
-			expect(ts[3].name).to.equal(&apos;didChangeState&apos;);
-			expect(ts[4].name).to.equal(&apos;willSaveState&apos;);
-			expect(ts[5].name).to.equal(&apos;didSaveState&apos;);
+			expect(ts[2].name).to.equal(&apos;didChangeState&apos;);
+			expect(ts[3].name).to.equal(&apos;willSaveState&apos;);
+			expect(ts[4].name).to.equal(&apos;didSaveState&apos;);
+			expect(ts[5].name).to.equal(&apos;afterTrans&apos;);
 		});
 
 		it(&apos;returns all transitionHanlder results&apos;, async () =&gt; {
@@ -513,7 +513,10 @@ describe(&apos;FSM&apos;, () =&gt; {
 			expect(error.message).to.equal(&apos;derdo&apos;);
 			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
 			expect(ts[1].name).to.equal(&apos;beforeTrans&apos;);
-			expect(ts.length).to.equal(2);
+			expect(ts[2].name).to.equal(&apos;didChangeState&apos;);
+			expect(ts[3].name).to.equal(&apos;willSaveState&apos;);
+			expect(ts[4].name).to.equal(&apos;didSaveState&apos;);
+			expect(ts.length).to.equal(5);
 			expect(fsm.state).to.equal(&apos;b&apos;);
 		});
 	});
@@ -628,6 +631,150 @@ describe(&apos;FSM&apos;, () =&gt; {
 				await fsm.trans();
 			} catch (e) {}
 			await fsm.trans2();
+		});
+	});
+
+
+	describe(&apos;transition REST API&apos;, () =&gt; {
+		let fsm, cfg;
+		beforeEach(() =&gt; {
+			cfg = {
+				initialState: &apos;a&apos;,
+				transitions: [{
+					name: &apos;t1&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/trans&apos;,
+						method: &apos;patch&apos;,
+					},
+				}, {
+					name: &apos;t2&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/{resId}/trans/{subId}&apos;,
+						method: &apos;patch&apos;,
+						params: {
+							resId: &apos;data.resId&apos;,
+							subId: &apos;data._embedded.event.resId&apos;,
+						},
+					},
+				}, {
+					name: &apos;t3&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+				}, {
+					name: &apos;t4&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/{entity}/{resId}/trans/{subId}&apos;,
+						method: &apos;patch&apos;,
+						params: {
+							resId: &apos;data.resId&apos;,
+							subId: &apos;data._embedded.event.resId&apos;,
+						},
+					},
+				}],
+				saveState: () =&gt; {},
+				willChangeState: () =&gt; bb.delay(5),
+				data: {
+					resId: &apos;42&apos;,
+					_embedded: {
+						event: {
+							resId: &apos;22&apos;,
+						},
+					},
+				},
+			};
+		});
+
+		it(&apos;exposes &quot;restApi()&quot; function&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			expect(fsm.restApi).to.be.a(&apos;function&apos;);
+		});
+
+		it(&apos;filters transitions without &quot;api&quot; property&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t1).to.exist;
+			expect(r.t2).to.exist;
+			expect(r.t3).not.to.exist;
+		});
+
+		it(&apos;returns parsed api object&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t1).to.eql({
+				href: &apos;/entity/trans&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+
+		it(&apos;returns &quot;self&quot; when declared&apos;, async () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					self: {
+						path: &apos;/entity/{resId}&apos;,
+					},
+					params: {
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+			const r = fsm.restApi();
+			expect(r.self).to.eql({
+				href: &apos;/entity/42&apos;,
+				method: &apos;get&apos;,
+			});
+		});
+
+		it(&apos;can mix global &amp; transition local params in same route&apos;, () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					data: {
+						entity: &apos;events&apos;,
+					},
+					self: {
+						path: &apos;/{entity}/{resId}&apos;,
+					},
+					params: {
+						entity: &apos;api.data.entity&apos;,
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+
+			const r = fsm.restApi();
+			expect(r.t4).to.eql({
+				href: &apos;/events/42/trans/22&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+
+
+		it(&apos;can declare static params data in &quot;api.data&quot; object&apos;, () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					data: {
+						entity: &apos;events&apos;,
+					},
+					self: {
+						path: &apos;/{entity}/{resId}&apos;,
+					},
+					params: {
+						entity: &apos;api.data.entity&apos;,
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+
+			const r = fsm.restApi();
+			expect(r.self).to.eql({
+				href: &apos;/events/42&apos;,
+				method: &apos;get&apos;,
+			});
 		});
 	});
 });

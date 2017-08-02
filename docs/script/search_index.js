@@ -462,6 +462,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/fsm.js~fsm#restapi",
+    "class/lib/fsm.js~FSM.html#instance-method-restApi",
+    "lib/fsm.js~FSM#restApi",
+    "method"
+  ],
+  [
     "lib/fsm.js~fsm#state",
     "class/lib/fsm.js~FSM.html#instance-get-state",
     "lib/fsm.js~FSM#state",
@@ -501,6 +507,18 @@ window.esdocSearchIndex = [
     "lib/is-valid-state-value.js",
     "file/lib/is-valid-state-value.js.html",
     "lib/is-valid-state-value.js",
+    "file"
+  ],
+  [
+    "lib/parse-transition-api.js",
+    "file/lib/parse-transition-api.js.html",
+    "lib/parse-transition-api.js",
+    "file"
+  ],
+  [
+    "lib/parse-transition-api.specs.js",
+    "file/lib/parse-transition-api.specs.js.html",
+    "lib/parse-transition-api.specs.js",
     "file"
   ],
   [

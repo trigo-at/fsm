@@ -41,13 +41,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FSM from &apos;<span><a href="file/lib/fsm.js.html#lineNumber24">@trigo/fsm/lib/fsm.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FSM from &apos;<span><a href="file/lib/fsm.js.html#lineNumber25">@trigo/fsm/lib/fsm.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/fsm.js.html#lineNumber24">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/fsm.js.html#lineNumber25">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -405,6 +405,34 @@
         <p>
           
           
+          <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-restApi">restApi</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Get rest API links for all currently available transitions than define the</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-transitions">transitions</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>&gt;</span>
         </p>
       </div>
@@ -577,7 +605,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber59">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber80">source</a></span></span>
     </span>
   </h3>
 
@@ -664,9 +692,31 @@
       <td data-ice="name" data-depth="1">options.eventHandler</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>object containin hander for specific trasaction
-{ beforeTransName: async (ctx, args) =&gt; {...}, afterTransName: async (ctx, args) =&gt; {...}</p>
-</td>
+      <td data-ice="description"><p>object containin hander for specific trasaction</p>
+<pre><code><code class="source-code prettyprint">{
+    beforeTransName: async (ctx, args) =&gt; {...},
+    afterTransName: async (ctx, args) =&gt; {...},
+}</code>
+</code></pre></td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.api</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>object containing global REST API data:</p>
+<pre><code><code class="source-code prettyprint">{
+    self: {
+        path: &apos;/{entityName}/{id}&apos;
+    },
+    params: {
+        id: &apos;data.event.id&apos;,
+        entityName: &apos;api.data.entityName&apos;
+    },
+    data: {
+        entityName: &apos;events&apos;
+    }
+}</code>
+</code></pre></td>
     </tr>
 </tbody>
   </table>
@@ -705,7 +755,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber198">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber266">source</a></span></span>
     </span>
   </h3>
 
@@ -762,7 +812,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber112">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber134">source</a></span></span>
     </span>
   </h3>
 
@@ -819,7 +869,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber121">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber143">source</a></span></span>
     </span>
   </h3>
 
@@ -863,7 +913,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber96">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber118">source</a></span></span>
     </span>
   </h3>
 
@@ -923,7 +973,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber168">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber236">source</a></span></span>
     </span>
   </h3>
 
@@ -1030,7 +1080,7 @@ Supported syntax:<br>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber210">source</a></span></span>
     </span>
   </h3>
 
@@ -1111,7 +1161,7 @@ Supported syntax:<br>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber86">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber108">source</a></span></span>
     </span>
   </h3>
 
@@ -1174,6 +1224,78 @@ states of the state machine</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-restApi">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">restApi</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber176">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Get rest API links for all currently available transitions than define the</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>&quot;restApi&quot; object.</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">// example output:
+{
+    self: {
+        href: &apos;/events/42&apos;,
+        method: &apos;get&apos;
+    },
+    &apos;transition:name:1&apos;: {
+        href: &apos;/events/42/transition/{param1}&apos;,
+        method: &apos;put&apos;,
+        params: {
+            param1: true,
+        }
+    }
+}</code>
+</code></pre>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-transitions">
     <span class="access" data-ice="access">public</span>
     
@@ -1185,7 +1307,7 @@ states of the state machine</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber130">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber152">source</a></span></span>
     </span>
   </h3>
 
