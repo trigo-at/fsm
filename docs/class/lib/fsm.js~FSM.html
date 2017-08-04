@@ -34,8 +34,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -349,6 +347,40 @@
         <p>
           
           
+          <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-allTransitions">allTransitions</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Get all transititons that are defined for the state machine in the format</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">{
+   t1: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+   t2: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+   t3: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+}</code>
+</code></pre>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-execute">execute</a></span></span><span data-ice="signature">(transition: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, args: ...<span>any</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
         </p>
       </div>
@@ -411,7 +443,22 @@
       <div>
         
         
-        <div data-ice="description"><p>Get rest API links for all currently available transitions than define the</p>
+        <div data-ice="description"><p>Get rest API links for all currently available transitions where defined</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">// example output:
+{
+    self: {
+        href: &apos;/events/42&apos;,
+        method: &apos;get&apos;
+    },
+    &apos;transition:name:1&apos;: {
+        href: &apos;/events/42/transition/{param1}&apos;,
+        method: &apos;put&apos;,
+        params: {
+            param1: true,
+        }
+    }
+}</code>
+</code></pre>
 </div>
       </div>
     </td>
@@ -657,35 +704,35 @@
       <td data-ice="name" data-depth="1">options.saveState</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;</p>
+      <td data-ice="description"><p>function with signature <code>async (ctx, arg1, arg2...) =&gt; {...}</code></p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">options.willChangeState</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;</p>
+      <td data-ice="description"><p>function with signature <code>async (ctx, arg1, arg2...) =&gt; {...}</code></p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">options.didChangeState</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;</p>
+      <td data-ice="description"><p>function with signature <code>async (ctx, arg1, arg2...) =&gt; {...}</code></p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">options.willSaveState</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;</p>
+      <td data-ice="description"><p>function with signature <code>async (ctx, arg1, arg2...) =&gt; {...}</code></p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">options.didSaveState</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>function with signature &quot;async (ctx, arg1, arg2...) =&gt; {...}&quot;</p>
+      <td data-ice="description"><p>function with signature <code>async (ctx, arg1, arg2...) =&gt; {...}</code></p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="1">
@@ -755,7 +802,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber266">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber292">source</a></span></span>
     </span>
   </h3>
 
@@ -973,7 +1020,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber236">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber262">source</a></span></span>
     </span>
   </h3>
 
@@ -1015,23 +1062,27 @@ myTransition, my:transition, my_transition, my-transition =&gt; will create func
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>the states from which this
 transition can be triggered.<br><br>
-Supported syntax:<br>
-&apos;*&apos; =&gt; allow from any state
-&apos;state1&apos; =&gt; allow only from state &apos;state1&apos;<br>
-[&apos;state1&apos;, &apos;state2&apos;] =&gt; allow transition from state1 &amp; state2<br>
-{ state: [&apos;s1&apos;, &apos;s2&apos;], substate: [&apos;sub1&apos;, &apos;sub2&apos;] } =&gt; allow transition from all states creates by calculating all<br>
-permutations of the given states. &apos;state:s2|substate:sub1&apos; &apos;state:s2|substate:sub1&apos; &apos;state:s2|substate:sub2&apos;</p>
-</td>
+Supported syntax:</p>
+<pre><code><code class="source-code prettyprint">&apos;*&apos; =&gt; allow from any state
+&apos;state1&apos; =&gt; allow only from state &apos;state1&apos;
+[&apos;state1&apos;, &apos;state2&apos;] =&gt; allow transition from state1 &amp; state2
+{ state: [&apos;s1&apos;, &apos;s2&apos;], substate: [&apos;sub1&apos;, &apos;sub2&apos;] } =&gt; allow transition
+from all states creates by calculating all
+permutations of the given states. &apos;state:s2|substate:sub1&apos;
+&apos;state:s2|substate:sub1&apos; and &apos;state:s2|substate:sub2&apos;</code>
+</code></pre></td>
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" data-depth="1">transition.form</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>defines the state that is created after the transition<br><br>
-Supported syntax:<br>
-&apos;*&apos; =&gt; do not change source state<br>
-&apos;state1&apos; =&gt; sets target state to &apos;state1&apos;<br>
-{ state: &apos;s1&apos; } =&gt; sets the property &quot;state&quot; of the current state to &quot;s1&quot; eg. patches the existing state object representation</p>
+Supported syntax:</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">&apos;*&apos; =&gt; do not change source state
+&apos;state1&apos; =&gt; sets target state to &apos;state1&apos;
+{ state: &apos;s1&apos; } =&gt; sets the property &quot;state&quot; of the current state
+to &quot;s1&quot; eg. patches the existing state object representation</code>
+</code></pre>
 </td>
     </tr>
 </tbody>
@@ -1069,6 +1120,69 @@ Supported syntax:<br>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-allTransitions">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">allTransitions</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber166">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Get all transititons that are defined for the state machine in the format</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">{
+   t1: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+   t2: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+   t3: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+}</code>
+</code></pre>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>transitions</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-execute">
     <span class="access" data-ice="access">public</span>
     
@@ -1080,7 +1194,7 @@ Supported syntax:<br>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber210">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber229">source</a></span></span>
     </span>
   </h3>
 
@@ -1235,28 +1349,14 @@ states of the state machine</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber176">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber195">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Get rest API links for all currently available transitions than define the</p>
-</div>
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tbody>
-        <tr>
-          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
-          <td class="return-desc" data-ice="returnDescription"><p>&quot;restApi&quot; object.</p>
+  <div data-ice="description"><p>Get rest API links for all currently available transitions where defined</p>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">// example output:
 {
     self: {
@@ -1272,6 +1372,20 @@ states of the state machine</p>
     }
 }</code>
 </code></pre>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>&quot;restApi&quot; object.</p>
 </td>
         </tr>
       </tbody>

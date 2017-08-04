@@ -12,18 +12,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@trigo/fsm/lib/find-possible-transitions.js~findpossibletransitions",
-    "function/index.html#static-function-findpossibletransitions",
-    "<span>findpossibletransitions</span> <span class=\"search-result-import-path\">@trigo/fsm/lib/find-possible-transitions.js</span>",
-    "function"
-  ],
-  [
-    "@trigo/fsm/lib/is-valid-state-value.js~isvalidstatevalue",
-    "function/index.html#static-function-isvalidstatevalue",
-    "<span>isvalidstatevalue</span> <span class=\"search-result-import-path\">@trigo/fsm/lib/is-valid-state-value.js</span>",
-    "function"
-  ],
-  [
     "builtinexternal/ecmascriptexternal.js~array",
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
     "BuiltinExternal/ECMAScriptExternal.js~Array",
@@ -429,6 +417,12 @@ window.esdocSearchIndex = [
     "lib/fsm.js~fsm#addtransition",
     "class/lib/fsm.js~FSM.html#instance-method-addTransition",
     "lib/fsm.js~FSM#addTransition",
+    "method"
+  ],
+  [
+    "lib/fsm.js~fsm#alltransitions",
+    "class/lib/fsm.js~FSM.html#instance-method-allTransitions",
+    "lib/fsm.js~FSM#allTransitions",
     "method"
   ],
   [

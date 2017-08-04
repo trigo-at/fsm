@@ -34,8 +34,6 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-findpossibletransitions">findpossibletransitions</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isvalidstatevalue">isvalidstatevalue</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -249,6 +247,14 @@ describe(&apos;FSM&apos;, () =&gt; {
 
 		it(&apos;can list valid transitions&apos;, async () =&gt; {
 			expect(fsm.transitions()).to.eql([&apos;a-to-b&apos;, &apos;no:op&apos;]);
+		});
+
+		it.only(&apos;can list all transitions&apos;, async () =&gt; {
+			expect(fsm.allTransitions()).to.eql({
+				&apos;a-to-b&apos;: { from: &apos;a&apos;, to: &apos;b&apos; },
+				&apos;no:op&apos;: { from: &apos;a&apos;, to: &apos;*&apos; },
+				&apos;b-to-c&apos;: { from: &apos;b&apos;, to: &apos;c&apos; },
+			});
 		});
 
 		it(&apos;cannot run invalid transition&apos;, async () =&gt; {
