@@ -1,3 +1,13 @@
 {
-	"extends": "@trigo/eslint-config-trigo"
+	"extends": "trigo",
+	"env": {
+		"node": true
+   	},
+	"parserOptions": {
+    	"sourceType": "script"
+    },
+	"rules": {
+		"strict": [2, "global"],
+		"no-underscore-dangle": 0
+	}
 }
