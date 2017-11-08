@@ -1,6 +1,6 @@
 {
   "name": "@trigo/fsm",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "FSM - Finite State Machine",
   "main": "index.js",
   "scripts": {
