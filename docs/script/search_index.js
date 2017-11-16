@@ -378,6 +378,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/execute-transition-rules.js",
+    "file/lib/execute-transition-rules.js.html",
+    "lib/execute-transition-rules.js",
+    "file"
+  ],
+  [
+    "lib/execute-transition-rules.specs.js",
+    "file/lib/execute-transition-rules.specs.js.html",
+    "lib/execute-transition-rules.specs.js",
+    "file"
+  ],
+  [
     "lib/find-current-transition.js",
     "file/lib/find-current-transition.js.html",
     "lib/find-current-transition.js",
@@ -399,6 +411,12 @@ window.esdocSearchIndex = [
     "lib/find-possible-transitions.specs.js",
     "file/lib/find-possible-transitions.specs.js.html",
     "lib/find-possible-transitions.specs.js",
+    "file"
+  ],
+  [
+    "lib/fsm.fluent-api.specs.js",
+    "file/lib/fsm.fluent-api.specs.js.html",
+    "lib/fsm.fluent-api.specs.js",
     "file"
   ],
   [
@@ -486,9 +504,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/fsm.rest-api.specs.js",
+    "file/lib/fsm.rest-api.specs.js.html",
+    "lib/fsm.rest-api.specs.js",
+    "file"
+  ],
+  [
     "lib/fsm.specs.js",
     "file/lib/fsm.specs.js.html",
     "lib/fsm.specs.js",
+    "file"
+  ],
+  [
+    "lib/fsm.statics.specs.js",
+    "file/lib/fsm.statics.specs.js.html",
+    "lib/fsm.statics.specs.js",
+    "file"
+  ],
+  [
+    "lib/fsm.transition-execution.specs.js",
+    "file/lib/fsm.transition-execution.specs.js.html",
+    "lib/fsm.transition-execution.specs.js",
     "file"
   ],
   [

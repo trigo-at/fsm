@@ -365,6 +365,115 @@
   {
     "__docId__": 15,
     "kind": "file",
+    "name": "lib/execute-transition-rules.js",
+    "content": "'use strict';\n\n/** @private */\nmodule.exports = (transitionRules, ctx) => {\n\tconst rules = Array.isArray(transitionRules) ? transitionRules : [transitionRules];\n\n\tfor (const rule of rules) {\n\t\tif (rule) {\n\t\t\ttry { rule(ctx); } catch (e) {\n\t\t\t\treturn e;\n\t\t\t}\n\t\t}\n\t}\n\n\treturn undefined;\n};\n",
+    "static": true,
+    "longname": "lib/execute-transition-rules.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 16,
+    "kind": "function",
+    "name": "executetransitionrules",
+    "memberof": "lib/execute-transition-rules.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "lib/execute-transition-rules.js~executetransitionrules",
+    "access": "private",
+    "export": true,
+    "importPath": "@trigo/fsm/lib/execute-transition-rules.js",
+    "importStyle": "executetransitionrules",
+    "description": null,
+    "lineNumber": 4,
+    "params": [
+      {
+        "name": "transitionRules",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "ctx",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 17,
+    "kind": "file",
+    "name": "lib/execute-transition-rules.specs.js",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst { expect } = require('chai');\nconst executeTransitionRules = require('./execute-transition-rules');\n\ndescribe('execute-transition-rules', () => {\n\tit('should return undefined if the transitionRules are not set', async () => {\n\t\tconst result = executeTransitionRules(undefined, {});\n\t\texpect(result).to.be.undefined;\n\t});\n\n\tit('should return undefined if the transitionRules are a empty array', async () => {\n\t\tconst result = executeTransitionRules([], {});\n\t\texpect(result).to.be.undefined;\n\t});\n\n\tit('should return undefined if the transitionRules are a satisfied', async () => {\n\t\tconst rules = [\n\t\t\t() => {},\n\t\t\t() => {},\n\t\t\t() => {},\n\t\t];\n\n\t\tconst result = executeTransitionRules(rules, {});\n\t\texpect(result).to.be.undefined;\n\t});\n\n\tit('should return a error-string if the transitionRules are not satisfied', async () => {\n\t\tconst rules = [\n\t\t\t() => {},\n\t\t\t() => { throw new Error('some error'); },\n\t\t\t() => {},\n\t\t];\n\n\t\tconst result = executeTransitionRules(rules, {});\n\t\texpect(result.message).to.equal('some error');\n\t});\n});\n",
+    "static": true,
+    "longname": "lib/execute-transition-rules.specs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 18,
+    "kind": "variable",
+    "name": "expect",
+    "memberof": "lib/execute-transition-rules.specs.js",
+    "static": true,
+    "longname": "lib/execute-transition-rules.specs.js~expect",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/execute-transition-rules.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 19,
+    "kind": "variable",
+    "name": "executeTransitionRules",
+    "memberof": "lib/execute-transition-rules.specs.js",
+    "static": true,
+    "longname": "lib/execute-transition-rules.specs.js~executeTransitionRules",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/execute-transition-rules.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 20,
+    "kind": "file",
     "name": "lib/find-current-transition.js",
     "content": "'use strict';\n\nconst toCamelCase = require('./to-camel-case');\nconst findPossibleTransitions = require('./find-possible-transitions');\n\n/** @private */\nmodule.exports = (transitionName, state, transitions) => {\n\tconst matches = findPossibleTransitions(state, transitions.filter(t => toCamelCase(t.name) === transitionName));\n\n\tif (matches.length > 1) {\n\t\tthrow new Error(`Ambigious transitions found: ${matches.map(m => JSON.stringify(m)).join(' ')}`);\n\t}\n\treturn matches[0];\n};\n",
     "static": true,
@@ -374,7 +483,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 16,
+    "__docId__": 21,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/find-current-transition.js",
@@ -400,7 +509,7 @@
     }
   },
   {
-    "__docId__": 17,
+    "__docId__": 22,
     "kind": "variable",
     "name": "findPossibleTransitions",
     "memberof": "lib/find-current-transition.js",
@@ -426,7 +535,7 @@
     }
   },
   {
-    "__docId__": 18,
+    "__docId__": 23,
     "kind": "function",
     "name": "findcurrenttransition",
     "memberof": "lib/find-current-transition.js",
@@ -467,7 +576,7 @@
     }
   },
   {
-    "__docId__": 19,
+    "__docId__": 24,
     "kind": "file",
     "name": "lib/find-current-transition.specs.js",
     "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst findCurrentTransition = require('./find-current-transition');\nconst { expect } = require('chai');\n\nconst t = { name: 'method:name', from: 'x', to: 'b' };\nconst t1 = { name: 'method:name', from: 'a', to: 'b' };\nconst t2 = { name: 'method:name', from: ['b', 'c'], to: 'b' };\nconst tConflict = { name: 'method:name', from: 'c', to: 'b' };\n\ndescribe('findCurrentTransition', () => {\n\tit('returns matching tarnsiton using toCacemCase', () => {\n\t\texpect(findCurrentTransition('methodName', 'a', [t, t1, t2])).to.eql(t1);\n\t});\n\n\tit('works with arrayed to', () => {\n\t\texpect(findCurrentTransition('methodName', 'b', [t, t1, t2])).to.eql(t2);\n\t});\n\n\tit('throws with abigious transtitins', () => {\n\t\texpect(() => findCurrentTransition('methodName', 'c', [t, t1, t2, tConflict])).to.throw(/Ambigious transitions found/);\n\t});\n});\n",
@@ -478,7 +587,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 20,
+    "__docId__": 25,
     "kind": "variable",
     "name": "findCurrentTransition",
     "memberof": "lib/find-current-transition.specs.js",
@@ -504,7 +613,7 @@
     }
   },
   {
-    "__docId__": 21,
+    "__docId__": 26,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/find-current-transition.specs.js",
@@ -530,7 +639,7 @@
     }
   },
   {
-    "__docId__": 22,
+    "__docId__": 27,
     "kind": "variable",
     "name": "t",
     "memberof": "lib/find-current-transition.specs.js",
@@ -556,7 +665,7 @@
     }
   },
   {
-    "__docId__": 23,
+    "__docId__": 28,
     "kind": "variable",
     "name": "t1",
     "memberof": "lib/find-current-transition.specs.js",
@@ -582,7 +691,7 @@
     }
   },
   {
-    "__docId__": 24,
+    "__docId__": 29,
     "kind": "variable",
     "name": "t2",
     "memberof": "lib/find-current-transition.specs.js",
@@ -608,7 +717,7 @@
     }
   },
   {
-    "__docId__": 25,
+    "__docId__": 30,
     "kind": "variable",
     "name": "tConflict",
     "memberof": "lib/find-current-transition.specs.js",
@@ -634,7 +743,7 @@
     }
   },
   {
-    "__docId__": 26,
+    "__docId__": 31,
     "kind": "file",
     "name": "lib/find-possible-transitions.js",
     "content": "'use strict';\n\nconst compositState = require('./composit-state');\n\nconst matchObjects = (stateObj, fromObj) => {\n\tconst stateKeys = Object.keys(stateObj);\n\tfor (const stateKey of stateKeys) {\n\t\tif (!fromObj[stateKey]) return false;\n\t\tconst stateKeyValue = stateObj[stateKey];\n\t\tconst fromValues = Array.isArray(fromObj[stateKey]) ? fromObj[stateKey] : [fromObj[stateKey]];\n\t\tif (fromValues.indexOf(stateKeyValue) === -1) return false;\n\t}\n\treturn true;\n};\n\n\nconst matchState = (state, trans) => {\n\tif (trans.from === '*') return true;\n\tconst froms = Array.isArray(trans.from) ? trans.from : [trans.from];\n\tif (state.indexOf(':') === -1) {\n\t\treturn froms.indexOf(state) !== -1;\n\t}\n\n\n\tconst stateObj = compositState.parse(state);\n\n\tfor (const from of froms) {\n\t\tif (typeof from === 'object') {\n\t\t\tif (matchObjects(stateObj, from)) return true;\n\t\t}\n\t}\n\treturn false;\n};\n\n/** @private */\nmodule.exports = (state, transitions) => transitions.filter(t => matchState(state, t));\n",
@@ -645,7 +754,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 27,
+    "__docId__": 32,
     "kind": "variable",
     "name": "compositState",
     "memberof": "lib/find-possible-transitions.js",
@@ -671,7 +780,7 @@
     }
   },
   {
-    "__docId__": 28,
+    "__docId__": 33,
     "kind": "function",
     "name": "matchObjects",
     "memberof": "lib/find-possible-transitions.js",
@@ -713,7 +822,7 @@
     }
   },
   {
-    "__docId__": 29,
+    "__docId__": 34,
     "kind": "function",
     "name": "matchState",
     "memberof": "lib/find-possible-transitions.js",
@@ -755,7 +864,7 @@
     }
   },
   {
-    "__docId__": 30,
+    "__docId__": 35,
     "kind": "function",
     "name": "findpossibletransitions",
     "memberof": "lib/find-possible-transitions.js",
@@ -785,7 +894,7 @@
     ]
   },
   {
-    "__docId__": 31,
+    "__docId__": 36,
     "kind": "file",
     "name": "lib/find-possible-transitions.specs.js",
     "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst { expect } = require('chai');\nconst findPossibleTransitions = require('./find-possible-transitions');\n\nconst tMatchAll = { name: 'tMatchAll', from: '*', to: '*' };\nconst tSingleString = { name: 'tSingleString', from: 'test', to: '*' };\nconst tMultiString = { name: 'tMultiString', from: ['test', 'test2'], to: '*' };\nconst tSingleObject = { name: 'tSingleObject', from: { k1: 'v1', k2: 'v2' }, to: '*' };\nconst tMultiObject = { name: 'tMultiObject', from: [{ k1: 'v1', k2: 'v2' }, { k1: 'v11', k2: 'v22' }], to: '*' };\nconst tSingleObjectMultiValue = { name: 'tSingleObjectMultiValue', from: { k1: ['v1', 'v111'], k2: ['v2', 'v222'] }, to: '*' };\nconst tMultiObjectMultiValue = { name: 'tMultiObjectMultiValue',\n\tfrom: [\n\t\t{ k1: ['v1', 'v111'], k2: ['v2', 'v222'] },\n\t\t{ k1: ['v1111', 'v11111'], k2: ['v2222', 'v22222'] },\n\t],\n\tto: '*' };\n\nconst allTrans = [\n\ttMatchAll,\n\ttSingleString,\n\ttMultiString,\n\ttSingleObject,\n\ttMultiObject,\n\ttSingleObjectMultiValue,\n\ttMultiObjectMultiValue,\n];\n\ndescribe('Match all transtion', () => {\n\tit('Match All: for state \"asgasdg\"', () => {\n\t\tconst res = findPossibleTransitions('asgasdg', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.length).to.equal(1);\n\t});\n\n\tit('Match All: for state: \"kk1:v1|kk2:v2\"', () => {\n\t\tconst res = findPossibleTransitions('kk1:v1|kk2:v2', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.length).to.equal(1);\n\t});\n\n\tit('Single String: for state \"test\"', () => {\n\t\tconst res = findPossibleTransitions('test', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tSingleString')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiString')).to.exist;\n\t\texpect(res.length).to.equal(3);\n\t});\n\n\tit('Multi String: for state \"test2\"', () => {\n\t\tconst res = findPossibleTransitions('test2', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiString')).to.exist;\n\t\texpect(res.length).to.equal(2);\n\t});\n\n\tit('Single Object: for state \"k1:v1|k2:v2\"', () => {\n\t\tconst res = findPossibleTransitions('k1:v1|k2:v2', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tSingleObject')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiObject')).to.exist;\n\t\texpect(res.find(t => t.name === 'tSingleObjectMultiValue')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiObjectMultiValue')).to.exist;\n\t\texpect(res.length).to.equal(5);\n\t});\n\n\tit('Multi Object: for state \"k1:v11|k2:v22\"', () => {\n\t\tconst res = findPossibleTransitions('k1:v11|k2:v22', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiObject')).to.exist;\n\t\texpect(res.length).to.equal(2);\n\t});\n\n\tit('Single Object Multi Value: for state \"k1:v111|k2:v222\"', () => {\n\t\tconst res = findPossibleTransitions('k1:v111|k2:v222', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tSingleObjectMultiValue')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiObjectMultiValue')).to.exist;\n\t\texpect(res.length).to.equal(3);\n\t});\n\n\tit('Multi Object Multi Value: for state \"k1:v11111|k2:v22222\"', () => {\n\t\tconst res = findPossibleTransitions('k1:v11111|k2:v22222', allTrans);\n\t\texpect(res.find(t => t.name === 'tMatchAll')).to.exist;\n\t\texpect(res.find(t => t.name === 'tMultiObjectMultiValue')).to.exist;\n\t\texpect(res.length).to.equal(2);\n\t});\n});\n",
@@ -796,7 +905,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 32,
+    "__docId__": 37,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -822,7 +931,7 @@
     }
   },
   {
-    "__docId__": 33,
+    "__docId__": 38,
     "kind": "variable",
     "name": "findPossibleTransitions",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -848,7 +957,7 @@
     }
   },
   {
-    "__docId__": 34,
+    "__docId__": 39,
     "kind": "variable",
     "name": "tMatchAll",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -874,7 +983,7 @@
     }
   },
   {
-    "__docId__": 35,
+    "__docId__": 40,
     "kind": "variable",
     "name": "tSingleString",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -900,7 +1009,7 @@
     }
   },
   {
-    "__docId__": 36,
+    "__docId__": 41,
     "kind": "variable",
     "name": "tMultiString",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -926,7 +1035,7 @@
     }
   },
   {
-    "__docId__": 37,
+    "__docId__": 42,
     "kind": "variable",
     "name": "tSingleObject",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -952,7 +1061,7 @@
     }
   },
   {
-    "__docId__": 38,
+    "__docId__": 43,
     "kind": "variable",
     "name": "tMultiObject",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -978,7 +1087,7 @@
     }
   },
   {
-    "__docId__": 39,
+    "__docId__": 44,
     "kind": "variable",
     "name": "tSingleObjectMultiValue",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -1004,7 +1113,7 @@
     }
   },
   {
-    "__docId__": 40,
+    "__docId__": 45,
     "kind": "variable",
     "name": "tMultiObjectMultiValue",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -1030,7 +1139,7 @@
     }
   },
   {
-    "__docId__": 41,
+    "__docId__": 46,
     "kind": "variable",
     "name": "allTrans",
     "memberof": "lib/find-possible-transitions.specs.js",
@@ -1056,10 +1165,125 @@
     }
   },
   {
-    "__docId__": 42,
+    "__docId__": 47,
+    "kind": "file",
+    "name": "lib/fsm.fluent-api.specs.js",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\nconst compositState = require('./composit-state');\n\ndescribe('FSM', () => {\n\tdescribe('fluent build API', () => {\n\t\tit('can add transition', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'trans', from: 'a', to: 'b' })\n\t\t\t\t.addTransition({ name: 'trans2', from: ['a', 'b'], to: 'c' })\n\t\t\t\t.init('a');\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\n\t\tit('can add transition array', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition([{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t\t{ name: 'trans2', from: ['a', 'b'], to: 'c' }])\n\t\t\t\t.init('a');\n\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\t\tit('validates transitions', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({})).to.throw(/Invalid transition/);\n\t\t});\n\n\t\tit('does not allow trasition name clashes', () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'a-to-b', from: 'a', to: 'b' });\n\t\t\texpect(() => f.addTransition({ name: 'a:to:b', from: 'a', to: 'b' })).to.throw(/Ambigious transtion name/);\n\t\t});\n\n\t\tit('does not allow transiion named like native FSM methods', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({ name: 'execute', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t\texpect(() => f.addTransition({ name: 'add:transition', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t});\n\t});\n});\n",
+    "static": true,
+    "longname": "lib/fsm.fluent-api.specs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 48,
+    "kind": "variable",
+    "name": "bb",
+    "memberof": "lib/fsm.fluent-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.fluent-api.specs.js~bb",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.fluent-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "variable",
+    "name": "FSM",
+    "memberof": "lib/fsm.fluent-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.fluent-api.specs.js~FSM",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.fluent-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "variable",
+    "name": "expect",
+    "memberof": "lib/fsm.fluent-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.fluent-api.specs.js~expect",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.fluent-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "variable",
+    "name": "compositState",
+    "memberof": "lib/fsm.fluent-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.fluent-api.specs.js~compositState",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.fluent-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 52,
     "kind": "file",
     "name": "lib/fsm.js",
-    "content": "'use strict';\n\n/* eslint no-unused-expressions: 0, class-methods-use-this: 0 */\n\nconst toCamelCase = require('./to-camel-case');\nconst compositState = require('./composit-state');\nconst parseTrasition = require('./parse-transition');\nconst findCurrentTransition = require('./find-current-transition');\nconst findPossibleTransitions = require('./find-possible-transitions');\nconst getAllTakenNames = require('./get-all-taken-names');\nconst parseTrasitionApi = require('./parse-transition-api');\n\nconst callIfSet = async (handler, ctx, args) => {\n\tif (handler && typeof handler === 'function') {\n\t\tconst a = [ctx].concat(args);\n\t\treturn handler(...a);\n\t}\n\treturn null;\n};\n\n/**\n * Class representing a Finite State Machine\n * @class\n */\nclass FSM {\n\t/**\n\t * Returns the composit state tool used to parse and build state strings from objects\n\t *\n\t * @return {CompositState} the composit sate tool\n\t */\n\tstatic get compositState() {\n\t\treturn compositState;\n\t}\n\n\t/**\n\t * Create a camelCase function name formthe given string. Used internally to convert transition names to function names\n\t *\n\t * @param {string} name the name to transform\n\t *\n\t * @return {string} camelCased version of the given name\n\t */\n\tstatic toFunctionName(name) {\n\t\treturn toCamelCase(name);\n\t}\n\n\t/**\n     * Create a new state machine.\n     * @param {object} options the initalisation object.\n     * @param {object} options.initialState the state string used to initialize the state machine\n     * @param {Array.<object>} options.transitions array of defined transitions\n     * @param {object} options.data the data that is stored in the state machine\n     * @param {function} options.saveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.willChangeState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.didChangeState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.willSaveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.didSaveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {object} options.eventHandler object containin hander for specific trasaction\n\t *\t```\n\t *\t{\n\t *\t\tbeforeTransName: async (ctx, args) => {...},\n\t *\t\tafterTransName: async (ctx, args) => {...},\n\t *\t}\n\t *\t```\n\t * @param {object} options.api object containing global REST API data:\n\t *\t```\n\t *\t{\n\t *\t\tself: {\n\t *\t\t\tpath: '/{entityName}/{id}'\n\t *\t\t},\n\t *\t\tparams: {\n\t *\t\t\tid: 'data.event.id',\n\t *\t\t\tentityName: 'api.data.entityName'\n\t *\t\t},\n\t *\t\tdata: {\n\t *\t\t\tentityName: 'events'\n\t *\t\t}\n\t *\t}\n\t *\t```\n     */\n\tconstructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler, api }) {\n\t\tthis._state = '__uninitialized__';\n\t\tthis._transitions = [];\n\t\tthis._saveState = saveState;\n\t\tthis._willChangeState = willChangeState;\n\t\tthis._didChangeState = didChangeState;\n\t\tthis._willSaveState = willSaveState;\n\t\tthis._didSaveState = didSaveState;\n\t\tthis._data = data;\n\t\tthis._eventHandler = eventHandler || {};\n\t\tthis._trasitionFunctionNames = [];\n\t\tthis._api = api || {};\n\n\t\tif (transitions) {\n\t\t\tthis.addTransition(transitions);\n\t\t}\n\n\t\tif (initialState) {\n\t\t\tthis.init(initialState);\n\t\t}\n\t}\n\n\t/**\n\t * Initalize an existing state machine with the given state\n\t *\n\t * @param {string} state the state string to set. The string must be one of the existing\n\t * states of the state machine\n\t */\n\tinit(state) {\n\t\tthis._state = state;\n\t\treturn this;\n\t}\n\n\t/**\n\t * Get the current state string\n\t *\n\t * @return {string} the state string\n\t */\n\tget state() {\n\t\treturn this._state;\n\t}\n\n\t/**\n\t * @private\n\t */\n\tset state(_) {\n\t\tthrow new Error('cannot set state');\n\t}\n\n\t/**\n\t * Get the data stored in the state machine\n\t *\n\t * @return {object} the stored data objec\n\t */\n\tget data() {\n\t\treturn this._data;\n\t}\n\n\t/**\n\t * Set the data stored in the state machine\n\t *\n\t * @param {object} value the data object\n\t */\n\tset data(value) {\n\t\tthis._data = value;\n\t}\n\n\t/**\n\t * Get all transitions that are valid for the current state of the state machine\n\t *\n\t * @return {Array.<string>} array of valid transitions name\n\t */\n\ttransitions() {\n\t\treturn findPossibleTransitions(this.state, this._transitions).map(t => t.name);\n\t}\n\n\t/**\n\t * Get all transititons that are defined for the state machine in the format\n\t * ```javascript\n\t * {\n\t *    t1: { from: 'a', to: 'b', ...},\n\t *    t2: { from: 'a', to: 'b', ...},\n\t *    t3: { from: 'a', to: 'b', ...},\n\t * }```\n\t * @return {object} transitions\n\t */\n\tallTransitions() {\n\t\tconst ts = {};\n\t\tthis._transitions.forEach((t) => {\n\t\t\tts[t.name] = Object.assign({}, t);\n\t\t\tdelete ts[t.name].name;\n\t\t});\n\t\treturn ts;\n\t}\n\n\t/**\n\t * Get rest API links for all currently available transitions where defined\n\t * ```javascript\n\t * // example output:\n\t * {\n\t *\t\tself: {\n\t *\t\t\thref: '/events/42',\n\t *\t\t\tmethod: 'get'\n\t *\t\t},\n\t *\t\t'transition:name:1': {\n\t *\t\t\thref: '/events/42/transition/{param1}',\n\t *\t\t\tmethod: 'put',\n\t *\t\t\tparams: {\n\t *\t\t\t\tparam1: true,\n\t *\t\t\t}\n\t *\t\t}\n\t * }\n\t * ```\n\t * @return {object} \"restApi\" object.\n\t */\n\trestApi() {\n\t\tconst api = {};\n\t\tif (this._api && this._api.self) {\n\t\t\tapi.self = parseTrasitionApi({\n\t\t\t\tapi: this._api.self,\n\t\t\t\tctx: {\n\t\t\t\t\tdata: this._data,\n\t\t\t\t\tapi: this._api,\n\t\t\t\t},\n\t\t\t});\n\t\t}\n\t\tfindPossibleTransitions(this.state, this._transitions)\n\t\t\t.filter(t => t.api)\n\t\t\t.forEach((t) => {\n\t\t\t\tapi[t.name] = parseTrasitionApi({\n\t\t\t\t\tapi: t.api,\n\t\t\t\t\tctx: {\n\t\t\t\t\t\tdata: this._data,\n\t\t\t\t\t\tapi: this._api,\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t});\n\n\t\treturn api;\n\t}\n\n\t/**\n\t * Execute a transition\n\t *\n\t * @param {string} transition the name of the transition\n\t * @param {...any} args list of arguments passed to the event handlers during transition\n\t *\n\t * @return {object} object containing the results of the executed event handlers\n\t */\n\texecute(transition, ...args) {\n\t\treturn this[FSM.toFunctionName(transition)](...args);\n\t}\n\n\n\t/**\n\t * Add a new transition to the state machine\n\t *\n\t * @param {object} transition the name of the transition<br><br>\n\t * Suported syntax: (camelCasle, colon:case, snake_case, dash-case)<br>\n\t * myTransition, my:transition, my_transition, my-transition => will create function .myTransition()\n\t * @param {string} transition.name the name of the transition\n\t * @param {(string|object|Array.<string>|Array.<object>)} transition.form the states from which this\n\t * transition can be triggered.<br><br>\n\t * Supported syntax:\n\t * ```\n\t * '*' => allow from any state\n\t * 'state1' => allow only from state 'state1'\n\t * ['state1', 'state2'] => allow transition from state1 & state2\n\t * { state: ['s1', 's2'], substate: ['sub1', 'sub2'] } => allow transition\n\t * from all states creates by calculating all\n\t * permutations of the given states. 'state:s2|substate:sub1'\n\t * 'state:s2|substate:sub1' and 'state:s2|substate:sub2'\n\t * ```\n\t * @param {(string|object} transition.form defines the state that is created after the transition<br><br>\n\t * Supported syntax:\n\t * ```javascript\n\t * '*' => do not change source state\n\t * 'state1' => sets target state to 'state1'\n\t * { state: 's1' } => sets the property \"state\" of the current state\n\t * to \"s1\" eg. patches the existing state object representation\n\t * ```\n\t */\n\taddTransition(transition) {\n\t\tconst transitions = Array.isArray(transition) ? transition : [transition];\n\t\ttransitions.map(parseTrasition)\n\t\t\t.forEach((trans) => {\n\t\t\t\tif (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {\n\t\t\t\t\tconst conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];\n\t\t\t\t\tthrow new Error(`Ambigious transtion name: \"${trans.name}\" conflicts with existing transition: \"${conflicting}\"`);\n\t\t\t\t}\n\t\t\t\tif (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {\n\t\t\t\t\tthrow new Error(`Forbidden transition name: \"${trans.name}\" forbidden names: \"${Array.from(getAllTakenNames(this)).join(', ')}\"`);\n\t\t\t\t}\n\t\t\t\tthis._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));\n\n\t\t\t\tthis._transitions.push(trans);\n\t\t\t\tthis._buildTransition(trans);\n\t\t\t});\n\t\treturn this;\n\t}\n\n\t_buildTransition(trans) {\n\t\tconst transitionName = toCamelCase(trans.name);\n\t\tif (this[transitionName]) return;\n\n\t\t/**\n\t\t * Run-time created transition methods\n\t\t *\n\t\t * @param {...any} args the arguments that will be passed to event handlers\n\t\t *\n\t\t * @return {object} contains the result objects from the event handlers\n\t\t */\n\t\tthis[transitionName] = async (...args) => {\n\t\t\tif (this.__inTransition) {\n\t\t\t\tthrow new Error('Cannot start transition when during running transition');\n\t\t\t}\n\t\t\tthis.__inTransition = true;\n\t\t\ttry {\n\t\t\t\tconst currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);\n\t\t\t\tconst validNames = this.transitions().map(toCamelCase);\n\t\t\t\tif (!currentTransition || (validNames.indexOf('*') === -1 && validNames.indexOf(transitionName) === -1)) {\n\t\t\t\t\tthrow new Error(`Invalid transition: \"${transitionName}\" in state: \"${this.state}\"`);\n\t\t\t\t}\n\t\t\t\tconst from = this.state;\n\t\t\t\tlet to = from;\n\t\t\t\tif (currentTransition.to !== '*') {\n\t\t\t\t\tif (typeof currentTransition.to === 'string') {\n\t\t\t\t\t\tto = currentTransition.to;\n\t\t\t\t\t} else if (typeof currentTransition.to === 'object') {\n\t\t\t\t\t\tconst stateObj = FSM.compositState.parse(from);\n\t\t\t\t\t\tconst newStateObj = Object.assign({}, stateObj, currentTransition.to);\n\t\t\t\t\t\tto = FSM.compositState.build(newStateObj);\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tconst ctx = {\n\t\t\t\t\ttransition: transitionName,\n\t\t\t\t\tfrom,\n\t\t\t\t\tto,\n\t\t\t\t\tfsm: this,\n\t\t\t\t};\n\t\t\t\tif (this._data) {\n\t\t\t\t\tctx.data = this._data;\n\t\t\t\t}\n\t\t\t\tconst beforeHandler = `before${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\t\t\t\tconst afterHandler = `after${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\n\t\t\t\tconst result = {};\n\t\t\t\tctx.results = result;\n\t\t\t\tresult.willChangeState = await callIfSet(this._willChangeState, ctx, args);\n\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[beforeHandler] = await callIfSet(this._eventHandler[beforeHandler], ctx, args);\n\t\t\t\t// console.log(`Change state: \"${from}\" => \"${to}\"`)\n\t\t\t\tthis._state = to;\n\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult.didChangeState = await callIfSet(this._didChangeState, ctx, args);\n\n\t\t\t\tif (this._saveState && typeof this._saveState === 'function') {\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.willSaveState = await callIfSet(this._willSaveState, ctx, args);\n\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.saveState = await this._saveState(ctx, args);\n\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.didSaveState = await callIfSet(this._didSaveState, ctx, args);\n\t\t\t\t}\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);\n\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\treturn result;\n\t\t\t} catch (e) {\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\tthrow e;\n\t\t\t}\n\t\t};\n\t}\n}\n\nmodule.exports = FSM;\n",
+    "content": "'use strict';\n\n/* eslint no-unused-expressions: 0, class-methods-use-this: 0 */\n\nconst toCamelCase = require('./to-camel-case');\nconst compositState = require('./composit-state');\nconst parseTrasition = require('./parse-transition');\nconst findCurrentTransition = require('./find-current-transition');\nconst findPossibleTransitions = require('./find-possible-transitions');\nconst getAllTakenNames = require('./get-all-taken-names');\nconst parseTrasitionApi = require('./parse-transition-api');\nconst executeTransitionRules = require('./execute-transition-rules');\nconst isValidStateValue = require('./is-valid-state-value');\n\nconst callIfSet = async (handler, ctx, args) => {\n\tif (handler && typeof handler === 'function') {\n\t\tconst a = [ctx].concat(args);\n\t\treturn handler(...a);\n\t}\n\treturn null;\n};\n\n/**\n * Class representing a Finite State Machine\n * @class\n */\nclass FSM {\n\t/**\n\t * Returns the composit state tool used to parse and build state strings from objects\n\t *\n\t * @return {CompositState} the composit sate tool\n\t */\n\tstatic get compositState() {\n\t\treturn compositState;\n\t}\n\n\t/**\n\t * Create a camelCase function name formthe given string. Used internally to convert transition names to function names\n\t *\n\t * @param {string} name the name to transform\n\t *\n\t * @return {string} camelCased version of the given name\n\t */\n\tstatic toFunctionName(name) {\n\t\treturn toCamelCase(name);\n\t}\n\n\t/**\n     * Create a new state machine.\n     * @param {object} options the initalisation object.\n     * @param {object} options.initialState the state string used to initialize the state machine\n     * @param {Array.<object>} options.transitions array of defined transitions\n     * @param {object} options.data the data that is stored in the state machine\n     * @param {function} options.saveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.willChangeState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.didChangeState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.willSaveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {function} options.didSaveState function with signature `async (ctx, arg1, arg2...) => {...}`\n     * @param {object} options.eventHandler object containin hander for specific trasaction\n\t *\t```\n\t *\t{\n\t *\t\tbeforeTransName: async (ctx, args) => {...},\n\t *\t\tafterTransName: async (ctx, args) => {...},\n\t *\t}\n\t *\t```\n\t * @param {object} options.api object containing global REST API data:\n\t *\t```\n\t *\t{\n\t *\t\tself: {\n\t *\t\t\tpath: '/{entityName}/{id}'\n\t *\t\t},\n\t *\t\tparams: {\n\t *\t\t\tid: 'data.event.id',\n\t *\t\t\tentityName: 'api.data.entityName'\n\t *\t\t},\n\t *\t\tdata: {\n\t *\t\t\tentityName: 'events'\n\t *\t\t}\n\t *\t}\n\t *\t```\n     */\n\tconstructor({ initialState, transitions, data, saveState, willChangeState, didChangeState, willSaveState, didSaveState, eventHandler, api }) {\n\t\tthis._state = '__uninitialized__';\n\t\tthis._transitions = [];\n\t\tthis._saveState = saveState;\n\t\tthis._willChangeState = willChangeState;\n\t\tthis._didChangeState = didChangeState;\n\t\tthis._willSaveState = willSaveState;\n\t\tthis._didSaveState = didSaveState;\n\t\tthis._data = data;\n\t\tthis._eventHandler = eventHandler || {};\n\t\tthis._trasitionFunctionNames = [];\n\t\tthis._api = api || {};\n\n\t\tif (transitions) {\n\t\t\tthis.addTransition(transitions);\n\t\t}\n\n\t\tif (initialState) {\n\t\t\tthis.init(initialState);\n\t\t}\n\t}\n\n\t/**\n\t * Initalize an existing state machine with the given state\n\t *\n\t * @param {string} state the state string to set. The string must be one of the existing\n\t * states of the state machine\n\t */\n\tinit(state) {\n\t\tthis._state = state;\n\t\treturn this;\n\t}\n\n\t/**\n\t * Get the current state string\n\t *\n\t * @return {string} the state string\n\t */\n\tget state() {\n\t\treturn this._state;\n\t}\n\n\t/**\n\t * @private\n\t */\n\tset state(_) {\n\t\tthrow new Error('cannot set state');\n\t}\n\n\t/**\n\t * Get the data stored in the state machine\n\t *\n\t * @return {object} the stored data objec\n\t */\n\tget data() {\n\t\treturn this._data;\n\t}\n\n\t/**\n\t * Set the data stored in the state machine\n\t *\n\t * @param {object} value the data object\n\t */\n\tset data(value) {\n\t\tthis._data = value;\n\t}\n\n\t/**\n\t * Get all transitions that are valid for the current state of the state machine\n\t *\n\t * @return {Array.<string>} array of valid transitions name\n\t */\n\ttransitions() {\n\t\treturn findPossibleTransitions(this.state, this._transitions).map(t => t.name);\n\t}\n\n\t/**\n\t * Get all transititons that are defined for the state machine in the format\n\t * ```javascript\n\t * [\n\t *\t { name: 'a-to-b', from: 'a', to: 'b' },\n\t *\t { name: 'no:op', from: 'a', to: '*' },\n\t *\t { name: 'b-to-c', from: 'b', to: 'c' },\n\t * ]\n\t * }```\n\t * @return {Array.<object>} transitions\n\t */\n\tallTransitions() {\n\t\treturn this._transitions.map(t => Object.assign({}, t));\n\t}\n\n\t/**\n\t * Get rest API links for all currently available transitions where defined\n\t * ```javascript\n\t * // example output:\n\t * {\n\t *\t\tself: {\n\t *\t\t\thref: '/events/42',\n\t *\t\t\tmethod: 'get'\n\t *\t\t},\n\t *\t\t'transition:name:1': {\n\t *\t\t\thref: '/events/42/transition/{param1}',\n\t *\t\t\tmethod: 'put',\n\t *\t\t\tparams: {\n\t *\t\t\t\tparam1: true,\n\t *\t\t\t}\n\t *\t\t}\n\t * }\n\t * ```\n\t * @return {object} \"restApi\" object.\n\t */\n\trestApi() {\n\t\tconst api = {};\n\t\tif (this._api && this._api.self) {\n\t\t\tapi.self = parseTrasitionApi({\n\t\t\t\tapi: this._api.self,\n\t\t\t\tctx: {\n\t\t\t\t\tdata: this._data,\n\t\t\t\t\tapi: this._api,\n\t\t\t\t},\n\t\t\t});\n\t\t}\n\t\tfindPossibleTransitions(this.state, this._transitions)\n\t\t\t.filter(t => t.api)\n\t\t\t.forEach((t) => {\n\t\t\t\tapi[t.name] = parseTrasitionApi({\n\t\t\t\t\tapi: t.api,\n\t\t\t\t\tctx: {\n\t\t\t\t\t\tdata: this._data,\n\t\t\t\t\t\tapi: this._api,\n\t\t\t\t\t},\n\t\t\t\t\trules: t.rules,\n\t\t\t\t});\n\t\t\t});\n\n\t\treturn api;\n\t}\n\n\t/**\n\t * Execute a transition\n\t *\n\t * @param {string} transition the name of the transition\n\t * @param {...any} args list of arguments passed to the event handlers during transition\n\t *\n\t * @return {object} object containing the results of the executed event handlers\n\t */\n\texecute(transition, ...args) {\n\t\treturn this[FSM.toFunctionName(transition)](...args);\n\t}\n\n\n\t/**\n\t * Add a new transition to the state machine\n\t *\n\t * @param {object} transition the name of the transition<br><br>\n\t * Suported syntax: (camelCasle, colon:case, snake_case, dash-case)<br>\n\t * myTransition, my:transition, my_transition, my-transition => will create function .myTransition()\n\t * @param {string} transition.name the name of the transition\n\t * @param {(string|object|Array.<string>|Array.<object>)} transition.form the states from which this\n\t * transition can be triggered.<br><br>\n\t * Supported syntax:\n\t * ```\n\t * '*' => allow from any state\n\t * 'state1' => allow only from state 'state1'\n\t * ['state1', 'state2'] => allow transition from state1 & state2\n\t * { state: ['s1', 's2'], substate: ['sub1', 'sub2'] } => allow transition\n\t * from all states creates by calculating all\n\t * permutations of the given states. 'state:s2|substate:sub1'\n\t * 'state:s2|substate:sub1' and 'state:s2|substate:sub2'\n\t * ```\n\t * @param {(string|object|function} transition.to defines the state that is created after the transition<br><br>\n\t * Supported syntax:\n\t * ```javascript\n\t * '*' => do not change source state\n\t * 'state1' => sets target state to 'state1'\n\t * { state: 's1' } => sets the property \"state\" of the current state\n\t * to \"s1\" eg. patches the existing state object representation\n\t * async (state, ctx) -> String => stets state from result of the function\n\t * { state: async (state, ctx) -> String } => stets substate from result of the function\n\t * the result of the function mus be a vaild state string value\n\t * ```\n\t */\n\taddTransition(transition) {\n\t\tconst transitions = Array.isArray(transition) ? transition : [transition];\n\t\ttransitions.map(parseTrasition)\n\t\t\t.forEach((trans) => {\n\t\t\t\tif (this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name)) !== -1) {\n\t\t\t\t\tconst conflicting = this._trasitionFunctionNames[this._trasitionFunctionNames.indexOf(FSM.toFunctionName(trans.name))];\n\t\t\t\t\tthrow new Error(`Ambigious transtion name: \"${trans.name}\" conflicts with existing transition: \"${conflicting}\"`);\n\t\t\t\t}\n\t\t\t\tif (getAllTakenNames(this).has(FSM.toFunctionName(trans.name))) {\n\t\t\t\t\tthrow new Error(`Forbidden transition name: \"${trans.name}\" forbidden names: \"${Array.from(getAllTakenNames(this)).join(', ')}\"`);\n\t\t\t\t}\n\t\t\t\tthis._trasitionFunctionNames.push(FSM.toFunctionName(trans.name));\n\n\t\t\t\tthis._transitions.push(trans);\n\t\t\t\tthis._buildTransition(trans);\n\t\t\t});\n\t\treturn this;\n\t}\n\n\t_buildTransition(trans) {\n\t\tconst transitionName = toCamelCase(trans.name);\n\t\tif (this[transitionName]) return;\n\n\t\t/**\n\t\t * Run-time created transition methods\n\t\t *\n\t\t * @param {...any} args the arguments that will be passed to event handlers\n\t\t *\n\t\t * @return {object} contains the result objects from the event handlers\n\t\t */\n\t\tthis[transitionName] = async (...args) => {\n\t\t\tif (this.__inTransition) {\n\t\t\t\tthrow new Error('Cannot start transition when during running transition');\n\t\t\t}\n\t\t\tthis.__inTransition = true;\n\t\t\ttry {\n\t\t\t\tconst currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);\n\t\t\t\tconst validNames = this.transitions().map(toCamelCase);\n\n\t\t\t\tif (!currentTransition || (validNames.indexOf('*') === -1 && validNames.indexOf(transitionName) === -1)) {\n\t\t\t\t\tthrow new Error(`Invalid transition: \"${transitionName}\" in state: \"${this.state}\"`);\n\t\t\t\t}\n\n\t\t\t\tconst from = this.state;\n\t\t\t\tlet to = from;\n\n\t\t\t\tconst ctx = {\n\t\t\t\t\ttransition: transitionName,\n\t\t\t\t\tfrom,\n\t\t\t\t\tfsm: this,\n\t\t\t\t};\n\t\t\t\tif (this._data) {\n\t\t\t\t\tctx.data = this._data;\n\t\t\t\t}\n\n\t\t\t\tconst execTransitionFunction = async (fn, state, ctxArg) => {\n\t\t\t\t\tconst res = await fn(state, ctxArg);\n\t\t\t\t\tif (!isValidStateValue(res)) {\n\t\t\t\t\t\tthrow new Error(`Invalid \"to\" function result: \"${res}\" not a valid state string`);\n\t\t\t\t\t}\n\t\t\t\t\treturn res;\n\t\t\t\t};\n\n\t\t\t\tif (currentTransition.to !== '*') {\n\t\t\t\t\tif (typeof currentTransition.to === 'function') {\n\t\t\t\t\t\tto = await execTransitionFunction(currentTransition.to, from, ctx);\n\t\t\t\t\t} else if (typeof currentTransition.to === 'string') {\n\t\t\t\t\t\tto = currentTransition.to;\n\t\t\t\t\t} else if (typeof currentTransition.to === 'object') {\n\t\t\t\t\t\tconst stateObj = FSM.compositState.parse(from);\n\t\t\t\t\t\tconst newStateObj = Object.assign({}, stateObj, currentTransition.to);\n\t\t\t\t\t\tfor (const key of Object.keys(currentTransition.to)) {\n\t\t\t\t\t\t\tif (typeof currentTransition.to[key] === 'function') {\n\t\t\t\t\t\t\t\tnewStateObj[key] = await execTransitionFunction(currentTransition.to[key], stateObj[key], ctx);\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tnewStateObj[key] = currentTransition.to[key];\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t\tto = FSM.compositState.build(newStateObj);\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tctx.to = to;\n\n\n\t\t\t\tconst rules = currentTransition.rules || [];\n\t\t\t\tconst error = executeTransitionRules(rules, ctx);\n\t\t\t\tif (error) {\n\t\t\t\t\tconst newError = new Error(`Invalid transition: \"${transitionName}\". Reason: ${error.message}`);\n\t\t\t\t\tnewError.inner = error;\n\t\t\t\t\tthrow newError;\n\t\t\t\t}\n\n\t\t\t\tconst beforeHandler = `before${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\t\t\t\tconst afterHandler = `after${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;\n\n\t\t\t\tconst result = {};\n\t\t\t\tctx.results = result;\n\t\t\t\tresult.willChangeState = await callIfSet(this._willChangeState, ctx, args);\n\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[beforeHandler] = await callIfSet(this._eventHandler[beforeHandler], ctx, args);\n\t\t\t\t// console.log(`Change state: \"${from}\" => \"${to}\"`)\n\t\t\t\tthis._state = to;\n\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult.didChangeState = await callIfSet(this._didChangeState, ctx, args);\n\n\t\t\t\tif (this._saveState && typeof this._saveState === 'function') {\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.willSaveState = await callIfSet(this._willSaveState, ctx, args);\n\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.saveState = await this._saveState(ctx, args);\n\n\t\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\t\tresult.didSaveState = await callIfSet(this._didSaveState, ctx, args);\n\t\t\t\t}\n\t\t\t\tctx.results = Object.assign({}, result);\n\t\t\t\tresult[afterHandler] = await callIfSet(this._eventHandler[afterHandler], ctx, args);\n\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\treturn result;\n\t\t\t} catch (e) {\n\t\t\t\tthis.__inTransition = false;\n\t\t\t\tthrow e;\n\t\t\t}\n\t\t};\n\t}\n}\n\nmodule.exports = FSM;\n",
     "static": true,
     "longname": "lib/fsm.js",
     "access": null,
@@ -1067,7 +1291,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 43,
+    "__docId__": 53,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/fsm.js",
@@ -1093,7 +1317,7 @@
     }
   },
   {
-    "__docId__": 44,
+    "__docId__": 54,
     "kind": "variable",
     "name": "compositState",
     "memberof": "lib/fsm.js",
@@ -1119,7 +1343,7 @@
     }
   },
   {
-    "__docId__": 45,
+    "__docId__": 55,
     "kind": "variable",
     "name": "parseTrasition",
     "memberof": "lib/fsm.js",
@@ -1145,7 +1369,7 @@
     }
   },
   {
-    "__docId__": 46,
+    "__docId__": 56,
     "kind": "variable",
     "name": "findCurrentTransition",
     "memberof": "lib/fsm.js",
@@ -1171,7 +1395,7 @@
     }
   },
   {
-    "__docId__": 47,
+    "__docId__": 57,
     "kind": "variable",
     "name": "findPossibleTransitions",
     "memberof": "lib/fsm.js",
@@ -1197,7 +1421,7 @@
     }
   },
   {
-    "__docId__": 48,
+    "__docId__": 58,
     "kind": "variable",
     "name": "getAllTakenNames",
     "memberof": "lib/fsm.js",
@@ -1223,7 +1447,7 @@
     }
   },
   {
-    "__docId__": 49,
+    "__docId__": 59,
     "kind": "variable",
     "name": "parseTrasitionApi",
     "memberof": "lib/fsm.js",
@@ -1249,7 +1473,59 @@
     }
   },
   {
-    "__docId__": 50,
+    "__docId__": 60,
+    "kind": "variable",
+    "name": "executeTransitionRules",
+    "memberof": "lib/fsm.js",
+    "static": true,
+    "longname": "lib/fsm.js~executeTransitionRules",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "variable",
+    "name": "isValidStateValue",
+    "memberof": "lib/fsm.js",
+    "static": true,
+    "longname": "lib/fsm.js~isValidStateValue",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
     "kind": "function",
     "name": "callIfSet",
     "memberof": "lib/fsm.js",
@@ -1262,7 +1538,7 @@
     "importPath": "@trigo/fsm/lib/fsm.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 15,
     "undocument": true,
     "unknown": [
       {
@@ -1297,7 +1573,7 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 63,
     "kind": "class",
     "name": "FSM",
     "memberof": "lib/fsm.js",
@@ -1308,7 +1584,7 @@
     "importPath": "@trigo/fsm/lib/fsm.js",
     "importStyle": "FSM",
     "description": "Class representing a Finite State Machine",
-    "lineNumber": 25,
+    "lineNumber": 27,
     "unknown": [
       {
         "tagName": "@class",
@@ -1318,7 +1594,7 @@
     "interface": false
   },
   {
-    "__docId__": 52,
+    "__docId__": 64,
     "kind": "get",
     "name": "compositState",
     "memberof": "lib/fsm.js~FSM",
@@ -1328,7 +1604,7 @@
     "longname": "lib/fsm.js~FSM.compositState",
     "access": null,
     "description": "Returns the composit state tool used to parse and build state strings from objects",
-    "lineNumber": 31,
+    "lineNumber": 33,
     "return": {
       "nullable": null,
       "types": [
@@ -1344,7 +1620,7 @@
     }
   },
   {
-    "__docId__": 53,
+    "__docId__": 65,
     "kind": "method",
     "name": "toFunctionName",
     "memberof": "lib/fsm.js~FSM",
@@ -1354,7 +1630,7 @@
     "longname": "lib/fsm.js~FSM.toFunctionName",
     "access": null,
     "description": "Create a camelCase function name formthe given string. Used internally to convert transition names to function names",
-    "lineNumber": 42,
+    "lineNumber": 44,
     "params": [
       {
         "nullable": null,
@@ -1377,7 +1653,7 @@
     }
   },
   {
-    "__docId__": 54,
+    "__docId__": 66,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "lib/fsm.js~FSM",
@@ -1387,7 +1663,7 @@
     "longname": "lib/fsm.js~FSM#constructor",
     "access": null,
     "description": "Create a new state machine.",
-    "lineNumber": 80,
+    "lineNumber": 82,
     "params": [
       {
         "nullable": null,
@@ -1502,7 +1778,7 @@
     ]
   },
   {
-    "__docId__": 55,
+    "__docId__": 67,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -1510,7 +1786,7 @@
     "longname": "lib/fsm.js~FSM#_state",
     "access": null,
     "description": null,
-    "lineNumber": 81,
+    "lineNumber": 83,
     "undocument": true,
     "unknown": [
       {
@@ -1525,7 +1801,7 @@
     }
   },
   {
-    "__docId__": 56,
+    "__docId__": 68,
     "kind": "member",
     "name": "_transitions",
     "memberof": "lib/fsm.js~FSM",
@@ -1533,7 +1809,7 @@
     "longname": "lib/fsm.js~FSM#_transitions",
     "access": null,
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 84,
     "undocument": true,
     "unknown": [
       {
@@ -1548,58 +1824,12 @@
     }
   },
   {
-    "__docId__": 57,
+    "__docId__": 69,
     "kind": "member",
     "name": "_saveState",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
     "longname": "lib/fsm.js~FSM#_saveState",
-    "access": null,
-    "description": null,
-    "lineNumber": 83,
-    "undocument": true,
-    "unknown": [
-      {
-        "tagName": "@_undocument",
-        "tagValue": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 58,
-    "kind": "member",
-    "name": "_willChangeState",
-    "memberof": "lib/fsm.js~FSM",
-    "static": false,
-    "longname": "lib/fsm.js~FSM#_willChangeState",
-    "access": null,
-    "description": null,
-    "lineNumber": 84,
-    "undocument": true,
-    "unknown": [
-      {
-        "tagName": "@_undocument",
-        "tagValue": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 59,
-    "kind": "member",
-    "name": "_didChangeState",
-    "memberof": "lib/fsm.js~FSM",
-    "static": false,
-    "longname": "lib/fsm.js~FSM#_didChangeState",
     "access": null,
     "description": null,
     "lineNumber": 85,
@@ -1617,12 +1847,12 @@
     }
   },
   {
-    "__docId__": 60,
+    "__docId__": 70,
     "kind": "member",
-    "name": "_willSaveState",
+    "name": "_willChangeState",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_willSaveState",
+    "longname": "lib/fsm.js~FSM#_willChangeState",
     "access": null,
     "description": null,
     "lineNumber": 86,
@@ -1640,12 +1870,12 @@
     }
   },
   {
-    "__docId__": 61,
+    "__docId__": 71,
     "kind": "member",
-    "name": "_didSaveState",
+    "name": "_didChangeState",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_didSaveState",
+    "longname": "lib/fsm.js~FSM#_didChangeState",
     "access": null,
     "description": null,
     "lineNumber": 87,
@@ -1663,12 +1893,12 @@
     }
   },
   {
-    "__docId__": 62,
+    "__docId__": 72,
     "kind": "member",
-    "name": "_data",
+    "name": "_willSaveState",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_data",
+    "longname": "lib/fsm.js~FSM#_willSaveState",
     "access": null,
     "description": null,
     "lineNumber": 88,
@@ -1686,12 +1916,12 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 73,
     "kind": "member",
-    "name": "_eventHandler",
+    "name": "_didSaveState",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_eventHandler",
+    "longname": "lib/fsm.js~FSM#_didSaveState",
     "access": null,
     "description": null,
     "lineNumber": 89,
@@ -1709,12 +1939,12 @@
     }
   },
   {
-    "__docId__": 64,
+    "__docId__": 74,
     "kind": "member",
-    "name": "_trasitionFunctionNames",
+    "name": "_data",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_trasitionFunctionNames",
+    "longname": "lib/fsm.js~FSM#_data",
     "access": null,
     "description": null,
     "lineNumber": 90,
@@ -1727,17 +1957,17 @@
     ],
     "type": {
       "types": [
-        "*[]"
+        "*"
       ]
     }
   },
   {
-    "__docId__": 65,
+    "__docId__": 75,
     "kind": "member",
-    "name": "_api",
+    "name": "_eventHandler",
     "memberof": "lib/fsm.js~FSM",
     "static": false,
-    "longname": "lib/fsm.js~FSM#_api",
+    "longname": "lib/fsm.js~FSM#_eventHandler",
     "access": null,
     "description": null,
     "lineNumber": 91,
@@ -1755,7 +1985,53 @@
     }
   },
   {
-    "__docId__": 66,
+    "__docId__": 76,
+    "kind": "member",
+    "name": "_trasitionFunctionNames",
+    "memberof": "lib/fsm.js~FSM",
+    "static": false,
+    "longname": "lib/fsm.js~FSM#_trasitionFunctionNames",
+    "access": null,
+    "description": null,
+    "lineNumber": 92,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 77,
+    "kind": "member",
+    "name": "_api",
+    "memberof": "lib/fsm.js~FSM",
+    "static": false,
+    "longname": "lib/fsm.js~FSM#_api",
+    "access": null,
+    "description": null,
+    "lineNumber": 93,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
     "kind": "method",
     "name": "init",
     "memberof": "lib/fsm.js~FSM",
@@ -1765,7 +2041,7 @@
     "longname": "lib/fsm.js~FSM#init",
     "access": null,
     "description": "Initalize an existing state machine with the given state",
-    "lineNumber": 108,
+    "lineNumber": 110,
     "params": [
       {
         "nullable": null,
@@ -1785,7 +2061,7 @@
     }
   },
   {
-    "__docId__": 67,
+    "__docId__": 79,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -1793,7 +2069,7 @@
     "longname": "lib/fsm.js~FSM#_state",
     "access": null,
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 111,
     "undocument": true,
     "unknown": [
       {
@@ -1808,7 +2084,7 @@
     }
   },
   {
-    "__docId__": 68,
+    "__docId__": 80,
     "kind": "get",
     "name": "state",
     "memberof": "lib/fsm.js~FSM",
@@ -1818,7 +2094,7 @@
     "longname": "lib/fsm.js~FSM#state",
     "access": null,
     "description": "Get the current state string",
-    "lineNumber": 118,
+    "lineNumber": 120,
     "return": {
       "nullable": null,
       "types": [
@@ -1834,7 +2110,7 @@
     }
   },
   {
-    "__docId__": 69,
+    "__docId__": 81,
     "kind": "set",
     "name": "state",
     "memberof": "lib/fsm.js~FSM",
@@ -1844,7 +2120,7 @@
     "longname": "lib/fsm.js~FSM#state",
     "access": "private",
     "description": "",
-    "lineNumber": 125,
+    "lineNumber": 127,
     "type": {
       "types": [
         "*"
@@ -1852,7 +2128,7 @@
     }
   },
   {
-    "__docId__": 70,
+    "__docId__": 82,
     "kind": "get",
     "name": "data",
     "memberof": "lib/fsm.js~FSM",
@@ -1862,7 +2138,7 @@
     "longname": "lib/fsm.js~FSM#data",
     "access": null,
     "description": "Get the data stored in the state machine",
-    "lineNumber": 134,
+    "lineNumber": 136,
     "return": {
       "nullable": null,
       "types": [
@@ -1878,7 +2154,7 @@
     }
   },
   {
-    "__docId__": 71,
+    "__docId__": 83,
     "kind": "set",
     "name": "data",
     "memberof": "lib/fsm.js~FSM",
@@ -1888,7 +2164,7 @@
     "longname": "lib/fsm.js~FSM#data",
     "access": null,
     "description": "Set the data stored in the state machine",
-    "lineNumber": 143,
+    "lineNumber": 145,
     "params": [
       {
         "nullable": null,
@@ -1908,7 +2184,7 @@
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 84,
     "kind": "member",
     "name": "_data",
     "memberof": "lib/fsm.js~FSM",
@@ -1916,7 +2192,7 @@
     "longname": "lib/fsm.js~FSM#_data",
     "access": null,
     "description": null,
-    "lineNumber": 144,
+    "lineNumber": 146,
     "undocument": true,
     "unknown": [
       {
@@ -1931,7 +2207,7 @@
     }
   },
   {
-    "__docId__": 73,
+    "__docId__": 85,
     "kind": "method",
     "name": "transitions",
     "memberof": "lib/fsm.js~FSM",
@@ -1941,7 +2217,7 @@
     "longname": "lib/fsm.js~FSM#transitions",
     "access": null,
     "description": "Get all transitions that are valid for the current state of the state machine",
-    "lineNumber": 152,
+    "lineNumber": 154,
     "params": [],
     "return": {
       "nullable": null,
@@ -1953,7 +2229,7 @@
     }
   },
   {
-    "__docId__": 74,
+    "__docId__": 86,
     "kind": "method",
     "name": "allTransitions",
     "memberof": "lib/fsm.js~FSM",
@@ -1962,20 +2238,20 @@
     "static": false,
     "longname": "lib/fsm.js~FSM#allTransitions",
     "access": null,
-    "description": "Get all transititons that are defined for the state machine in the format\n```javascript\n{\n   t1: { from: 'a', to: 'b', ...},\n   t2: { from: 'a', to: 'b', ...},\n   t3: { from: 'a', to: 'b', ...},\n}```",
-    "lineNumber": 166,
+    "description": "Get all transititons that are defined for the state machine in the format\n```javascript\n[\n { name: 'a-to-b', from: 'a', to: 'b' },\n { name: 'no:op', from: 'a', to: '*' },\n { name: 'b-to-c', from: 'b', to: 'c' },\n]\n}```",
+    "lineNumber": 169,
     "params": [],
     "return": {
       "nullable": null,
       "types": [
-        "object"
+        "Array.<object>"
       ],
       "spread": false,
       "description": "transitions"
     }
   },
   {
-    "__docId__": 75,
+    "__docId__": 87,
     "kind": "method",
     "name": "restApi",
     "memberof": "lib/fsm.js~FSM",
@@ -1985,7 +2261,7 @@
     "longname": "lib/fsm.js~FSM#restApi",
     "access": null,
     "description": "Get rest API links for all currently available transitions where defined\n```javascript\n// example output:\n{\n\tself: {\n\t\thref: '/events/42',\n\t\tmethod: 'get'\n\t},\n\t'transition:name:1': {\n\t\thref: '/events/42/transition/{param1}',\n\t\tmethod: 'put',\n\t\tparams: {\n\t\t\tparam1: true,\n\t\t}\n\t}\n}\n```",
-    "lineNumber": 195,
+    "lineNumber": 193,
     "params": [],
     "return": {
       "nullable": null,
@@ -1997,7 +2273,7 @@
     }
   },
   {
-    "__docId__": 76,
+    "__docId__": 88,
     "kind": "method",
     "name": "execute",
     "memberof": "lib/fsm.js~FSM",
@@ -2007,7 +2283,7 @@
     "longname": "lib/fsm.js~FSM#execute",
     "access": null,
     "description": "Execute a transition",
-    "lineNumber": 229,
+    "lineNumber": 228,
     "params": [
       {
         "nullable": null,
@@ -2040,7 +2316,7 @@
     }
   },
   {
-    "__docId__": 77,
+    "__docId__": 89,
     "kind": "method",
     "name": "addTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -2050,7 +2326,7 @@
     "longname": "lib/fsm.js~FSM#addTransition",
     "access": null,
     "description": "Add a new transition to the state machine",
-    "lineNumber": 262,
+    "lineNumber": 264,
     "params": [
       {
         "nullable": null,
@@ -2089,12 +2365,13 @@
         "nullable": null,
         "types": [
           "string",
-          "object"
+          "object",
+          "function"
         ],
         "spread": false,
         "optional": false,
-        "name": "transition.form",
-        "description": "defines the state that is created after the transition<br><br>\nSupported syntax:\n```javascript\n'*' => do not change source state\n'state1' => sets target state to 'state1'\n{ state: 's1' } => sets the property \"state\" of the current state\nto \"s1\" eg. patches the existing state object representation\n```"
+        "name": "transition.to",
+        "description": "defines the state that is created after the transition<br><br>\nSupported syntax:\n```javascript\n'*' => do not change source state\n'state1' => sets target state to 'state1'\n{ state: 's1' } => sets the property \"state\" of the current state\nto \"s1\" eg. patches the existing state object representation\nasync (state, ctx) -> String => stets state from result of the function\n{ state: async (state, ctx) -> String } => stets substate from result of the function\nthe result of the function mus be a vaild state string value\n```"
       }
     ],
     "return": {
@@ -2104,7 +2381,7 @@
     }
   },
   {
-    "__docId__": 78,
+    "__docId__": 90,
     "kind": "method",
     "name": "_buildTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -2114,7 +2391,7 @@
     "longname": "lib/fsm.js~FSM#_buildTransition",
     "access": null,
     "description": null,
-    "lineNumber": 281,
+    "lineNumber": 283,
     "undocument": true,
     "unknown": [
       {
@@ -2132,7 +2409,7 @@
     ]
   },
   {
-    "__docId__": 79,
+    "__docId__": 91,
     "kind": "member",
     "name": "[transitionName]",
     "memberof": "lib/fsm.js~FSM",
@@ -2140,7 +2417,7 @@
     "longname": "lib/fsm.js~FSM#[transitionName]",
     "access": null,
     "description": "Run-time created transition methods",
-    "lineNumber": 292,
+    "lineNumber": 294,
     "params": [
       {
         "nullable": null,
@@ -2168,7 +2445,7 @@
     }
   },
   {
-    "__docId__": 80,
+    "__docId__": 92,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -2176,7 +2453,7 @@
     "longname": "lib/fsm.js~FSM#__inTransition",
     "access": null,
     "description": null,
-    "lineNumber": 296,
+    "lineNumber": 298,
     "undocument": true,
     "unknown": [
       {
@@ -2191,7 +2468,7 @@
     }
   },
   {
-    "__docId__": 81,
+    "__docId__": 93,
     "kind": "member",
     "name": "_state",
     "memberof": "lib/fsm.js~FSM",
@@ -2199,7 +2476,7 @@
     "longname": "lib/fsm.js~FSM#_state",
     "access": null,
     "description": null,
-    "lineNumber": 334,
+    "lineNumber": 367,
     "undocument": true,
     "unknown": [
       {
@@ -2214,7 +2491,7 @@
     }
   },
   {
-    "__docId__": 82,
+    "__docId__": 94,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -2222,7 +2499,7 @@
     "longname": "lib/fsm.js~FSM#__inTransition",
     "access": null,
     "description": null,
-    "lineNumber": 352,
+    "lineNumber": 385,
     "undocument": true,
     "unknown": [
       {
@@ -2237,7 +2514,7 @@
     }
   },
   {
-    "__docId__": 83,
+    "__docId__": 95,
     "kind": "member",
     "name": "__inTransition",
     "memberof": "lib/fsm.js~FSM",
@@ -2245,7 +2522,7 @@
     "longname": "lib/fsm.js~FSM#__inTransition",
     "access": null,
     "description": null,
-    "lineNumber": 355,
+    "lineNumber": 388,
     "undocument": true,
     "unknown": [
       {
@@ -2260,10 +2537,99 @@
     }
   },
   {
-    "__docId__": 84,
+    "__docId__": 96,
+    "kind": "file",
+    "name": "lib/fsm.rest-api.specs.js",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\n\ndescribe('FSM', () => {\n\tdescribe('transition REST API', () => {\n\t\tconst data = {\n\t\t\tresId: '42',\n\t\t\t_embedded: {\n\t\t\t\tevent: {\n\t\t\t\t\tresId: '22',\n\t\t\t\t},\n\t\t\t},\n\t\t};\n\n\t\tlet fsm, cfg;\n\t\tlet savedContext;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{\n\t\t\t\t\tname: 't1',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t},\n\t\t\t\t}, {\n\t\t\t\t\tname: 't2',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/{resId}/trans/{subId}',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t\tparams: {\n\t\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t\t\tsubId: 'data._embedded.event.resId',\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t}, {\n\t\t\t\t\tname: 't3',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t}, {\n\t\t\t\t\tname: 't4',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}/trans/{subId}',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t\tparams: {\n\t\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t\t\tsubId: 'data._embedded.event.resId',\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t}, {\n\t\t\t\t\tname: 't5',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t},\n\t\t\t\t\trules: [\n\t\t\t\t\t\t() => {},\n\t\t\t\t\t\t() => {},\n\t\t\t\t\t],\n\t\t\t\t}, {\n\t\t\t\t\tname: 't6',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t},\n\t\t\t\t\trules: [\n\t\t\t\t\t\t() => {},\n\t\t\t\t\t\t() => { throw new Error('some error'); },\n\t\t\t\t\t],\n\t\t\t\t}, {\n\t\t\t\t\tname: 't7',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t},\n\t\t\t\t\trules: [\n\t\t\t\t\t\t(ctx) => { savedContext = ctx; },\n\t\t\t\t\t],\n\t\t\t\t}],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t\tdata,\n\t\t\t};\n\t\t});\n\n\t\tit('exposes \"restApi()\" function', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\texpect(fsm.restApi).to.be.a('function');\n\t\t});\n\n\t\tit('filters transitions without \"api\" property', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t1).to.exist;\n\t\t\texpect(r.t2).to.exist;\n\t\t\texpect(r.t3).not.to.exist;\n\t\t});\n\n\t\tit('returns parsed api object', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t1).to.eql({\n\t\t\t\thref: '/entity/trans',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\n\t\tit('returns \"self\" when declared', async () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/entity/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.self).to.eql({\n\t\t\t\thref: '/entity/42',\n\t\t\t\tmethod: 'get',\n\t\t\t});\n\t\t});\n\n\t\tit('can mix global & transition local params in same route', () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tdata: {\n\t\t\t\t\t\tentity: 'events',\n\t\t\t\t\t},\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tentity: 'api.data.entity',\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t4).to.eql({\n\t\t\t\thref: '/events/42/trans/22',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\n\n\t\tit('can declare static params data in \"api.data\" object', () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tdata: {\n\t\t\t\t\t\tentity: 'events',\n\t\t\t\t\t},\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tentity: 'api.data.entity',\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.self).to.eql({\n\t\t\t\thref: '/events/42',\n\t\t\t\tmethod: 'get',\n\t\t\t});\n\t\t});\n\n\t\tit('should return the restApi object if all rules are satisfied', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t5).to.eql({\n\t\t\t\thref: '/entity/trans',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\n\t\tit('should return a restApi object with a error message if not all rules are satisfied', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t6).to.eql({\n\t\t\t\thref: '/entity/trans',\n\t\t\t\tmethod: 'patch',\n\t\t\t\terror: {\n\t\t\t\t\tmessage: 'some error',\n\t\t\t\t},\n\t\t\t});\n\t\t});\n\n\t\tit('should pass the context of the fsm to the rules functions', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tfsm.restApi();\n\t\t\texpect(savedContext.data).to.eql(data);\n\t\t});\n\n\t\tit('should execute the rules functions on an fsm without a data object without any error', async () => {\n\t\t\tconst testCfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{\n\t\t\t\t\t\tname: 't',\n\t\t\t\t\t\tfrom: '*',\n\t\t\t\t\t\tto: 'a',\n\t\t\t\t\t\tapi: {\n\t\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t\t},\n\t\t\t\t\t\trules: [\n\t\t\t\t\t\t\t(ctx) => { savedContext = ctx; },\n\t\t\t\t\t\t],\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t};\n\n\t\t\tfsm = new FSM(testCfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(savedContext.data).to.be.undefined;\n\t\t\texpect(r.t).to.eql({\n\t\t\t\thref: '/entity/trans',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\t});\n});\n",
+    "static": true,
+    "longname": "lib/fsm.rest-api.specs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 97,
+    "kind": "variable",
+    "name": "bb",
+    "memberof": "lib/fsm.rest-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.rest-api.specs.js~bb",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.rest-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 98,
+    "kind": "variable",
+    "name": "FSM",
+    "memberof": "lib/fsm.rest-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.rest-api.specs.js~FSM",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.rest-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 99,
+    "kind": "variable",
+    "name": "expect",
+    "memberof": "lib/fsm.rest-api.specs.js",
+    "static": true,
+    "longname": "lib/fsm.rest-api.specs.js~expect",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.rest-api.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 100,
     "kind": "file",
     "name": "lib/fsm.specs.js",
-    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\n\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\nconst compositState = require('./composit-state');\n\ndescribe('FSM', () => {\n\tdescribe('statics', () => {\n\t\tit('exposes compositState tool', () => {\n\t\t\texpect(FSM.compositState).to.equal(compositState);\n\t\t});\n\n\t\tit('cannot set compositState', () => {\n\t\t\texpect(() => { FSM.compositState = () => {}; }).to.throw();\n\t\t});\n\n\t\tit('exposes toFunctionName() helper', () => {\n\t\t\texpect(FSM.toFunctionName('test:transition:oida')).to.equal('testTransitionOida');\n\t\t});\n\t});\n\n\tdescribe('can use state Objects (compositState)', () => {\n\t\tit('to in object notation patches from stat', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'ns1:def|ns2:fe',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: { ns1: 'b' } },\n\t\t\t\t],\n\t\t\t});\n\t\t\t// expect(f.states()).to.eql(['ns1:def|ns2:fe', 'ns1:b|ns2:fe'].sort());\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('ns1:b|ns2:fe');\n\t\t});\n\n\t\tit('creates state permutation with object notation', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'k1:k11|k2:k21',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { k1: ['k11', 'k12'], k2: ['k21', 'k22'] }, to: '*' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tf.init('k1:k11|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k21');\n\t\t\tf.init('k1:k12|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k21');\n\t\t\tf.init('k1:k11|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k22');\n\t\t\tf.init('k1:k12|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k22');\n\t\t});\n\t});\n\n\tdescribe('fluent build API', () => {\n\t\tit('can add transition', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'trans', from: 'a', to: 'b' })\n\t\t\t\t.addTransition({ name: 'trans2', from: ['a', 'b'], to: 'c' })\n\t\t\t\t.init('a');\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\n\t\tit('can add transition array', async () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition([{ name: 'trans', from: 'a', to: 'b' },\n\t\t\t\t{ name: 'trans2', from: ['a', 'b'], to: 'c' }])\n\t\t\t\t.init('a');\n\n\t\t\tawait f.trans();\n\t\t\texpect(f.state).to.equal('b');\n\t\t\tawait f.trans2();\n\t\t\texpect(f.state).to.equal('c');\n\t\t});\n\t\tit('validates transitions', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({})).to.throw(/Invalid transition/);\n\t\t});\n\n\t\tit('does not allow trasition name clashes', () => {\n\t\t\tconst f = new FSM({});\n\t\t\tf.addTransition({ name: 'a-to-b', from: 'a', to: 'b' });\n\t\t\texpect(() => f.addTransition({ name: 'a:to:b', from: 'a', to: 'b' })).to.throw(/Ambigious transtion name/);\n\t\t});\n\n\t\tit('does not allow transiion named like native FSM methods', () => {\n\t\t\tconst f = new FSM({});\n\t\t\texpect(() => f.addTransition({ name: 'execute', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t\texpect(() => f.addTransition({ name: 'add:transition', from: 'a', to: 'b' })).to.throw(/Forbidden transition name/);\n\t\t});\n\t});\n\n\tdescribe('large machine', () => {\n\t\tconst transitions = [];\n\t\tconst cntSubstate = 100;\n\t\tconst cntValue = 100;\n\t\tconst cntTransiotions = 100;\n\t\tbefore(() => {\n\t\t\tconst state = {};\n\t\t\tfor (let i = 0; i < cntSubstate; i++) {\n\t\t\t\tstate[`substate_${i}`] = [];\n\t\t\t\tfor (let j = 0; j < cntValue; j++) {\n\t\t\t\t\tstate[`substate_${i}`].push(`value_${i}_${j}`);\n\t\t\t\t}\n\t\t\t}\n\t\t\tfor (let t = 0; t < cntTransiotions; t++) {\n\t\t\t\ttransitions.push({\n\t\t\t\t\tname: `trans:${t}`,\n\t\t\t\t\tfrom: state,\n\t\t\t\t\tto: '*',\n\t\t\t\t});\n\t\t\t}\n\t\t});\n\t\tit('initialize large FSM', async () => {\n\t\t\tconst d1 = new Date();\n\t\t\tconst test = new FSM({ transitions });\n\t\t\tconst d2 = new Date();\n\t\t\tconst ms = d2.getTime() - d1.getTime();\n\t\t\texpect(ms).to.lt(1000);\n\t\t\texpect(test).to.exist;\n\t\t});\n\t});\n\n\tdescribe('ctor, API & state constrainsts', () => {\n\t\tlet fsm;\n\t\tbeforeEach(() => {\n\t\t\tfsm = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'a-to-b', from: 'a', to: 'b' },\n\t\t\t\t\t{ name: 'no:op', from: 'a', to: '*' },\n\t\t\t\t\t{ name: 'b-to-c', from: 'b', to: 'c' }],\n\t\t\t});\n\t\t\tfsm.init('a');\n\t\t});\n\n\t\tit('can create empty FSM', () => {\n\t\t\tnew FSM({}); //eslint-disable-line\n\t\t});\n\t\tit('uninitialized: state == \"__uninitialized__\"', () => {\n\t\t\texpect(new FSM({ transitions: [] }).state).to.equal('__uninitialized__');\n\t\t});\n\n\t\tit('validates transitions', () => {\n\t\t\texpect(() => new FSM({ transitions: [{}] })).to.throw(/Invalid transition/);\n\t\t});\n\t\tit('init(state)', () => {\n\t\t\tfsm.init('a');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('cannot set \"state: property', () => {\n\t\t\texpect(() => {\n\t\t\t\tfsm.state = 'test';\n\t\t\t}).to.throw('cannot set state');\n\t\t});\n\n\t\tit('can access \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({ data: dataObj });\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('can set \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({});\n\t\t\tf.data = dataObj;\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('creates transition methods', () => {\n\t\t\texpect(fsm.aToB).to.be.instanceof(Function);\n\t\t\texpect(fsm.noOp).to.be.instanceof(Function);\n\t\t\texpect(fsm.bToC).to.be.instanceof(Function);\n\t\t});\n\n\t\tit('changes state when calling transition method', async () => {\n\t\t\tawait fsm.aToB();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnition:name)\"', async () => {\n\t\t\tawait fsm.execute('a-to-b', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnitionName)\"', async () => {\n\t\t\tawait fsm.execute('aToB', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('keeps state when \"to\" === \"*\"', async () => {\n\t\t\tawait fsm.noOp();\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('can list valid transitions', async () => {\n\t\t\texpect(fsm.transitions()).to.eql(['a-to-b', 'no:op']);\n\t\t});\n\n\t\tit.only('can list all transitions', async () => {\n\t\t\texpect(fsm.allTransitions()).to.eql({\n\t\t\t\t'a-to-b': { from: 'a', to: 'b' },\n\t\t\t\t'no:op': { from: 'a', to: '*' },\n\t\t\t\t'b-to-c': { from: 'b', to: 'c' },\n\t\t\t});\n\t\t});\n\n\t\tit('cannot run invalid transition', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.bToC();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"bToC\" in state: \"a\"');\n\t\t});\n\t});\n\n\tdescribe('transition definitions', () => {\n\t\tit('can use array in from clause', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1', from: ['a', 'b', 'c'], to: 'd' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('b');\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('c');\n\t\t\tawait fsm.trans1();\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"trans1\" in state: \"d\"');\n\t\t});\n\t});\n\n\tdescribe('saveState', () => {\n\t\tit('can use async \"saveState\"', async () => {\n\t\t\tlet saved;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: async (ctx) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tsaved = ctx.fsm.state;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans();\n\t\t\texpect(saved).to.equal('b');\n\t\t});\n\t\tit('can use sync \"saveState\"', async () => {\n\t\t\tlet ctx, args;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: (c, a) => {\n\t\t\t\t\tctx = c;\n\t\t\t\t\targs = a;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: null,\n\t\t\t\t\tbeforeTrans: null,\n\t\t\t\t\tdidChangeState: null,\n\t\t\t\t\twillSaveState: null,\n\t\t\t\t\tdidSaveState: null,\n\t\t\t\t\tsaveState: undefined,\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('throw when exection is throw in sync \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: () => {\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t\tit('throw when exection is throw in async \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: async () => {\n\t\t\t\t\t\tawait bb.delay(20);\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t});\n\n\tdescribe('transiton events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tconst data = { test: 'data' };\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\tdata,\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => 'saveState',\n\t\t\t\twillChangeState: async (ctx, a1, a2) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args: [a1, a2] });\n\t\t\t\t\treturn 'willChangeState';\n\t\t\t\t},\n\t\t\t\tdidChangeState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t\treturn 'didChangeState';\n\t\t\t\t},\n\t\t\t\twillSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t\treturn 'willSaveState';\n\t\t\t\t},\n\t\t\t\tdidSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t\treturn 'didSaveState';\n\t\t\t\t},\n\t\t\t\teventHandler: {\n\t\t\t\t\tbeforeTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'beforeTrans', ctx, args });\n\t\t\t\t\t\treturn 'beforeTrans';\n\t\t\t\t\t},\n\t\t\t\t\tafterTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'afterTrans', ctx, args });\n\t\t\t\t\t\treturn 'afterTrans';\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('with \"execute(trasnition)\" calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.execute('trans', 42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('didChangeState');\n\t\t\texpect(ts[3].name).to.equal('willSaveState');\n\t\t\texpect(ts[4].name).to.equal('didSaveState');\n\t\t\texpect(ts[5].name).to.equal('afterTrans');\n\t\t});\n\n\t\tit('returns all transitionHanlder results', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst result = await fsm.trans();\n\t\t\texpect(result).to.eql({\n\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\tsaveState: 'saveState',\n\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t});\n\t\t});\n\n\t\tit('throw error when beforeTransiton handler fails does not change state', async () => {\n\t\t\tcfg.eventHandler.beforeTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts.length).to.equal(1);\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when afterTransiton handler fails changes state', async () => {\n\t\t\tcfg.eventHandler.afterTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('didChangeState');\n\t\t\texpect(ts[3].name).to.equal('willSaveState');\n\t\t\texpect(ts[4].name).to.equal('didSaveState');\n\t\t\texpect(ts.length).to.equal(5);\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('global transition events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\twillSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts[2].name).to.equal('willSaveState');\n\t\t\texpect(ts[3].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('calls will & didSaveState only called when saveState is defined', async () => {\n\t\t\tdelete cfg.saveState;\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t});\n\n\t\tit('throw error when willChangeState & state does not change', async () => {\n\t\t\tcfg.willChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when didChangeState & state changes', async () => {\n\t\t\tcfg.didChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('race conditions', () => {\n\t\tlet fsm, cfg;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: ['a', 'b'], to: 'b' }, { name: 'trans2', from: ['a', 'b'], to: 'a' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t};\n\t\t});\n\n\t\tit('cannot start transition while anothr one is running', (done) => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tfsm.trans();\n\t\t\tfsm.trans2().then(() => done(new Error('should have failed'))).catch((err) => {\n\t\t\t\texpect(err.message).to.equal('Cannot start transition when during running transition');\n\t\t\t\tdone();\n\t\t\t});\n\t\t});\n\t\tit('can run transition sequential', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\tawait fsm.trans2();\n\t\t});\n\n\t\tit('can run transtition after a trasition was abourted', async () => {\n\t\t\tcfg.eventHandler = {\n\t\t\t\tbeforeTrans: async () => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tthrow new Error('uuppps');\n\t\t\t\t},\n\t\t\t};\n\t\t\tfsm = new FSM(cfg);\n\t\t\ttry {\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {}\n\t\t\tawait fsm.trans2();\n\t\t});\n\t});\n\n\n\tdescribe('transition REST API', () => {\n\t\tlet fsm, cfg;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{\n\t\t\t\t\tname: 't1',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/trans',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t},\n\t\t\t\t}, {\n\t\t\t\t\tname: 't2',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/entity/{resId}/trans/{subId}',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t\tparams: {\n\t\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t\t\tsubId: 'data._embedded.event.resId',\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t}, {\n\t\t\t\t\tname: 't3',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t}, {\n\t\t\t\t\tname: 't4',\n\t\t\t\t\tfrom: '*',\n\t\t\t\t\tto: 'a',\n\t\t\t\t\tapi: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}/trans/{subId}',\n\t\t\t\t\t\tmethod: 'patch',\n\t\t\t\t\t\tparams: {\n\t\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t\t\tsubId: 'data._embedded.event.resId',\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t}],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t\tdata: {\n\t\t\t\t\tresId: '42',\n\t\t\t\t\t_embedded: {\n\t\t\t\t\t\tevent: {\n\t\t\t\t\t\t\tresId: '22',\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('exposes \"restApi()\" function', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\texpect(fsm.restApi).to.be.a('function');\n\t\t});\n\n\t\tit('filters transitions without \"api\" property', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t1).to.exist;\n\t\t\texpect(r.t2).to.exist;\n\t\t\texpect(r.t3).not.to.exist;\n\t\t});\n\n\t\tit('returns parsed api object', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t1).to.eql({\n\t\t\t\thref: '/entity/trans',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\n\t\tit('returns \"self\" when declared', async () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/entity/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.self).to.eql({\n\t\t\t\thref: '/entity/42',\n\t\t\t\tmethod: 'get',\n\t\t\t});\n\t\t});\n\n\t\tit('can mix global & transition local params in same route', () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tdata: {\n\t\t\t\t\t\tentity: 'events',\n\t\t\t\t\t},\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tentity: 'api.data.entity',\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.t4).to.eql({\n\t\t\t\thref: '/events/42/trans/22',\n\t\t\t\tmethod: 'patch',\n\t\t\t});\n\t\t});\n\n\n\t\tit('can declare static params data in \"api.data\" object', () => {\n\t\t\tfsm = new FSM(Object.assign({}, cfg, {\n\t\t\t\tapi: {\n\t\t\t\t\tdata: {\n\t\t\t\t\t\tentity: 'events',\n\t\t\t\t\t},\n\t\t\t\t\tself: {\n\t\t\t\t\t\tpath: '/{entity}/{resId}',\n\t\t\t\t\t},\n\t\t\t\t\tparams: {\n\t\t\t\t\t\tentity: 'api.data.entity',\n\t\t\t\t\t\tresId: 'data.resId',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}));\n\n\t\t\tconst r = fsm.restApi();\n\t\t\texpect(r.self).to.eql({\n\t\t\t\thref: '/events/42',\n\t\t\t\tmethod: 'get',\n\t\t\t});\n\t\t});\n\t});\n});\n",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\n\ndescribe('FSM', () => {\n\tdescribe('ctor, API & state constrainsts', () => {\n\t\tlet fsm;\n\t\tbeforeEach(() => {\n\t\t\tfsm = new FSM({\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'a-to-b', from: 'a', to: 'b' },\n\t\t\t\t\t{ name: 'no:op', from: 'a', to: '*' },\n\t\t\t\t\t{ name: 'b-to-c', from: 'b', to: 'c' },\n\t\t\t\t\t{ name: 'a-to-c', from: 'a', to: 'c', rules: [() => { throw new Error('some error'); }] },\n\t\t\t\t],\n\t\t\t});\n\t\t\tfsm.init('a');\n\t\t});\n\n\t\tit('can create empty FSM', () => {\n\t\t\tnew FSM({}); //eslint-disable-line\n\t\t});\n\t\tit('uninitialized: state == \"__uninitialized__\"', () => {\n\t\t\texpect(new FSM({ transitions: [] }).state).to.equal('__uninitialized__');\n\t\t});\n\n\t\tit('validates transitions', () => {\n\t\t\texpect(() => new FSM({ transitions: [{}] })).to.throw(/Invalid transition/);\n\t\t});\n\t\tit('init(state)', () => {\n\t\t\tfsm.init('a');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('cannot set \"state: property', () => {\n\t\t\texpect(() => {\n\t\t\t\tfsm.state = 'test';\n\t\t\t}).to.throw('cannot set state');\n\t\t});\n\n\t\tit('can access \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({ data: dataObj });\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('can set \"data\" obj', () => {\n\t\t\tconst dataObj = { dat: 'a', onbj: { as: 'as' } };\n\t\t\tconst f = new FSM({});\n\t\t\tf.data = dataObj;\n\t\t\texpect(f.data).to.equal(dataObj);\n\t\t});\n\n\t\tit('creates transition methods', () => {\n\t\t\texpect(fsm.aToB).to.be.instanceof(Function);\n\t\t\texpect(fsm.noOp).to.be.instanceof(Function);\n\t\t\texpect(fsm.bToC).to.be.instanceof(Function);\n\t\t});\n\n\t\tit('changes state when calling transition method', async () => {\n\t\t\tawait fsm.aToB();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnition:name)\"', async () => {\n\t\t\tawait fsm.execute('a-to-b', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('chances state using \"execute(trasnitionName)\"', async () => {\n\t\t\tawait fsm.execute('aToB', { arg: 'obj' });\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('keeps state when \"to\" === \"*\"', async () => {\n\t\t\tawait fsm.noOp();\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('can list valid transitions', async () => {\n\t\t\texpect(fsm.transitions()).to.eql(['a-to-b', 'no:op', 'a-to-c']);\n\t\t});\n\n\t\tit('can list all transitions', async () => {\n\t\t\tconst transitions = fsm.allTransitions();\n\t\t\tconst transitionNames = transitions.map(t => t.name);\n\t\t\tconst expectedTransitions = ['a-to-b', 'no:op', 'b-to-c', 'a-to-c'];\n\t\t\texpect(transitions.length).to.eql(4);\n\t\t\texpect(transitionNames).to.eql(expectedTransitions);\n\t\t});\n\n\t\tit('cannot run invalid transition', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.bToC();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"bToC\" in state: \"a\"');\n\t\t});\n\n\t\tit('cannot run valid transition if rules are not satisfied', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.aToC();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.inner.message).to.equal('some error');\n\t\t\texpect(error.message).to.equal('Invalid transition: \"aToC\". Reason: some error');\n\t\t});\n\n\t\tit('can use array in from clause', async () => {\n\t\t\tfsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1', from: ['a', 'b', 'c'], to: 'd' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('b');\n\t\t\tawait fsm.trans1();\n\t\t\tfsm.init('c');\n\t\t\tawait fsm.trans1();\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('Invalid transition: \"trans1\" in state: \"d\"');\n\t\t});\n\t});\n\n\n\tdescribe('\"to\" state functions', () => {\n\t\tit('can set to: async () => newState', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1', from: 'a', to: async () => 'b' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t\tit('it awaits the async function', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: 'a',\n\t\t\t\t\t\tto: async () => {\n\t\t\t\t\t\t\tawait bb.delay(10);\n\t\t\t\t\t\t\treturn 'b';\n\t\t\t\t\t\t} },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\n\t\tit('aborts transition & throws error whe function throws', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: 'a',\n\t\t\t\t\t\tto: async () => { throw new Error('asf'); } },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tlet thrown = false;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\tthrown = true;\n\t\t\t}\n\t\t\texpect(thrown).to.be.true;\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\n\t\tit('validates the functions resukt to a valid state string', async () => {\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: 'a',\n\t\t\t\t\t\tto: async () => '' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tlet err;\n\t\t\ttry {\n\t\t\t\tawait fsm.trans1();\n\t\t\t} catch (e) {\n\t\t\t\terr = e;\n\t\t\t}\n\t\t\texpect(err.message).to.contain('not a valid state string');\n\t\t});\n\n\t\tit('passes the state value as first argument to \"to\" function', async () => {\n\t\t\tlet stateArg;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: 'a',\n\t\t\t\t\t\tto: async (state) => {\n\t\t\t\t\t\t\tstateArg = state;\n\t\t\t\t\t\t\tstate = 'asgsdg'; // eslint-disable-line\n\t\t\t\t\t\t\treturn 'b';\n\t\t\t\t\t\t} },\n\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\texpect(stateArg).to.equal('a');\n\t\t});\n\n\t\tit('passes the ctx object as second argument to \"to\" function', async () => {\n\t\t\tlet ctxArg;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: 'a',\n\t\t\t\t\t\tto: async (state, ctx) => {\n\t\t\t\t\t\t\tctxArg = ctx;\n\t\t\t\t\t\t\treturn 'b';\n\t\t\t\t\t\t} },\n\n\t\t\t\t],\n\t\t\t\tdata: {\n\t\t\t\t\tas: 'sa',\n\t\t\t\t},\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\texpect(ctxArg.fsm).to.equal(fsm);\n\t\t\texpect(ctxArg.data).to.equal(fsm.data);\n\t\t});\n\n\t\tit('works on state object properties', async () => {\n\t\t\tlet ctxArg, stateArg;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: FSM.compositState.build({ s1: 's1', s2: 's2' }),\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 'trans1',\n\t\t\t\t\t\tfrom: { s1: 's1', s2: 's2' },\n\t\t\t\t\t\tto: { s1: async (state, ctx) => {\n\t\t\t\t\t\t\tstateArg = state;\n\t\t\t\t\t\t\tctxArg = ctx;\n\t\t\t\t\t\t\treturn 'b';\n\t\t\t\t\t\t} } },\n\t\t\t\t],\n\t\t\t\tdata: {\n\t\t\t\t\tas: 'sa',\n\t\t\t\t},\n\t\t\t});\n\n\t\t\tawait fsm.trans1();\n\t\t\texpect(stateArg).to.equal('s1');\n\t\t\texpect(ctxArg.fsm).to.equal(fsm);\n\t\t\texpect(ctxArg.data).to.equal(fsm.data);\n\t\t\texpect(FSM.compositState.parse(fsm.state)).to.eql({ s1: 'b', s2: 's2' });\n\t\t});\n\t});\n\n\tdescribe('can use state Objects (compositState)', () => {\n\t\tit('to in object notation patches from stat', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'ns1:def|ns2:fe',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { ns1: 'def', ns2: 'fe' }, to: { ns1: 'b' } },\n\t\t\t\t],\n\t\t\t});\n\t\t\t// expect(f.states()).to.eql(['ns1:def|ns2:fe', 'ns1:b|ns2:fe'].sort());\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('ns1:b|ns2:fe');\n\t\t});\n\n\t\tit('creates state permutation with object notation', async () => {\n\t\t\tconst f = new FSM({\n\t\t\t\tinitialState: 'k1:k11|k2:k21',\n\t\t\t\ttransitions: [\n\t\t\t\t\t{ name: 't1', from: { k1: ['k11', 'k12'], k2: ['k21', 'k22'] }, to: '*' },\n\t\t\t\t],\n\t\t\t});\n\n\t\t\tf.init('k1:k11|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k21');\n\t\t\tf.init('k1:k12|k2:k21');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k21');\n\t\t\tf.init('k1:k11|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k11|k2:k22');\n\t\t\tf.init('k1:k12|k2:k22');\n\t\t\tawait f.t1();\n\t\t\texpect(f.state).to.equal('k1:k12|k2:k22');\n\t\t});\n\t});\n\n\tdescribe('large machine', () => {\n\t\tconst transitions = [];\n\t\tconst cntSubstate = 100;\n\t\tconst cntValue = 100;\n\t\tconst cntTransiotions = 100;\n\t\tbefore(() => {\n\t\t\tconst state = {};\n\t\t\tfor (let i = 0; i < cntSubstate; i++) {\n\t\t\t\tstate[`substate_${i}`] = [];\n\t\t\t\tfor (let j = 0; j < cntValue; j++) {\n\t\t\t\t\tstate[`substate_${i}`].push(`value_${i}_${j}`);\n\t\t\t\t}\n\t\t\t}\n\t\t\tfor (let t = 0; t < cntTransiotions; t++) {\n\t\t\t\ttransitions.push({\n\t\t\t\t\tname: `trans:${t}`,\n\t\t\t\t\tfrom: state,\n\t\t\t\t\tto: '*',\n\t\t\t\t});\n\t\t\t}\n\t\t});\n\t\tit('initialize large FSM', async () => {\n\t\t\tconst d1 = new Date();\n\t\t\tconst test = new FSM({ transitions });\n\t\t\tconst d2 = new Date();\n\t\t\tconst ms = d2.getTime() - d1.getTime();\n\t\t\texpect(ms).to.lt(1000);\n\t\t\texpect(test).to.exist;\n\t\t});\n\t});\n});\n",
     "static": true,
     "longname": "lib/fsm.specs.js",
     "access": null,
@@ -2271,7 +2637,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 85,
+    "__docId__": 101,
     "kind": "variable",
     "name": "bb",
     "memberof": "lib/fsm.specs.js",
@@ -2297,12 +2663,38 @@
     }
   },
   {
-    "__docId__": 86,
+    "__docId__": 102,
     "kind": "variable",
     "name": "FSM",
     "memberof": "lib/fsm.specs.js",
     "static": true,
     "longname": "lib/fsm.specs.js~FSM",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 103,
+    "kind": "variable",
+    "name": "expect",
+    "memberof": "lib/fsm.specs.js",
+    "static": true,
+    "longname": "lib/fsm.specs.js~expect",
     "access": null,
     "export": false,
     "importPath": "@trigo/fsm/lib/fsm.specs.js",
@@ -2323,18 +2715,55 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 104,
+    "kind": "file",
+    "name": "lib/fsm.statics.specs.js",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\nconst compositState = require('./composit-state');\n\ndescribe('FSM', () => {\n\tdescribe('statics', () => {\n\t\tit('exposes compositState tool', () => {\n\t\t\texpect(FSM.compositState).to.equal(compositState);\n\t\t});\n\n\t\tit('cannot set compositState', () => {\n\t\t\texpect(() => { FSM.compositState = () => {}; }).to.throw();\n\t\t});\n\n\t\tit('exposes toFunctionName() helper', () => {\n\t\t\texpect(FSM.toFunctionName('test:transition:oida')).to.equal('testTransitionOida');\n\t\t});\n\t});\n});\n",
+    "static": true,
+    "longname": "lib/fsm.statics.specs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 105,
+    "kind": "variable",
+    "name": "FSM",
+    "memberof": "lib/fsm.statics.specs.js",
+    "static": true,
+    "longname": "lib/fsm.statics.specs.js~FSM",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.statics.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 106,
     "kind": "variable",
     "name": "expect",
-    "memberof": "lib/fsm.specs.js",
+    "memberof": "lib/fsm.statics.specs.js",
     "static": true,
-    "longname": "lib/fsm.specs.js~expect",
+    "longname": "lib/fsm.statics.specs.js~expect",
     "access": null,
     "export": false,
-    "importPath": "@trigo/fsm/lib/fsm.specs.js",
+    "importPath": "@trigo/fsm/lib/fsm.statics.specs.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 7,
     "undocument": true,
     "unknown": [
       {
@@ -2349,18 +2778,18 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 107,
     "kind": "variable",
     "name": "compositState",
-    "memberof": "lib/fsm.specs.js",
+    "memberof": "lib/fsm.statics.specs.js",
     "static": true,
-    "longname": "lib/fsm.specs.js~compositState",
+    "longname": "lib/fsm.statics.specs.js~compositState",
     "access": null,
     "export": false,
-    "importPath": "@trigo/fsm/lib/fsm.specs.js",
+    "importPath": "@trigo/fsm/lib/fsm.statics.specs.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 8,
     "undocument": true,
     "unknown": [
       {
@@ -2375,7 +2804,96 @@
     }
   },
   {
-    "__docId__": 89,
+    "__docId__": 108,
+    "kind": "file",
+    "name": "lib/fsm.transition-execution.specs.js",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */\n\nconst bb = require('bluebird');\nconst FSM = require('./fsm');\nconst { expect } = require('chai');\n\ndescribe('FSM', () => {\n\tdescribe('saveState', () => {\n\t\tit('can use async \"saveState\"', async () => {\n\t\t\tlet saved;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: async (ctx) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tsaved = ctx.fsm.state;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans();\n\t\t\texpect(saved).to.equal('b');\n\t\t});\n\t\tit('can use sync \"saveState\"', async () => {\n\t\t\tlet ctx, args;\n\t\t\tconst fsm = new FSM({\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: (c, a) => {\n\t\t\t\t\tctx = c;\n\t\t\t\t\targs = a;\n\t\t\t\t},\n\t\t\t});\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: null,\n\t\t\t\t\tbeforeTrans: null,\n\t\t\t\t\tdidChangeState: null,\n\t\t\t\t\twillSaveState: null,\n\t\t\t\t\tdidSaveState: null,\n\t\t\t\t\tsaveState: undefined,\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('throw when exection is throw in sync \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: () => {\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t\tit('throw when exection is throw in async \"saveState\"', async () => {\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tconst fsm = new FSM({\n\t\t\t\t\tinitialState: 'a',\n\t\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\t\tsaveState: async () => {\n\t\t\t\t\t\tawait bb.delay(20);\n\t\t\t\t\t\tthrow new Error('save failed');\n\t\t\t\t\t},\n\t\t\t\t});\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('save failed');\n\t\t});\n\t});\n\tdescribe('transiton events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tconst data = { test: 'data' };\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\tdata,\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => 'saveState',\n\t\t\t\twillChangeState: async (ctx, a1, a2) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args: [a1, a2] });\n\t\t\t\t\treturn 'willChangeState';\n\t\t\t\t},\n\t\t\t\tdidChangeState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t\treturn 'didChangeState';\n\t\t\t\t},\n\t\t\t\twillSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t\treturn 'willSaveState';\n\t\t\t\t},\n\t\t\t\tdidSaveState: async (ctx, ...args) => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t\treturn 'didSaveState';\n\t\t\t\t},\n\t\t\t\teventHandler: {\n\t\t\t\t\tbeforeTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'beforeTrans', ctx, args });\n\t\t\t\t\t\treturn 'beforeTrans';\n\t\t\t\t\t},\n\t\t\t\t\tafterTrans: async (ctx, ...args) => {\n\t\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\t\tts.push({ name: 'afterTrans', ctx, args });\n\t\t\t\t\t\treturn 'afterTrans';\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans(42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('with \"execute(trasnition)\" calls transition methods with \"ctx\" and args', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.execute('trans', 42, 'test');\n\t\t\texpect(ts[0].ctx).to.eql({\n\t\t\t\tfrom: 'a',\n\t\t\t\tto: 'b',\n\t\t\t\ttransition: 'trans',\n\t\t\t\tfsm,\n\t\t\t\tdata,\n\t\t\t\tresults: {\n\t\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t\t\tsaveState: 'saveState',\n\t\t\t\t},\n\t\t\t});\n\t\t\texpect(ts[0].args).to.eql([42, 'test']);\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('didChangeState');\n\t\t\texpect(ts[3].name).to.equal('willSaveState');\n\t\t\texpect(ts[4].name).to.equal('didSaveState');\n\t\t\texpect(ts[5].name).to.equal('afterTrans');\n\t\t});\n\n\t\tit('returns all transitionHanlder results', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tconst result = await fsm.trans();\n\t\t\texpect(result).to.eql({\n\t\t\t\twillChangeState: 'willChangeState',\n\t\t\t\tbeforeTrans: 'beforeTrans',\n\t\t\t\tafterTrans: 'afterTrans',\n\t\t\t\tdidChangeState: 'didChangeState',\n\t\t\t\twillSaveState: 'willSaveState',\n\t\t\t\tsaveState: 'saveState',\n\t\t\t\tdidSaveState: 'didSaveState',\n\t\t\t});\n\t\t});\n\n\t\tit('throw error when beforeTransiton handler fails does not change state', async () => {\n\t\t\tcfg.eventHandler.beforeTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts.length).to.equal(1);\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when afterTransiton handler fails changes state', async () => {\n\t\t\tcfg.eventHandler.afterTrans = async () => {\n\t\t\t\tawait bb.delay(5);\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('beforeTrans');\n\t\t\texpect(ts[2].name).to.equal('didChangeState');\n\t\t\texpect(ts[3].name).to.equal('willSaveState');\n\t\t\texpect(ts[4].name).to.equal('didSaveState');\n\t\t\texpect(ts.length).to.equal(5);\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('global transition events', () => {\n\t\tlet fsm, cfg, ts;\n\t\tbeforeEach(() => {\n\t\t\tts = [];\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: 'a', to: 'b' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidChangeState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didChangeState', ctx, args });\n\t\t\t\t},\n\t\t\t\twillSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'willSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t\tdidSaveState: (ctx, ...args) => {\n\t\t\t\t\tts.push({ name: 'didSaveState', ctx, args });\n\t\t\t\t},\n\t\t\t};\n\t\t});\n\n\t\tit('calls transition events in order', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts[2].name).to.equal('willSaveState');\n\t\t\texpect(ts[3].name).to.equal('didSaveState');\n\t\t});\n\n\t\tit('calls will & didSaveState only called when saveState is defined', async () => {\n\t\t\tdelete cfg.saveState;\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\texpect(ts[0].name).to.equal('willChangeState');\n\t\t\texpect(ts[1].name).to.equal('didChangeState');\n\t\t\texpect(ts.length).to.equal(2);\n\t\t});\n\n\t\tit('throw error when willChangeState & state does not change', async () => {\n\t\t\tcfg.willChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('a');\n\t\t});\n\t\tit('throw error when didChangeState & state changes', async () => {\n\t\t\tcfg.didChangeState = () => {\n\t\t\t\tthrow new Error('derdo');\n\t\t\t};\n\t\t\tlet error;\n\t\t\ttry {\n\t\t\t\tfsm = new FSM(cfg);\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {\n\t\t\t\terror = e;\n\t\t\t}\n\t\t\texpect(error).to.exist;\n\t\t\texpect(error.message).to.equal('derdo');\n\t\t\texpect(fsm.state).to.equal('b');\n\t\t});\n\t});\n\n\tdescribe('race conditions', () => {\n\t\tlet fsm, cfg;\n\t\tbeforeEach(() => {\n\t\t\tcfg = {\n\t\t\t\tinitialState: 'a',\n\t\t\t\ttransitions: [{ name: 'trans', from: ['a', 'b'], to: 'b' }, { name: 'trans2', from: ['a', 'b'], to: 'a' }],\n\t\t\t\tsaveState: () => {},\n\t\t\t\twillChangeState: () => bb.delay(5),\n\t\t\t};\n\t\t});\n\n\t\tit('cannot start transition while anothr one is running', (done) => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tfsm.trans();\n\t\t\tfsm.trans2().then(() => done(new Error('should have failed'))).catch((err) => {\n\t\t\t\texpect(err.message).to.equal('Cannot start transition when during running transition');\n\t\t\t\tdone();\n\t\t\t});\n\t\t});\n\t\tit('can run transition sequential', async () => {\n\t\t\tfsm = new FSM(cfg);\n\t\t\tawait fsm.trans();\n\t\t\tawait fsm.trans2();\n\t\t});\n\n\t\tit('can run transtition after a trasition was abourted', async () => {\n\t\t\tcfg.eventHandler = {\n\t\t\t\tbeforeTrans: async () => {\n\t\t\t\t\tawait bb.delay(5);\n\t\t\t\t\tthrow new Error('uuppps');\n\t\t\t\t},\n\t\t\t};\n\t\t\tfsm = new FSM(cfg);\n\t\t\ttry {\n\t\t\t\tawait fsm.trans();\n\t\t\t} catch (e) {}\n\t\t\tawait fsm.trans2();\n\t\t});\n\t});\n});\n",
+    "static": true,
+    "longname": "lib/fsm.transition-execution.specs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 109,
+    "kind": "variable",
+    "name": "bb",
+    "memberof": "lib/fsm.transition-execution.specs.js",
+    "static": true,
+    "longname": "lib/fsm.transition-execution.specs.js~bb",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.transition-execution.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 110,
+    "kind": "variable",
+    "name": "FSM",
+    "memberof": "lib/fsm.transition-execution.specs.js",
+    "static": true,
+    "longname": "lib/fsm.transition-execution.specs.js~FSM",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.transition-execution.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 111,
+    "kind": "variable",
+    "name": "expect",
+    "memberof": "lib/fsm.transition-execution.specs.js",
+    "static": true,
+    "longname": "lib/fsm.transition-execution.specs.js~expect",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/fsm.transition-execution.specs.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 112,
     "kind": "file",
     "name": "lib/get-all-taken-names.js",
     "content": "'use strict';\n\n/** @private */\nmodule.exports = (obj) => {\n\tconst methods = new Set();\n\twhile (obj = Reflect.getPrototypeOf(obj)) { // eslint-disable-line\n\t\tconst keys = Reflect.ownKeys(obj);\n\t\tkeys.forEach(k => methods.add(k));\n\t}\n\treturn methods;\n};\n",
@@ -2386,7 +2904,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 90,
+    "__docId__": 113,
     "kind": "function",
     "name": "getalltakennames",
     "memberof": "lib/get-all-taken-names.js",
@@ -2415,7 +2933,7 @@
     }
   },
   {
-    "__docId__": 91,
+    "__docId__": 114,
     "kind": "file",
     "name": "lib/is-valid-state-value.js",
     "content": "'use strict';\n\nconst STATE_KEY_REGEX = /^([a-zA-Z0-9-_.#/@$%^!=<>+~?]+|\\*)$/;\n\n/** @private */\nmodule.exports = value => value.match(STATE_KEY_REGEX);\n",
@@ -2426,7 +2944,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 92,
+    "__docId__": 115,
     "kind": "variable",
     "name": "STATE_KEY_REGEX",
     "memberof": "lib/is-valid-state-value.js",
@@ -2452,7 +2970,7 @@
     }
   },
   {
-    "__docId__": 93,
+    "__docId__": 116,
     "kind": "function",
     "name": "isvalidstatevalue",
     "memberof": "lib/is-valid-state-value.js",
@@ -2476,10 +2994,10 @@
     ]
   },
   {
-    "__docId__": 94,
+    "__docId__": 117,
     "kind": "file",
     "name": "lib/parse-transition-api.js",
-    "content": "'use strict';\n\nfunction getNested(theObject, path) {\n\ttry {\n\t\tconst separator = '.';\n\n\t\treturn path\n\t\t\t.replace('[', separator).replace(']', '')\n\t\t\t.split(separator)\n\t\t\t.reduce(\n\t\t\t\t(obj, property) => obj[property], theObject,\n\t\t\t);\n\t} catch (err) {\n\t\treturn undefined;\n\t}\n}\n\nconst replaceFromParams = (path, params, ctx) => {\n\tlet href = path;\n\tObject.keys(params).forEach((key) => {\n\t\tconst value = getNested(ctx, params[key]);\n\t\tif (value === undefined) {\n\t\t\tthrow new Error(`Cannot resolve param: \"${key}\" data path: \"${params[key]}\"`);\n\t\t}\n\t\thref = href.replace(new RegExp(`{${key}}`, 'g'), value);\n\t});\n\n\treturn href;\n};\n\nconst extractParams = (path) => {\n\tconst matches = path.match(/\\{.*?\\}/g);\n\tif (!matches) return undefined;\n\tconst params = {};\n\tmatches.forEach((m) => {\n\t\tparams[m.replace(/\\{/, '').replace(/\\}/, '')] = true;\n\t});\n\treturn params;\n};\n\n/** @private */\nmodule.exports = ({ api, ctx }) => {\n\tif (!api) throw new Error('Argument \"api\" missing');\n\tif (!api.path) throw new Error('Argument \"api.path\" missing');\n\n\tconst method = api.method || 'get';\n\n\tlet href = api.path;\n\tif (ctx && ctx.api && ctx.api.params) {\n\t\thref = replaceFromParams(href, ctx.api.params, ctx);\n\t}\n\tif (api.params) {\n\t\thref = replaceFromParams(href, api.params, ctx);\n\t}\n\n\tconst params = extractParams(href);\n\n\tconst link = {\n\t\thref,\n\t\tmethod,\n\t};\n\n\tif (params) {\n\t\tlink.params = params;\n\t}\n\treturn link;\n};\n",
+    "content": "'use strict';\n\nconst executeTransitionRules = require('./execute-transition-rules');\n\nfunction getNested(theObject, path) {\n\ttry {\n\t\tconst separator = '.';\n\n\t\treturn path\n\t\t\t.replace('[', separator).replace(']', '')\n\t\t\t.split(separator)\n\t\t\t.reduce(\n\t\t\t\t(obj, property) => obj[property], theObject,\n\t\t\t);\n\t} catch (err) {\n\t\treturn undefined;\n\t}\n}\n\nconst replaceFromParams = (path, params, ctx) => {\n\tlet href = path;\n\tObject.keys(params).forEach((key) => {\n\t\tconst value = getNested(ctx, params[key]);\n\t\tif (value === undefined) {\n\t\t\tthrow new Error(`Cannot resolve param: \"${key}\" data path: \"${params[key]}\"`);\n\t\t}\n\t\thref = href.replace(new RegExp(`{${key}}`, 'g'), value);\n\t});\n\n\treturn href;\n};\n\nconst extractParams = (path) => {\n\tconst matches = path.match(/\\{.*?\\}/g);\n\tif (!matches) return undefined;\n\tconst params = {};\n\tmatches.forEach((m) => {\n\t\tparams[m.replace(/\\{/, '').replace(/\\}/, '')] = true;\n\t});\n\treturn params;\n};\n\n/** @private */\nmodule.exports = ({ api, ctx, rules }) => {\n\tif (!api) throw new Error('Argument \"api\" missing');\n\tif (!api.path) throw new Error('Argument \"api.path\" missing');\n\tconst method = api.method || 'get';\n\n\tlet href = api.path;\n\tif (ctx && ctx.api && ctx.api.params) {\n\t\thref = replaceFromParams(href, ctx.api.params, ctx);\n\t}\n\tif (api.params) {\n\t\thref = replaceFromParams(href, api.params, ctx);\n\t}\n\n\tconst params = extractParams(href);\n\tconst transitionRules = rules || [];\n\tconst error = executeTransitionRules(transitionRules, ctx);\n\n\tconst link = {\n\t\thref,\n\t\tmethod,\n\t};\n\n\tif (params) {\n\t\tlink.params = params;\n\t}\n\n\tif (error) {\n\t\tlink.error = { message: error.message };\n\t}\n\n\treturn link;\n};\n",
     "static": true,
     "longname": "lib/parse-transition-api.js",
     "access": null,
@@ -2487,7 +3005,33 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 95,
+    "__docId__": 118,
+    "kind": "variable",
+    "name": "executeTransitionRules",
+    "memberof": "lib/parse-transition-api.js",
+    "static": true,
+    "longname": "lib/parse-transition-api.js~executeTransitionRules",
+    "access": null,
+    "export": false,
+    "importPath": "@trigo/fsm/lib/parse-transition-api.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 119,
     "kind": "function",
     "name": "getNested",
     "memberof": "lib/parse-transition-api.js",
@@ -2500,7 +3044,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition-api.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 5,
     "undocument": true,
     "unknown": [
       {
@@ -2529,7 +3073,7 @@
     }
   },
   {
-    "__docId__": 96,
+    "__docId__": 120,
     "kind": "function",
     "name": "replaceFromParams",
     "memberof": "lib/parse-transition-api.js",
@@ -2542,7 +3086,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition-api.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 20,
     "undocument": true,
     "unknown": [
       {
@@ -2577,7 +3121,7 @@
     }
   },
   {
-    "__docId__": 97,
+    "__docId__": 121,
     "kind": "function",
     "name": "extractParams",
     "memberof": "lib/parse-transition-api.js",
@@ -2590,7 +3134,7 @@
     "importPath": "@trigo/fsm/lib/parse-transition-api.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 33,
     "undocument": true,
     "unknown": [
       {
@@ -2613,7 +3157,7 @@
     }
   },
   {
-    "__docId__": 98,
+    "__docId__": 122,
     "kind": "function",
     "name": "parsetransitionapi",
     "memberof": "lib/parse-transition-api.js",
@@ -2626,18 +3170,19 @@
     "importPath": "@trigo/fsm/lib/parse-transition-api.js",
     "importStyle": "parsetransitionapi",
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 44,
     "params": [
       {
         "name": "objectPattern",
         "types": [
-          "{\"api\": *, \"ctx\": *}"
+          "{\"api\": *, \"ctx\": *, \"rules\": *}"
         ],
         "defaultRaw": {
           "api": null,
-          "ctx": null
+          "ctx": null,
+          "rules": null
         },
-        "defaultValue": "{\"api\":null,\"ctx\":null}"
+        "defaultValue": "{\"api\":null,\"ctx\":null,\"rules\":null}"
       }
     ],
     "return": {
@@ -2647,10 +3192,10 @@
     }
   },
   {
-    "__docId__": 99,
+    "__docId__": 123,
     "kind": "file",
     "name": "lib/parse-transition-api.specs.js",
-    "content": "'use strict';\n\nconst parseApi = require('./parse-transition-api');\nconst { expect } = require('chai');\n\ndescribe('parse transition api', () => {\n\tit('throws with missing \"api\"', () => {\n\t\texpect(() => parseApi({ })).to.throw('Argument \"api\" missing');\n\t});\n\tit('throws with missing \"api.path\"', () => {\n\t\texpect(() => parseApi({ api: { method: 'patch' } })).to.throw('Argument \"api.path\" missing');\n\t});\n\n\n\tit('returns corrct object', () => {\n\t\tconst res = parseApi({ api: {\n\t\t\tpath: '/test',\n\t\t\tmethod: 'patch',\n\t\t} });\n\t\texpect(res).to.eql({\n\t\t\thref: '/test',\n\t\t\tmethod: 'patch',\n\t\t});\n\t});\n\n\tit('resolves params from ctx object', () => {\n\t\texpect(parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t\tresId: '42',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.eql({\n\t\t\thref: '/test/42',\n\t\t\tmethod: 'patch',\n\t\t});\n\t});\n\n\tit('throws error when param cannot be resolved', () => {\n\t\texpect(() => parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.throw('Cannot resolve param: \"resId\" data path: \"data.event.resId\"');\n\t});\n\n\tit('creates \"templates\" object for unresolved path segments', () => {\n\t\texpect(parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}/{eventId}/{seminarId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t\tresId: '42',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.eql({\n\t\t\thref: '/test/42/{eventId}/{seminarId}',\n\t\t\tmethod: 'patch',\n\t\t\tparams: {\n\t\t\t\teventId: true,\n\t\t\t\tseminarId: true,\n\t\t\t},\n\t\t});\n\t});\n});\n",
+    "content": "'use strict';\n\nconst parseApi = require('./parse-transition-api');\nconst { expect } = require('chai');\n\ndescribe('parse transition api', () => {\n\tit('throws with missing \"api\"', () => {\n\t\texpect(() => parseApi({ })).to.throw('Argument \"api\" missing');\n\t});\n\tit('throws with missing \"api.path\"', () => {\n\t\texpect(() => parseApi({ api: { method: 'patch' } })).to.throw('Argument \"api.path\" missing');\n\t});\n\n\n\tit('returns corrct object', () => {\n\t\tconst res = parseApi({ api: {\n\t\t\tpath: '/test',\n\t\t\tmethod: 'patch',\n\t\t} });\n\t\texpect(res).to.eql({\n\t\t\thref: '/test',\n\t\t\tmethod: 'patch',\n\t\t});\n\t});\n\n\tit('resolves params from ctx object', () => {\n\t\texpect(parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t\tresId: '42',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.eql({\n\t\t\thref: '/test/42',\n\t\t\tmethod: 'patch',\n\t\t});\n\t});\n\n\tit('throws error when param cannot be resolved', () => {\n\t\texpect(() => parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.throw('Cannot resolve param: \"resId\" data path: \"data.event.resId\"');\n\t});\n\n\tit('creates \"templates\" object for unresolved path segments', () => {\n\t\texpect(parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test/{resId}/{eventId}/{seminarId}',\n\t\t\t\tmethod: 'patch',\n\t\t\t\tparams: {\n\t\t\t\t\tresId: 'data.event.resId',\n\t\t\t\t},\n\t\t\t},\n\t\t\tctx: {\n\t\t\t\tdata: {\n\t\t\t\t\tevent: {\n\t\t\t\t\t\tresId: '42',\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t},\n\t\t})).to.eql({\n\t\t\thref: '/test/42/{eventId}/{seminarId}',\n\t\t\tmethod: 'patch',\n\t\t\tparams: {\n\t\t\t\teventId: true,\n\t\t\t\tseminarId: true,\n\t\t\t},\n\t\t});\n\t});\n\n\tit('returns a valid api object if the rule array is not satisfied', () => {\n\t\tconst res = parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test',\n\t\t\t\tmethod: 'patch',\n\t\t\t},\n\t\t\trules: [\n\t\t\t\t() => {},\n\t\t\t\t() => {},\n\t\t\t],\n\t\t});\n\n\t\texpect(res).to.eql({\n\t\t\thref: '/test',\n\t\t\tmethod: 'patch',\n\t\t});\n\t});\n\n\tit('returns a invalid api object if the rule array is not satisfied', () => {\n\t\tconst res = parseApi({\n\t\t\tapi: {\n\t\t\t\tpath: '/test',\n\t\t\t\tmethod: 'patch',\n\t\t\t},\n\t\t\trules: [\n\t\t\t\t() => {},\n\t\t\t\t() => { throw new Error('some error'); },\n\t\t\t],\n\t\t});\n\n\t\texpect(res).to.eql({\n\t\t\thref: '/test',\n\t\t\tmethod: 'patch',\n\t\t\terror: {\n\t\t\t\tmessage: 'some error',\n\t\t\t},\n\t\t});\n\t});\n});\n",
     "static": true,
     "longname": "lib/parse-transition-api.specs.js",
     "access": null,
@@ -2658,7 +3203,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 100,
+    "__docId__": 124,
     "kind": "variable",
     "name": "parseApi",
     "memberof": "lib/parse-transition-api.specs.js",
@@ -2684,7 +3229,7 @@
     }
   },
   {
-    "__docId__": 101,
+    "__docId__": 125,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/parse-transition-api.specs.js",
@@ -2710,10 +3255,10 @@
     }
   },
   {
-    "__docId__": 102,
+    "__docId__": 126,
     "kind": "file",
     "name": "lib/parse-transition.js",
-    "content": "'use strict';\n\nconst isValidStateValue = require('./is-valid-state-value');\n\nconst validateFromTo = (fromTo) => {\n\tconst froms = Array.isArray(fromTo) ? fromTo : [fromTo];\n\tfroms.forEach((from) => {\n\t\tif (!from || (typeof from === 'string' && (!isValidStateValue(from) || from === '__uninitialized__'))) {\n\t\t\tthrow new Error(`Invalid state value! from: ${from}`);\n\t\t} else if (typeof from === 'object') {\n\t\t\tObject.keys(from).forEach((fromKey) => {\n\t\t\t\tconst fromVal = Array.isArray(from[fromKey]) ? from[fromKey] : [from[fromKey]];\n\t\t\t\tfromVal.forEach((val) => {\n\t\t\t\t\tif (!isValidStateValue(val) || from === '__uninitialized__') {\n\t\t\t\t\t\tthrow new Error(`Invalid state value! from: ${from}`);\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t});\n\t\t}\n\t});\n};\n\n/** @private */\nmodule.exports = (transition) => {\n\tconst trans = Object.assign({}, transition);\n\tif (!trans.name || !trans.name.replace(/ /g, '') || trans.name === '__uninitialized__') {\n\t\tthrow new Error(`Invalid transition name: ${trans.name}`);\n\t}\n\tvalidateFromTo(trans.from);\n\tvalidateFromTo(trans.to);\n\n\treturn trans;\n};\n",
+    "content": "'use strict';\n\nconst isValidStateValue = require('./is-valid-state-value');\n\nconst validateFromTo = (fromTo) => {\n\tconst froms = Array.isArray(fromTo) ? fromTo : [fromTo];\n\tfroms.forEach((from) => {\n\t\tif (!from || (typeof from === 'string' && (!isValidStateValue(from) || from === '__uninitialized__'))) {\n\t\t\tthrow new Error(`Invalid state value! from: ${from}`);\n\t\t} else if (typeof from === 'object') {\n\t\t\tObject.keys(from).forEach((fromKey) => {\n\t\t\t\tconst fromVal = Array.isArray(from[fromKey]) ? from[fromKey] : [from[fromKey]];\n\t\t\t\tfromVal.forEach((val) => {\n\t\t\t\t\tif ((typeof val === 'string') && (!isValidStateValue(val) || from === '__uninitialized__')) {\n\t\t\t\t\t\tthrow new Error(`Invalid state value! from: ${from}`);\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t});\n\t\t}\n\t});\n};\n\n/** @private */\nmodule.exports = (transition) => {\n\tconst trans = Object.assign({}, transition);\n\tif (!trans.name || !trans.name.replace(/ /g, '') || trans.name === '__uninitialized__') {\n\t\tthrow new Error(`Invalid transition name: ${trans.name}`);\n\t}\n\tvalidateFromTo(trans.from);\n\tvalidateFromTo(trans.to);\n\n\treturn trans;\n};\n",
     "static": true,
     "longname": "lib/parse-transition.js",
     "access": null,
@@ -2721,7 +3266,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 103,
+    "__docId__": 127,
     "kind": "variable",
     "name": "isValidStateValue",
     "memberof": "lib/parse-transition.js",
@@ -2747,7 +3292,7 @@
     }
   },
   {
-    "__docId__": 104,
+    "__docId__": 128,
     "kind": "function",
     "name": "validateFromTo",
     "memberof": "lib/parse-transition.js",
@@ -2778,7 +3323,7 @@
     ]
   },
   {
-    "__docId__": 105,
+    "__docId__": 129,
     "kind": "function",
     "name": "parsetransition",
     "memberof": "lib/parse-transition.js",
@@ -2807,10 +3352,10 @@
     }
   },
   {
-    "__docId__": 106,
+    "__docId__": 130,
     "kind": "file",
     "name": "lib/parse-transition.specs.js",
-    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst parseTrasition = require('./parse-transition');\nconst { expect } = require('chai');\n\ndescribe('parseTransition', () => {\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow trasition name: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name, from: 'a', to: 'b' })).to.throw();\n\t\t});\n\t});\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow from state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: name, to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow from state: \"['a', ${name}, 'b']\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: ['a', name, 'b'], to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow to state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: 'a', to: name })).to.throw();\n\t\t});\n\t});\n\n\tit('state values must match regex: /^([a-zA-Z0-9-_.#\\\\/@\\\\$%^!=<>+~?]+|\\\\*)$/', () => {\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a:1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a|1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: ['a:1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: ['a|1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: { s1: ['a:1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: { s1: ['a|1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: 'a:1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: 'a|1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: { s1: 'a:1' } })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: { s1: 'a|1' } })).to.throw(/Invalid state value!/);\n\t});\n});\n",
+    "content": "'use strict';\n\n/* eslint-env node, mocha */\n/* eslint no-unused-expressions: 0, arrow-body-style: 0 */\n\nconst parseTrasition = require('./parse-transition');\nconst { expect } = require('chai');\n\ndescribe('parseTransition', () => {\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow trasition name: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name, from: 'a', to: 'b' })).to.throw();\n\t\t});\n\t});\n\t['__uninitialized__', '', '  ', null, undefined].forEach((name) => {\n\t\tit(`does not allow from state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: name, to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow from state: \"['a', ${name}, 'b']\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: ['a', name, 'b'], to: 'b' })).to.throw();\n\t\t});\n\t\tit(`does not allow to state: \"${name}\"`, () => {\n\t\t\texpect(() => parseTrasition({ name: 'trans', from: 'a', to: name })).to.throw();\n\t\t});\n\t});\n\n\tit('state values must match regex: /^([a-zA-Z0-9-_.#\\\\/@\\\\$%^!=<>+~?]+|\\\\*)$/', () => {\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a:1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a|1', to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: ['a:1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: ['a|1'], to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: { s1: ['a:1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: { s1: ['a|1'] }, to: 'a' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: 'a:1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: 'a|1' })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't1', from: 'a', to: { s1: 'a:1' } })).to.throw(/Invalid state value!/);\n\t\texpect(() => parseTrasition({ name: 't2', from: 'a', to: { s1: 'a|1' } })).to.throw(/Invalid state value!/);\n\t});\n\n\tit('\"to\" can be a function', () => {\n\t\tparseTrasition({ name: 't', from: 'a', to: () => {} });\n\t});\n\n\tit('\"to\" substate can be a function', () => {\n\t\tparseTrasition({ name: 't', from: { s1: 'a', s2: 'b' }, to: { s1: 'a', s2: () => {} } });\n\t});\n});\n",
     "static": true,
     "longname": "lib/parse-transition.specs.js",
     "access": null,
@@ -2818,7 +3363,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 107,
+    "__docId__": 131,
     "kind": "variable",
     "name": "parseTrasition",
     "memberof": "lib/parse-transition.specs.js",
@@ -2844,7 +3389,7 @@
     }
   },
   {
-    "__docId__": 108,
+    "__docId__": 132,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/parse-transition.specs.js",
@@ -2870,7 +3415,7 @@
     }
   },
   {
-    "__docId__": 109,
+    "__docId__": 133,
     "kind": "file",
     "name": "lib/to-camel-case.js",
     "content": "'use strict';\n\n/** @private */\nmodule.exports = (str) => {\n\tconst words = str.split(/[_-]|:/);\n\tlet result = words[0];\n\tfor (let n = 1; n < words.length; n++) {\n\t\tresult = result + words[n].charAt(0).toUpperCase() + words[n].substring(1);\n\t}\n\treturn result;\n};\n",
@@ -2881,7 +3426,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 110,
+    "__docId__": 134,
     "kind": "function",
     "name": "tocamelcase",
     "memberof": "lib/to-camel-case.js",
@@ -2910,7 +3455,7 @@
     }
   },
   {
-    "__docId__": 111,
+    "__docId__": 135,
     "kind": "file",
     "name": "lib/to-camel-case.specs.js",
     "content": "'use strict';\n\nconst { expect } = require('chai');\nconst toCamelCase = require('./to-camel-case');\n\ndescribe('toCamelCase', () => {\n\tit('worsWith \"_\" delimiter', () => {\n\t\texpect(toCamelCase('test_func_name')).to.equal('testFuncName');\n\t});\n\tit('worsWith \"-\" delimiter', () => {\n\t\texpect(toCamelCase('test-func-name')).to.equal('testFuncName');\n\t});\n\tit('worsWith \":\" delimiter', () => {\n\t\texpect(toCamelCase('test:func:name')).to.equal('testFuncName');\n\t});\n});\n",
@@ -2921,7 +3466,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 112,
+    "__docId__": 136,
     "kind": "variable",
     "name": "expect",
     "memberof": "lib/to-camel-case.specs.js",
@@ -2947,7 +3492,7 @@
     }
   },
   {
-    "__docId__": 113,
+    "__docId__": 137,
     "kind": "variable",
     "name": "toCamelCase",
     "memberof": "lib/to-camel-case.specs.js",
@@ -2973,7 +3518,7 @@
     }
   },
   {
-    "__docId__": 115,
+    "__docId__": 139,
     "kind": "external",
     "name": "Infinity",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
@@ -2985,7 +3530,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
+    "__docId__": 140,
     "kind": "external",
     "name": "NaN",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
@@ -2997,7 +3542,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
+    "__docId__": 141,
     "kind": "external",
     "name": "undefined",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
@@ -3009,7 +3554,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
+    "__docId__": 142,
     "kind": "external",
     "name": "null",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
@@ -3021,7 +3566,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
+    "__docId__": 143,
     "kind": "external",
     "name": "Object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -3033,7 +3578,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
+    "__docId__": 144,
     "kind": "external",
     "name": "object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -3045,7 +3590,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
+    "__docId__": 145,
     "kind": "external",
     "name": "Function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -3057,7 +3602,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
+    "__docId__": 146,
     "kind": "external",
     "name": "function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -3069,7 +3614,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
+    "__docId__": 147,
     "kind": "external",
     "name": "Boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -3081,7 +3626,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
+    "__docId__": 148,
     "kind": "external",
     "name": "boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -3093,7 +3638,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
+    "__docId__": 149,
     "kind": "external",
     "name": "Symbol",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
@@ -3105,7 +3650,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
+    "__docId__": 150,
     "kind": "external",
     "name": "Error",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
@@ -3117,7 +3662,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
+    "__docId__": 151,
     "kind": "external",
     "name": "EvalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
@@ -3129,7 +3674,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
+    "__docId__": 152,
     "kind": "external",
     "name": "InternalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
@@ -3141,7 +3686,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 129,
+    "__docId__": 153,
     "kind": "external",
     "name": "RangeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
@@ -3153,7 +3698,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
+    "__docId__": 154,
     "kind": "external",
     "name": "ReferenceError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
@@ -3165,7 +3710,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 155,
     "kind": "external",
     "name": "SyntaxError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
@@ -3177,7 +3722,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
+    "__docId__": 156,
     "kind": "external",
     "name": "TypeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
@@ -3189,7 +3734,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 157,
     "kind": "external",
     "name": "URIError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
@@ -3201,7 +3746,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
+    "__docId__": 158,
     "kind": "external",
     "name": "Number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -3213,7 +3758,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
+    "__docId__": 159,
     "kind": "external",
     "name": "number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -3225,7 +3770,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
+    "__docId__": 160,
     "kind": "external",
     "name": "Date",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
@@ -3237,7 +3782,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 137,
+    "__docId__": 161,
     "kind": "external",
     "name": "String",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -3249,7 +3794,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
+    "__docId__": 162,
     "kind": "external",
     "name": "string",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -3261,7 +3806,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 139,
+    "__docId__": 163,
     "kind": "external",
     "name": "RegExp",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
@@ -3273,7 +3818,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 140,
+    "__docId__": 164,
     "kind": "external",
     "name": "Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
@@ -3285,7 +3830,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 141,
+    "__docId__": 165,
     "kind": "external",
     "name": "Int8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
@@ -3297,7 +3842,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 142,
+    "__docId__": 166,
     "kind": "external",
     "name": "Uint8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
@@ -3309,7 +3854,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 143,
+    "__docId__": 167,
     "kind": "external",
     "name": "Uint8ClampedArray",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
@@ -3321,7 +3866,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 144,
+    "__docId__": 168,
     "kind": "external",
     "name": "Int16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
@@ -3333,7 +3878,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 145,
+    "__docId__": 169,
     "kind": "external",
     "name": "Uint16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
@@ -3345,7 +3890,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 146,
+    "__docId__": 170,
     "kind": "external",
     "name": "Int32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
@@ -3357,7 +3902,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 147,
+    "__docId__": 171,
     "kind": "external",
     "name": "Uint32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
@@ -3369,7 +3914,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 148,
+    "__docId__": 172,
     "kind": "external",
     "name": "Float32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
@@ -3381,7 +3926,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 149,
+    "__docId__": 173,
     "kind": "external",
     "name": "Float64Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
@@ -3393,7 +3938,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 150,
+    "__docId__": 174,
     "kind": "external",
     "name": "Map",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
@@ -3405,7 +3950,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 151,
+    "__docId__": 175,
     "kind": "external",
     "name": "Set",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
@@ -3417,7 +3962,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 152,
+    "__docId__": 176,
     "kind": "external",
     "name": "WeakMap",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
@@ -3429,7 +3974,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 153,
+    "__docId__": 177,
     "kind": "external",
     "name": "WeakSet",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
@@ -3441,7 +3986,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 154,
+    "__docId__": 178,
     "kind": "external",
     "name": "ArrayBuffer",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
@@ -3453,7 +3998,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 155,
+    "__docId__": 179,
     "kind": "external",
     "name": "DataView",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
@@ -3465,7 +4010,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 156,
+    "__docId__": 180,
     "kind": "external",
     "name": "JSON",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
@@ -3477,7 +4022,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 157,
+    "__docId__": 181,
     "kind": "external",
     "name": "Promise",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
@@ -3489,7 +4034,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 158,
+    "__docId__": 182,
     "kind": "external",
     "name": "Generator",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
@@ -3501,7 +4046,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 159,
+    "__docId__": 183,
     "kind": "external",
     "name": "GeneratorFunction",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
@@ -3513,7 +4058,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 160,
+    "__docId__": 184,
     "kind": "external",
     "name": "Reflect",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
@@ -3525,7 +4070,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 161,
+    "__docId__": 185,
     "kind": "external",
     "name": "Proxy",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
@@ -3538,7 +4083,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 163,
+    "__docId__": 187,
     "kind": "external",
     "name": "CanvasRenderingContext2D",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
@@ -3550,7 +4095,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 164,
+    "__docId__": 188,
     "kind": "external",
     "name": "DocumentFragment",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
@@ -3562,7 +4107,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 165,
+    "__docId__": 189,
     "kind": "external",
     "name": "Element",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
@@ -3574,7 +4119,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 166,
+    "__docId__": 190,
     "kind": "external",
     "name": "Event",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
@@ -3586,7 +4131,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 167,
+    "__docId__": 191,
     "kind": "external",
     "name": "Node",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
@@ -3598,7 +4143,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 168,
+    "__docId__": 192,
     "kind": "external",
     "name": "NodeList",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
@@ -3610,7 +4155,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 169,
+    "__docId__": 193,
     "kind": "external",
     "name": "XMLHttpRequest",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
@@ -3622,7 +4167,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 170,
+    "__docId__": 194,
     "kind": "external",
     "name": "AudioContext",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",

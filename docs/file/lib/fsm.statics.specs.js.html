@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">lib/parse-transition.js | API Document</title>
+  <title data-ice="title">lib/fsm.statics.specs.js | API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -38,40 +38,31 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/parse-transition.js</h1>
+<div class="content" data-ice="content"><h1 data-ice="title">lib/fsm.statics.specs.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
-const isValidStateValue = require(&apos;./is-valid-state-value&apos;);
+/* eslint-env node, mocha */
+/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */
 
-const validateFromTo = (fromTo) =&gt; {
-	const froms = Array.isArray(fromTo) ? fromTo : [fromTo];
-	froms.forEach((from) =&gt; {
-		if (!from || (typeof from === &apos;string&apos; &amp;&amp; (!isValidStateValue(from) || from === &apos;__uninitialized__&apos;))) {
-			throw new Error(`Invalid state value! from: ${from}`);
-		} else if (typeof from === &apos;object&apos;) {
-			Object.keys(from).forEach((fromKey) =&gt; {
-				const fromVal = Array.isArray(from[fromKey]) ? from[fromKey] : [from[fromKey]];
-				fromVal.forEach((val) =&gt; {
-					if ((typeof val === &apos;string&apos;) &amp;&amp; (!isValidStateValue(val) || from === &apos;__uninitialized__&apos;)) {
-						throw new Error(`Invalid state value! from: ${from}`);
-					}
-				});
-			});
-		}
+const FSM = require(&apos;./fsm&apos;);
+const { expect } = require(&apos;chai&apos;);
+const compositState = require(&apos;./composit-state&apos;);
+
+describe(&apos;FSM&apos;, () =&gt; {
+	describe(&apos;statics&apos;, () =&gt; {
+		it(&apos;exposes compositState tool&apos;, () =&gt; {
+			expect(FSM.compositState).to.equal(compositState);
+		});
+
+		it(&apos;cannot set compositState&apos;, () =&gt; {
+			expect(() =&gt; { FSM.compositState = () =&gt; {}; }).to.throw();
+		});
+
+		it(&apos;exposes toFunctionName() helper&apos;, () =&gt; {
+			expect(FSM.toFunctionName(&apos;test:transition:oida&apos;)).to.equal(&apos;testTransitionOida&apos;);
+		});
 	});
-};
-
-/** @private */
-module.exports = (transition) =&gt; {
-	const trans = Object.assign({}, transition);
-	if (!trans.name || !trans.name.replace(/ /g, &apos;&apos;) || trans.name === &apos;__uninitialized__&apos;) {
-		throw new Error(`Invalid transition name: ${trans.name}`);
-	}
-	validateFromTo(trans.from);
-	validateFromTo(trans.to);
-
-	return trans;
-};
+});
 </code></pre>
 
 </div>

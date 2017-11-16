@@ -129,6 +129,45 @@ describe(&apos;parse transition api&apos;, () =&gt; {
 			},
 		});
 	});
+
+	it(&apos;returns a valid api object if the rule array is not satisfied&apos;, () =&gt; {
+		const res = parseApi({
+			api: {
+				path: &apos;/test&apos;,
+				method: &apos;patch&apos;,
+			},
+			rules: [
+				() =&gt; {},
+				() =&gt; {},
+			],
+		});
+
+		expect(res).to.eql({
+			href: &apos;/test&apos;,
+			method: &apos;patch&apos;,
+		});
+	});
+
+	it(&apos;returns a invalid api object if the rule array is not satisfied&apos;, () =&gt; {
+		const res = parseApi({
+			api: {
+				path: &apos;/test&apos;,
+				method: &apos;patch&apos;,
+			},
+			rules: [
+				() =&gt; {},
+				() =&gt; { throw new Error(&apos;some error&apos;); },
+			],
+		});
+
+		expect(res).to.eql({
+			href: &apos;/test&apos;,
+			method: &apos;patch&apos;,
+			error: {
+				message: &apos;some error&apos;,
+			},
+		});
+	});
 });
 </code></pre>
 

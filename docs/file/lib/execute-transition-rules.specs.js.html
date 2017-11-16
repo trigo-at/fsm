@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">lib/parse-transition-api.js | API Document</title>
+  <title data-ice="title">lib/execute-transition-rules.specs.js | API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -38,82 +38,48 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/parse-transition-api.js</h1>
+<div class="content" data-ice="content"><h1 data-ice="title">lib/execute-transition-rules.specs.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
+/* eslint-env node, mocha */
+/* eslint no-unused-expressions: 0, arrow-body-style: 0 */
+
+const { expect } = require(&apos;chai&apos;);
 const executeTransitionRules = require(&apos;./execute-transition-rules&apos;);
 
-function getNested(theObject, path) {
-	try {
-		const separator = &apos;.&apos;;
-
-		return path
-			.replace(&apos;[&apos;, separator).replace(&apos;]&apos;, &apos;&apos;)
-			.split(separator)
-			.reduce(
-				(obj, property) =&gt; obj[property], theObject,
-			);
-	} catch (err) {
-		return undefined;
-	}
-}
-
-const replaceFromParams = (path, params, ctx) =&gt; {
-	let href = path;
-	Object.keys(params).forEach((key) =&gt; {
-		const value = getNested(ctx, params[key]);
-		if (value === undefined) {
-			throw new Error(`Cannot resolve param: &quot;${key}&quot; data path: &quot;${params[key]}&quot;`);
-		}
-		href = href.replace(new RegExp(`{${key}}`, &apos;g&apos;), value);
+describe(&apos;execute-transition-rules&apos;, () =&gt; {
+	it(&apos;should return undefined if the transitionRules are not set&apos;, async () =&gt; {
+		const result = executeTransitionRules(undefined, {});
+		expect(result).to.be.undefined;
 	});
 
-	return href;
-};
-
-const extractParams = (path) =&gt; {
-	const matches = path.match(/\{.*?\}/g);
-	if (!matches) return undefined;
-	const params = {};
-	matches.forEach((m) =&gt; {
-		params[m.replace(/\{/, &apos;&apos;).replace(/\}/, &apos;&apos;)] = true;
+	it(&apos;should return undefined if the transitionRules are a empty array&apos;, async () =&gt; {
+		const result = executeTransitionRules([], {});
+		expect(result).to.be.undefined;
 	});
-	return params;
-};
 
-/** @private */
-module.exports = ({ api, ctx, rules }) =&gt; {
-	if (!api) throw new Error(&apos;Argument &quot;api&quot; missing&apos;);
-	if (!api.path) throw new Error(&apos;Argument &quot;api.path&quot; missing&apos;);
-	const method = api.method || &apos;get&apos;;
+	it(&apos;should return undefined if the transitionRules are a satisfied&apos;, async () =&gt; {
+		const rules = [
+			() =&gt; {},
+			() =&gt; {},
+			() =&gt; {},
+		];
 
-	let href = api.path;
-	if (ctx &amp;&amp; ctx.api &amp;&amp; ctx.api.params) {
-		href = replaceFromParams(href, ctx.api.params, ctx);
-	}
-	if (api.params) {
-		href = replaceFromParams(href, api.params, ctx);
-	}
+		const result = executeTransitionRules(rules, {});
+		expect(result).to.be.undefined;
+	});
 
-	const params = extractParams(href);
-	const transitionRules = rules || [];
-	const error = executeTransitionRules(transitionRules, ctx);
+	it(&apos;should return a error-string if the transitionRules are not satisfied&apos;, async () =&gt; {
+		const rules = [
+			() =&gt; {},
+			() =&gt; { throw new Error(&apos;some error&apos;); },
+			() =&gt; {},
+		];
 
-	const link = {
-		href,
-		method,
-	};
-
-	if (params) {
-		link.params = params;
-	}
-
-	if (error) {
-		link.error = { message: error.message };
-	}
-
-	return link;
-};
+		const result = executeTransitionRules(rules, {});
+		expect(result.message).to.equal(&apos;some error&apos;);
+	});
+});
 </code></pre>
 
 </div>
