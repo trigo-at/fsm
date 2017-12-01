@@ -45,134 +45,10 @@
 /* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */
 
 const bb = require(&apos;bluebird&apos;);
-
 const FSM = require(&apos;./fsm&apos;);
 const { expect } = require(&apos;chai&apos;);
-const compositState = require(&apos;./composit-state&apos;);
 
 describe(&apos;FSM&apos;, () =&gt; {
-	describe(&apos;statics&apos;, () =&gt; {
-		it(&apos;exposes compositState tool&apos;, () =&gt; {
-			expect(FSM.compositState).to.equal(compositState);
-		});
-
-		it(&apos;cannot set compositState&apos;, () =&gt; {
-			expect(() =&gt; { FSM.compositState = () =&gt; {}; }).to.throw();
-		});
-
-		it(&apos;exposes toFunctionName() helper&apos;, () =&gt; {
-			expect(FSM.toFunctionName(&apos;test:transition:oida&apos;)).to.equal(&apos;testTransitionOida&apos;);
-		});
-	});
-
-	describe(&apos;can use state Objects (compositState)&apos;, () =&gt; {
-		it(&apos;to in object notation patches from stat&apos;, async () =&gt; {
-			const f = new FSM({
-				initialState: &apos;ns1:def|ns2:fe&apos;,
-				transitions: [
-					{ name: &apos;t1&apos;, from: { ns1: &apos;def&apos;, ns2: &apos;fe&apos; }, to: { ns1: &apos;b&apos; } },
-				],
-			});
-			// expect(f.states()).to.eql([&apos;ns1:def|ns2:fe&apos;, &apos;ns1:b|ns2:fe&apos;].sort());
-			await f.t1();
-			expect(f.state).to.equal(&apos;ns1:b|ns2:fe&apos;);
-		});
-
-		it(&apos;creates state permutation with object notation&apos;, async () =&gt; {
-			const f = new FSM({
-				initialState: &apos;k1:k11|k2:k21&apos;,
-				transitions: [
-					{ name: &apos;t1&apos;, from: { k1: [&apos;k11&apos;, &apos;k12&apos;], k2: [&apos;k21&apos;, &apos;k22&apos;] }, to: &apos;*&apos; },
-				],
-			});
-
-			f.init(&apos;k1:k11|k2:k21&apos;);
-			await f.t1();
-			expect(f.state).to.equal(&apos;k1:k11|k2:k21&apos;);
-			f.init(&apos;k1:k12|k2:k21&apos;);
-			await f.t1();
-			expect(f.state).to.equal(&apos;k1:k12|k2:k21&apos;);
-			f.init(&apos;k1:k11|k2:k22&apos;);
-			await f.t1();
-			expect(f.state).to.equal(&apos;k1:k11|k2:k22&apos;);
-			f.init(&apos;k1:k12|k2:k22&apos;);
-			await f.t1();
-			expect(f.state).to.equal(&apos;k1:k12|k2:k22&apos;);
-		});
-	});
-
-	describe(&apos;fluent build API&apos;, () =&gt; {
-		it(&apos;can add transition&apos;, async () =&gt; {
-			const f = new FSM({});
-			f.addTransition({ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; })
-				.addTransition({ name: &apos;trans2&apos;, from: [&apos;a&apos;, &apos;b&apos;], to: &apos;c&apos; })
-				.init(&apos;a&apos;);
-			await f.trans();
-			expect(f.state).to.equal(&apos;b&apos;);
-			await f.trans2();
-			expect(f.state).to.equal(&apos;c&apos;);
-		});
-
-		it(&apos;can add transition array&apos;, async () =&gt; {
-			const f = new FSM({});
-			f.addTransition([{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
-				{ name: &apos;trans2&apos;, from: [&apos;a&apos;, &apos;b&apos;], to: &apos;c&apos; }])
-				.init(&apos;a&apos;);
-
-			await f.trans();
-			expect(f.state).to.equal(&apos;b&apos;);
-			await f.trans2();
-			expect(f.state).to.equal(&apos;c&apos;);
-		});
-		it(&apos;validates transitions&apos;, () =&gt; {
-			const f = new FSM({});
-			expect(() =&gt; f.addTransition({})).to.throw(/Invalid transition/);
-		});
-
-		it(&apos;does not allow trasition name clashes&apos;, () =&gt; {
-			const f = new FSM({});
-			f.addTransition({ name: &apos;a-to-b&apos;, from: &apos;a&apos;, to: &apos;b&apos; });
-			expect(() =&gt; f.addTransition({ name: &apos;a:to:b&apos;, from: &apos;a&apos;, to: &apos;b&apos; })).to.throw(/Ambigious transtion name/);
-		});
-
-		it(&apos;does not allow transiion named like native FSM methods&apos;, () =&gt; {
-			const f = new FSM({});
-			expect(() =&gt; f.addTransition({ name: &apos;execute&apos;, from: &apos;a&apos;, to: &apos;b&apos; })).to.throw(/Forbidden transition name/);
-			expect(() =&gt; f.addTransition({ name: &apos;add:transition&apos;, from: &apos;a&apos;, to: &apos;b&apos; })).to.throw(/Forbidden transition name/);
-		});
-	});
-
-	describe(&apos;large machine&apos;, () =&gt; {
-		const transitions = [];
-		const cntSubstate = 100;
-		const cntValue = 100;
-		const cntTransiotions = 100;
-		before(() =&gt; {
-			const state = {};
-			for (let i = 0; i &lt; cntSubstate; i++) {
-				state[`substate_${i}`] = [];
-				for (let j = 0; j &lt; cntValue; j++) {
-					state[`substate_${i}`].push(`value_${i}_${j}`);
-				}
-			}
-			for (let t = 0; t &lt; cntTransiotions; t++) {
-				transitions.push({
-					name: `trans:${t}`,
-					from: state,
-					to: &apos;*&apos;,
-				});
-			}
-		});
-		it(&apos;initialize large FSM&apos;, async () =&gt; {
-			const d1 = new Date();
-			const test = new FSM({ transitions });
-			const d2 = new Date();
-			const ms = d2.getTime() - d1.getTime();
-			expect(ms).to.lt(1000);
-			expect(test).to.exist;
-		});
-	});
-
 	describe(&apos;ctor, API &amp; state constrainsts&apos;, () =&gt; {
 		let fsm;
 		beforeEach(() =&gt; {
@@ -180,7 +56,9 @@ describe(&apos;FSM&apos;, () =&gt; {
 				transitions: [
 					{ name: &apos;a-to-b&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
 					{ name: &apos;no:op&apos;, from: &apos;a&apos;, to: &apos;*&apos; },
-					{ name: &apos;b-to-c&apos;, from: &apos;b&apos;, to: &apos;c&apos; }],
+					{ name: &apos;b-to-c&apos;, from: &apos;b&apos;, to: &apos;c&apos; },
+					{ name: &apos;a-to-c&apos;, from: &apos;a&apos;, to: &apos;c&apos;, rules: [() =&gt; { throw new Error(&apos;some error&apos;); }] },
+				],
 			});
 			fsm.init(&apos;a&apos;);
 		});
@@ -246,15 +124,15 @@ describe(&apos;FSM&apos;, () =&gt; {
 		});
 
 		it(&apos;can list valid transitions&apos;, async () =&gt; {
-			expect(fsm.transitions()).to.eql([&apos;a-to-b&apos;, &apos;no:op&apos;]);
+			expect(fsm.transitions()).to.eql([&apos;a-to-b&apos;, &apos;no:op&apos;, &apos;a-to-c&apos;]);
 		});
 
-		it.only(&apos;can list all transitions&apos;, async () =&gt; {
-			expect(fsm.allTransitions()).to.eql({
-				&apos;a-to-b&apos;: { from: &apos;a&apos;, to: &apos;b&apos; },
-				&apos;no:op&apos;: { from: &apos;a&apos;, to: &apos;*&apos; },
-				&apos;b-to-c&apos;: { from: &apos;b&apos;, to: &apos;c&apos; },
-			});
+		it(&apos;can list all transitions&apos;, async () =&gt; {
+			const transitions = fsm.allTransitions();
+			const transitionNames = transitions.map(t =&gt; t.name);
+			const expectedTransitions = [&apos;a-to-b&apos;, &apos;no:op&apos;, &apos;b-to-c&apos;, &apos;a-to-c&apos;];
+			expect(transitions.length).to.eql(4);
+			expect(transitionNames).to.eql(expectedTransitions);
 		});
 
 		it(&apos;cannot run invalid transition&apos;, async () =&gt; {
@@ -267,11 +145,21 @@ describe(&apos;FSM&apos;, () =&gt; {
 			expect(error).to.exist;
 			expect(error.message).to.equal(&apos;Invalid transition: &quot;bToC&quot; in state: &quot;a&quot;&apos;);
 		});
-	});
 
-	describe(&apos;transition definitions&apos;, () =&gt; {
+		it(&apos;cannot run valid transition if rules are not satisfied&apos;, async () =&gt; {
+			let error;
+			try {
+				await fsm.aToC();
+			} catch (e) {
+				error = e;
+			}
+			expect(error).to.exist;
+			expect(error.inner.message).to.equal(&apos;some error&apos;);
+			expect(error.message).to.equal(&apos;Invalid transition: &quot;aToC&quot;. Reason: some error&apos;);
+		});
+
 		it(&apos;can use array in from clause&apos;, async () =&gt; {
-			const fsm = new FSM({
+			fsm = new FSM({
 				initialState: &apos;a&apos;,
 				transitions: [
 					{ name: &apos;trans1&apos;, from: [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], to: &apos;d&apos; },
@@ -294,493 +182,208 @@ describe(&apos;FSM&apos;, () =&gt; {
 		});
 	});
 
-	describe(&apos;saveState&apos;, () =&gt; {
-		it(&apos;can use async &quot;saveState&quot;&apos;, async () =&gt; {
-			let saved;
+
+	describe(&apos;&quot;to&quot; state functions&apos;, () =&gt; {
+		it(&apos;can set to: async () =&gt; newState&apos;, async () =&gt; {
 			const fsm = new FSM({
 				initialState: &apos;a&apos;,
-				transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-				saveState: async (ctx) =&gt; {
-					await bb.delay(5);
-					saved = ctx.fsm.state;
-				},
+				transitions: [
+					{ name: &apos;trans1&apos;, from: &apos;a&apos;, to: async () =&gt; &apos;b&apos; },
+				],
 			});
-			await fsm.trans();
-			expect(saved).to.equal(&apos;b&apos;);
+
+			await fsm.trans1();
+			expect(fsm.state).to.equal(&apos;b&apos;);
 		});
-		it(&apos;can use sync &quot;saveState&quot;&apos;, async () =&gt; {
-			let ctx, args;
+		it(&apos;it awaits the async function&apos;, async () =&gt; {
 			const fsm = new FSM({
 				initialState: &apos;a&apos;,
-				transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-				saveState: (c, a) =&gt; {
-					ctx = c;
-					args = a;
-				},
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: &apos;a&apos;,
+						to: async () =&gt; {
+							await bb.delay(10);
+							return &apos;b&apos;;
+						} },
+				],
 			});
-			await fsm.trans(42, &apos;test&apos;);
-			expect(ctx).to.eql({
-				from: &apos;a&apos;,
-				to: &apos;b&apos;,
-				transition: &apos;trans&apos;,
-				fsm,
-				results: {
-					willChangeState: null,
-					beforeTrans: null,
-					didChangeState: null,
-					willSaveState: null,
-					didSaveState: null,
-					saveState: undefined,
-				},
-			});
-			expect(args).to.eql([42, &apos;test&apos;]);
-		});
 
-		it(&apos;throw when exection is throw in sync &quot;saveState&quot;&apos;, async () =&gt; {
-			let error;
-			try {
-				const fsm = new FSM({
-					initialState: &apos;a&apos;,
-					transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-					saveState: () =&gt; {
-						throw new Error(&apos;save failed&apos;);
-					},
-				});
-				await fsm.trans();
-			} catch (e) {
-				error = e;
-			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;save failed&apos;);
-		});
-		it(&apos;throw when exection is throw in async &quot;saveState&quot;&apos;, async () =&gt; {
-			let error;
-			try {
-				const fsm = new FSM({
-					initialState: &apos;a&apos;,
-					transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-					saveState: async () =&gt; {
-						await bb.delay(20);
-						throw new Error(&apos;save failed&apos;);
-					},
-				});
-				await fsm.trans();
-			} catch (e) {
-				error = e;
-			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;save failed&apos;);
-		});
-	});
-
-	describe(&apos;transiton events&apos;, () =&gt; {
-		let fsm, cfg, ts;
-		const data = { test: &apos;data&apos; };
-		beforeEach(() =&gt; {
-			ts = [];
-			cfg = {
-				initialState: &apos;a&apos;,
-				data,
-				transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-				saveState: () =&gt; &apos;saveState&apos;,
-				willChangeState: async (ctx, a1, a2) =&gt; {
-					await bb.delay(5);
-					ts.push({ name: &apos;willChangeState&apos;, ctx, args: [a1, a2] });
-					return &apos;willChangeState&apos;;
-				},
-				didChangeState: async (ctx, ...args) =&gt; {
-					await bb.delay(5);
-					ts.push({ name: &apos;didChangeState&apos;, ctx, args });
-					return &apos;didChangeState&apos;;
-				},
-				willSaveState: async (ctx, ...args) =&gt; {
-					await bb.delay(5);
-					ts.push({ name: &apos;willSaveState&apos;, ctx, args });
-					return &apos;willSaveState&apos;;
-				},
-				didSaveState: async (ctx, ...args) =&gt; {
-					await bb.delay(5);
-					ts.push({ name: &apos;didSaveState&apos;, ctx, args });
-					return &apos;didSaveState&apos;;
-				},
-				eventHandler: {
-					beforeTrans: async (ctx, ...args) =&gt; {
-						await bb.delay(5);
-						ts.push({ name: &apos;beforeTrans&apos;, ctx, args });
-						return &apos;beforeTrans&apos;;
-					},
-					afterTrans: async (ctx, ...args) =&gt; {
-						await bb.delay(5);
-						ts.push({ name: &apos;afterTrans&apos;, ctx, args });
-						return &apos;afterTrans&apos;;
-					},
-				},
-			};
-		});
-
-		it(&apos;calls transition methods with &quot;ctx&quot; and args&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			await fsm.trans(42, &apos;test&apos;);
-			expect(ts[0].ctx).to.eql({
-				from: &apos;a&apos;,
-				to: &apos;b&apos;,
-				transition: &apos;trans&apos;,
-				fsm,
-				data,
-				results: {
-					willChangeState: &apos;willChangeState&apos;,
-					beforeTrans: &apos;beforeTrans&apos;,
-					didChangeState: &apos;didChangeState&apos;,
-					willSaveState: &apos;willSaveState&apos;,
-					didSaveState: &apos;didSaveState&apos;,
-					saveState: &apos;saveState&apos;,
-				},
-			});
-			expect(ts[0].args).to.eql([42, &apos;test&apos;]);
-		});
-
-		it(&apos;with &quot;execute(trasnition)&quot; calls transition methods with &quot;ctx&quot; and args&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			await fsm.execute(&apos;trans&apos;, 42, &apos;test&apos;);
-			expect(ts[0].ctx).to.eql({
-				from: &apos;a&apos;,
-				to: &apos;b&apos;,
-				transition: &apos;trans&apos;,
-				fsm,
-				data,
-				results: {
-					willChangeState: &apos;willChangeState&apos;,
-					beforeTrans: &apos;beforeTrans&apos;,
-					didChangeState: &apos;didChangeState&apos;,
-					willSaveState: &apos;willSaveState&apos;,
-					didSaveState: &apos;didSaveState&apos;,
-					saveState: &apos;saveState&apos;,
-				},
-			});
-			expect(ts[0].args).to.eql([42, &apos;test&apos;]);
-		});
-
-		it(&apos;calls transition events in order&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			await fsm.trans();
-			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
-			expect(ts[1].name).to.equal(&apos;beforeTrans&apos;);
-			expect(ts[2].name).to.equal(&apos;didChangeState&apos;);
-			expect(ts[3].name).to.equal(&apos;willSaveState&apos;);
-			expect(ts[4].name).to.equal(&apos;didSaveState&apos;);
-			expect(ts[5].name).to.equal(&apos;afterTrans&apos;);
-		});
-
-		it(&apos;returns all transitionHanlder results&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			const result = await fsm.trans();
-			expect(result).to.eql({
-				willChangeState: &apos;willChangeState&apos;,
-				beforeTrans: &apos;beforeTrans&apos;,
-				afterTrans: &apos;afterTrans&apos;,
-				didChangeState: &apos;didChangeState&apos;,
-				willSaveState: &apos;willSaveState&apos;,
-				saveState: &apos;saveState&apos;,
-				didSaveState: &apos;didSaveState&apos;,
-			});
-		});
-
-		it(&apos;throw error when beforeTransiton handler fails does not change state&apos;, async () =&gt; {
-			cfg.eventHandler.beforeTrans = async () =&gt; {
-				await bb.delay(5);
-				throw new Error(&apos;derdo&apos;);
-			};
-			let error;
-			try {
-				fsm = new FSM(cfg);
-				await fsm.trans();
-			} catch (e) {
-				error = e;
-			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;derdo&apos;);
-			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
-			expect(ts.length).to.equal(1);
-			expect(fsm.state).to.equal(&apos;a&apos;);
-		});
-		it(&apos;throw error when afterTransiton handler fails changes state&apos;, async () =&gt; {
-			cfg.eventHandler.afterTrans = async () =&gt; {
-				await bb.delay(5);
-				throw new Error(&apos;derdo&apos;);
-			};
-			let error;
-			try {
-				fsm = new FSM(cfg);
-				await fsm.trans();
-			} catch (e) {
-				error = e;
-			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;derdo&apos;);
-			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
-			expect(ts[1].name).to.equal(&apos;beforeTrans&apos;);
-			expect(ts[2].name).to.equal(&apos;didChangeState&apos;);
-			expect(ts[3].name).to.equal(&apos;willSaveState&apos;);
-			expect(ts[4].name).to.equal(&apos;didSaveState&apos;);
-			expect(ts.length).to.equal(5);
+			await fsm.trans1();
 			expect(fsm.state).to.equal(&apos;b&apos;);
 		});
-	});
 
-	describe(&apos;global transition events&apos;, () =&gt; {
-		let fsm, cfg, ts;
-		beforeEach(() =&gt; {
-			ts = [];
-			cfg = {
+		it(&apos;aborts transition &amp; throws error whe function throws&apos;, async () =&gt; {
+			const fsm = new FSM({
 				initialState: &apos;a&apos;,
-				transitions: [{ name: &apos;trans&apos;, from: &apos;a&apos;, to: &apos;b&apos; }],
-				saveState: () =&gt; {},
-				willChangeState: (ctx, ...args) =&gt; {
-					ts.push({ name: &apos;willChangeState&apos;, ctx, args });
-				},
-				didChangeState: (ctx, ...args) =&gt; {
-					ts.push({ name: &apos;didChangeState&apos;, ctx, args });
-				},
-				willSaveState: (ctx, ...args) =&gt; {
-					ts.push({ name: &apos;willSaveState&apos;, ctx, args });
-				},
-				didSaveState: (ctx, ...args) =&gt; {
-					ts.push({ name: &apos;didSaveState&apos;, ctx, args });
-				},
-			};
-		});
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: &apos;a&apos;,
+						to: async () =&gt; { throw new Error(&apos;asf&apos;); } },
+				],
+			});
 
-		it(&apos;calls transition events in order&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			await fsm.trans();
-			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
-			expect(ts[1].name).to.equal(&apos;didChangeState&apos;);
-			expect(ts[2].name).to.equal(&apos;willSaveState&apos;);
-			expect(ts[3].name).to.equal(&apos;didSaveState&apos;);
-		});
-
-		it(&apos;calls will &amp; didSaveState only called when saveState is defined&apos;, async () =&gt; {
-			delete cfg.saveState;
-			fsm = new FSM(cfg);
-			await fsm.trans();
-			expect(ts[0].name).to.equal(&apos;willChangeState&apos;);
-			expect(ts[1].name).to.equal(&apos;didChangeState&apos;);
-			expect(ts.length).to.equal(2);
-		});
-
-		it(&apos;throw error when willChangeState &amp; state does not change&apos;, async () =&gt; {
-			cfg.willChangeState = () =&gt; {
-				throw new Error(&apos;derdo&apos;);
-			};
-			let error;
+			let thrown = false;
 			try {
-				fsm = new FSM(cfg);
-				await fsm.trans();
+				await fsm.trans1();
 			} catch (e) {
-				error = e;
+				thrown = true;
 			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;derdo&apos;);
+			expect(thrown).to.be.true;
 			expect(fsm.state).to.equal(&apos;a&apos;);
 		});
-		it(&apos;throw error when didChangeState &amp; state changes&apos;, async () =&gt; {
-			cfg.didChangeState = () =&gt; {
-				throw new Error(&apos;derdo&apos;);
-			};
-			let error;
-			try {
-				fsm = new FSM(cfg);
-				await fsm.trans();
-			} catch (e) {
-				error = e;
-			}
-			expect(error).to.exist;
-			expect(error.message).to.equal(&apos;derdo&apos;);
-			expect(fsm.state).to.equal(&apos;b&apos;);
-		});
-	});
 
-	describe(&apos;race conditions&apos;, () =&gt; {
-		let fsm, cfg;
-		beforeEach(() =&gt; {
-			cfg = {
+		it(&apos;validates the functions resukt to a valid state string&apos;, async () =&gt; {
+			const fsm = new FSM({
 				initialState: &apos;a&apos;,
-				transitions: [{ name: &apos;trans&apos;, from: [&apos;a&apos;, &apos;b&apos;], to: &apos;b&apos; }, { name: &apos;trans2&apos;, from: [&apos;a&apos;, &apos;b&apos;], to: &apos;a&apos; }],
-				saveState: () =&gt; {},
-				willChangeState: () =&gt; bb.delay(5),
-			};
-		});
-
-		it(&apos;cannot start transition while anothr one is running&apos;, (done) =&gt; {
-			fsm = new FSM(cfg);
-			fsm.trans();
-			fsm.trans2().then(() =&gt; done(new Error(&apos;should have failed&apos;))).catch((err) =&gt; {
-				expect(err.message).to.equal(&apos;Cannot start transition when during running transition&apos;);
-				done();
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: &apos;a&apos;,
+						to: async () =&gt; &apos;&apos; },
+				],
 			});
-		});
-		it(&apos;can run transition sequential&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			await fsm.trans();
-			await fsm.trans2();
-		});
 
-		it(&apos;can run transtition after a trasition was abourted&apos;, async () =&gt; {
-			cfg.eventHandler = {
-				beforeTrans: async () =&gt; {
-					await bb.delay(5);
-					throw new Error(&apos;uuppps&apos;);
-				},
-			};
-			fsm = new FSM(cfg);
+			let err;
 			try {
-				await fsm.trans();
-			} catch (e) {}
-			await fsm.trans2();
+				await fsm.trans1();
+			} catch (e) {
+				err = e;
+			}
+			expect(err.message).to.contain(&apos;not a valid state string&apos;);
 		});
-	});
 
-
-	describe(&apos;transition REST API&apos;, () =&gt; {
-		let fsm, cfg;
-		beforeEach(() =&gt; {
-			cfg = {
+		it(&apos;passes the state value as first argument to &quot;to&quot; function&apos;, async () =&gt; {
+			let stateArg;
+			const fsm = new FSM({
 				initialState: &apos;a&apos;,
-				transitions: [{
-					name: &apos;t1&apos;,
-					from: &apos;*&apos;,
-					to: &apos;a&apos;,
-					api: {
-						path: &apos;/entity/trans&apos;,
-						method: &apos;patch&apos;,
-					},
-				}, {
-					name: &apos;t2&apos;,
-					from: &apos;*&apos;,
-					to: &apos;a&apos;,
-					api: {
-						path: &apos;/entity/{resId}/trans/{subId}&apos;,
-						method: &apos;patch&apos;,
-						params: {
-							resId: &apos;data.resId&apos;,
-							subId: &apos;data._embedded.event.resId&apos;,
-						},
-					},
-				}, {
-					name: &apos;t3&apos;,
-					from: &apos;*&apos;,
-					to: &apos;a&apos;,
-				}, {
-					name: &apos;t4&apos;,
-					from: &apos;*&apos;,
-					to: &apos;a&apos;,
-					api: {
-						path: &apos;/{entity}/{resId}/trans/{subId}&apos;,
-						method: &apos;patch&apos;,
-						params: {
-							resId: &apos;data.resId&apos;,
-							subId: &apos;data._embedded.event.resId&apos;,
-						},
-					},
-				}],
-				saveState: () =&gt; {},
-				willChangeState: () =&gt; bb.delay(5),
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: &apos;a&apos;,
+						to: async (state) =&gt; {
+							stateArg = state;
+							state = &apos;asgsdg&apos;; // eslint-disable-line
+							return &apos;b&apos;;
+						} },
+
+				],
+			});
+
+			await fsm.trans1();
+			expect(stateArg).to.equal(&apos;a&apos;);
+		});
+
+		it(&apos;passes the ctx object as second argument to &quot;to&quot; function&apos;, async () =&gt; {
+			let ctxArg;
+			const fsm = new FSM({
+				initialState: &apos;a&apos;,
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: &apos;a&apos;,
+						to: async (state, ctx) =&gt; {
+							ctxArg = ctx;
+							return &apos;b&apos;;
+						} },
+
+				],
 				data: {
-					resId: &apos;42&apos;,
-					_embedded: {
-						event: {
-							resId: &apos;22&apos;,
-						},
-					},
+					as: &apos;sa&apos;,
 				},
-			};
-		});
-
-		it(&apos;exposes &quot;restApi()&quot; function&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			expect(fsm.restApi).to.be.a(&apos;function&apos;);
-		});
-
-		it(&apos;filters transitions without &quot;api&quot; property&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			const r = fsm.restApi();
-			expect(r.t1).to.exist;
-			expect(r.t2).to.exist;
-			expect(r.t3).not.to.exist;
-		});
-
-		it(&apos;returns parsed api object&apos;, async () =&gt; {
-			fsm = new FSM(cfg);
-			const r = fsm.restApi();
-			expect(r.t1).to.eql({
-				href: &apos;/entity/trans&apos;,
-				method: &apos;patch&apos;,
 			});
+
+			await fsm.trans1();
+			expect(ctxArg.fsm).to.equal(fsm);
+			expect(ctxArg.data).to.equal(fsm.data);
 		});
 
-		it(&apos;returns &quot;self&quot; when declared&apos;, async () =&gt; {
-			fsm = new FSM(Object.assign({}, cfg, {
-				api: {
-					self: {
-						path: &apos;/entity/{resId}&apos;,
-					},
-					params: {
-						resId: &apos;data.resId&apos;,
-					},
+		it(&apos;works on state object properties&apos;, async () =&gt; {
+			let ctxArg, stateArg;
+			const fsm = new FSM({
+				initialState: FSM.compositState.build({ s1: &apos;s1&apos;, s2: &apos;s2&apos; }),
+				transitions: [
+					{ name: &apos;trans1&apos;,
+						from: { s1: &apos;s1&apos;, s2: &apos;s2&apos; },
+						to: { s1: async (state, ctx) =&gt; {
+							stateArg = state;
+							ctxArg = ctx;
+							return &apos;b&apos;;
+						} } },
+				],
+				data: {
+					as: &apos;sa&apos;,
 				},
-			}));
-			const r = fsm.restApi();
-			expect(r.self).to.eql({
-				href: &apos;/entity/42&apos;,
-				method: &apos;get&apos;,
 			});
+
+			await fsm.trans1();
+			expect(stateArg).to.equal(&apos;s1&apos;);
+			expect(ctxArg.fsm).to.equal(fsm);
+			expect(ctxArg.data).to.equal(fsm.data);
+			expect(FSM.compositState.parse(fsm.state)).to.eql({ s1: &apos;b&apos;, s2: &apos;s2&apos; });
+		});
+	});
+
+	describe(&apos;can use state Objects (compositState)&apos;, () =&gt; {
+		it(&apos;to in object notation patches from stat&apos;, async () =&gt; {
+			const f = new FSM({
+				initialState: &apos;ns1:def|ns2:fe&apos;,
+				transitions: [
+					{ name: &apos;t1&apos;, from: { ns1: &apos;def&apos;, ns2: &apos;fe&apos; }, to: { ns1: &apos;b&apos; } },
+				],
+			});
+			// expect(f.states()).to.eql([&apos;ns1:def|ns2:fe&apos;, &apos;ns1:b|ns2:fe&apos;].sort());
+			await f.t1();
+			expect(f.state).to.equal(&apos;ns1:b|ns2:fe&apos;);
 		});
 
-		it(&apos;can mix global &amp; transition local params in same route&apos;, () =&gt; {
-			fsm = new FSM(Object.assign({}, cfg, {
-				api: {
-					data: {
-						entity: &apos;events&apos;,
-					},
-					self: {
-						path: &apos;/{entity}/{resId}&apos;,
-					},
-					params: {
-						entity: &apos;api.data.entity&apos;,
-						resId: &apos;data.resId&apos;,
-					},
-				},
-			}));
-
-			const r = fsm.restApi();
-			expect(r.t4).to.eql({
-				href: &apos;/events/42/trans/22&apos;,
-				method: &apos;patch&apos;,
+		it(&apos;creates state permutation with object notation&apos;, async () =&gt; {
+			const f = new FSM({
+				initialState: &apos;k1:k11|k2:k21&apos;,
+				transitions: [
+					{ name: &apos;t1&apos;, from: { k1: [&apos;k11&apos;, &apos;k12&apos;], k2: [&apos;k21&apos;, &apos;k22&apos;] }, to: &apos;*&apos; },
+				],
 			});
+
+			f.init(&apos;k1:k11|k2:k21&apos;);
+			await f.t1();
+			expect(f.state).to.equal(&apos;k1:k11|k2:k21&apos;);
+			f.init(&apos;k1:k12|k2:k21&apos;);
+			await f.t1();
+			expect(f.state).to.equal(&apos;k1:k12|k2:k21&apos;);
+			f.init(&apos;k1:k11|k2:k22&apos;);
+			await f.t1();
+			expect(f.state).to.equal(&apos;k1:k11|k2:k22&apos;);
+			f.init(&apos;k1:k12|k2:k22&apos;);
+			await f.t1();
+			expect(f.state).to.equal(&apos;k1:k12|k2:k22&apos;);
 		});
+	});
 
-
-		it(&apos;can declare static params data in &quot;api.data&quot; object&apos;, () =&gt; {
-			fsm = new FSM(Object.assign({}, cfg, {
-				api: {
-					data: {
-						entity: &apos;events&apos;,
-					},
-					self: {
-						path: &apos;/{entity}/{resId}&apos;,
-					},
-					params: {
-						entity: &apos;api.data.entity&apos;,
-						resId: &apos;data.resId&apos;,
-					},
-				},
-			}));
-
-			const r = fsm.restApi();
-			expect(r.self).to.eql({
-				href: &apos;/events/42&apos;,
-				method: &apos;get&apos;,
-			});
+	describe(&apos;large machine&apos;, () =&gt; {
+		const transitions = [];
+		const cntSubstate = 100;
+		const cntValue = 100;
+		const cntTransiotions = 100;
+		before(() =&gt; {
+			const state = {};
+			for (let i = 0; i &lt; cntSubstate; i++) {
+				state[`substate_${i}`] = [];
+				for (let j = 0; j &lt; cntValue; j++) {
+					state[`substate_${i}`].push(`value_${i}_${j}`);
+				}
+			}
+			for (let t = 0; t &lt; cntTransiotions; t++) {
+				transitions.push({
+					name: `trans:${t}`,
+					from: state,
+					to: &apos;*&apos;,
+				});
+			}
+		});
+		it(&apos;initialize large FSM&apos;, async () =&gt; {
+			const d1 = new Date();
+			const test = new FSM({ transitions });
+			const d2 = new Date();
+			const ms = d2.getTime() - d1.getTime();
+			expect(ms).to.lt(1000);
+			expect(test).to.exist;
 		});
 	});
 });

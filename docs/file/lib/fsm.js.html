@@ -50,6 +50,8 @@ const findCurrentTransition = require(&apos;./find-current-transition&apos;);
 const findPossibleTransitions = require(&apos;./find-possible-transitions&apos;);
 const getAllTakenNames = require(&apos;./get-all-taken-names&apos;);
 const parseTrasitionApi = require(&apos;./parse-transition-api&apos;);
+const executeTransitionRules = require(&apos;./execute-transition-rules&apos;);
+const isValidStateValue = require(&apos;./is-valid-state-value&apos;);
 
 const callIfSet = async (handler, ctx, args) =&gt; {
 	if (handler &amp;&amp; typeof handler === &apos;function&apos;) {
@@ -197,20 +199,16 @@ class FSM {
 	/**
 	 * Get all transititons that are defined for the state machine in the format
 	 * ```javascript
-	 * {
-	 *    t1: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-	 *    t2: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-	 *    t3: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+	 * [
+	 *	 { name: &apos;a-to-b&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
+	 *	 { name: &apos;no:op&apos;, from: &apos;a&apos;, to: &apos;*&apos; },
+	 *	 { name: &apos;b-to-c&apos;, from: &apos;b&apos;, to: &apos;c&apos; },
+	 * ]
 	 * }```
-	 * @return {object} transitions
+	 * @return {Array.&lt;object&gt;} transitions
 	 */
 	allTransitions() {
-		const ts = {};
-		this._transitions.forEach((t) =&gt; {
-			ts[t.name] = Object.assign({}, t);
-			delete ts[t.name].name;
-		});
-		return ts;
+		return this._transitions.map(t =&gt; Object.assign({}, t));
 	}
 
 	/**
@@ -253,6 +251,7 @@ class FSM {
 						data: this._data,
 						api: this._api,
 					},
+					rules: t.rules,
 				});
 			});
 
@@ -291,13 +290,16 @@ class FSM {
 	 * permutations of the given states. &apos;state:s2|substate:sub1&apos;
 	 * &apos;state:s2|substate:sub1&apos; and &apos;state:s2|substate:sub2&apos;
 	 * ```
-	 * @param {(string|object} transition.form defines the state that is created after the transition&lt;br&gt;&lt;br&gt;
+	 * @param {(string|object|function} transition.to defines the state that is created after the transition&lt;br&gt;&lt;br&gt;
 	 * Supported syntax:
 	 * ```javascript
 	 * &apos;*&apos; =&gt; do not change source state
 	 * &apos;state1&apos; =&gt; sets target state to &apos;state1&apos;
 	 * { state: &apos;s1&apos; } =&gt; sets the property &quot;state&quot; of the current state
 	 * to &quot;s1&quot; eg. patches the existing state object representation
+	 * async (state, ctx) -&gt; String =&gt; stets state from result of the function
+	 * { state: async (state, ctx) -&gt; String } =&gt; stets substate from result of the function
+	 * the result of the function mus be a vaild state string value
 	 * ```
 	 */
 	addTransition(transition) {
@@ -338,30 +340,61 @@ class FSM {
 			try {
 				const currentTransition = findCurrentTransition(transitionName, this.state, this._transitions);
 				const validNames = this.transitions().map(toCamelCase);
+
 				if (!currentTransition || (validNames.indexOf(&apos;*&apos;) === -1 &amp;&amp; validNames.indexOf(transitionName) === -1)) {
 					throw new Error(`Invalid transition: &quot;${transitionName}&quot; in state: &quot;${this.state}&quot;`);
 				}
+
 				const from = this.state;
 				let to = from;
-				if (currentTransition.to !== &apos;*&apos;) {
-					if (typeof currentTransition.to === &apos;string&apos;) {
-						to = currentTransition.to;
-					} else if (typeof currentTransition.to === &apos;object&apos;) {
-						const stateObj = FSM.compositState.parse(from);
-						const newStateObj = Object.assign({}, stateObj, currentTransition.to);
-						to = FSM.compositState.build(newStateObj);
-					}
-				}
 
 				const ctx = {
 					transition: transitionName,
 					from,
-					to,
 					fsm: this,
 				};
 				if (this._data) {
 					ctx.data = this._data;
 				}
+
+				const execTransitionFunction = async (fn, state, ctxArg) =&gt; {
+					const res = await fn(state, ctxArg);
+					if (!isValidStateValue(res)) {
+						throw new Error(`Invalid &quot;to&quot; function result: &quot;${res}&quot; not a valid state string`);
+					}
+					return res;
+				};
+
+				if (currentTransition.to !== &apos;*&apos;) {
+					if (typeof currentTransition.to === &apos;function&apos;) {
+						to = await execTransitionFunction(currentTransition.to, from, ctx);
+					} else if (typeof currentTransition.to === &apos;string&apos;) {
+						to = currentTransition.to;
+					} else if (typeof currentTransition.to === &apos;object&apos;) {
+						const stateObj = FSM.compositState.parse(from);
+						const newStateObj = Object.assign({}, stateObj, currentTransition.to);
+						for (const key of Object.keys(currentTransition.to)) {
+							if (typeof currentTransition.to[key] === &apos;function&apos;) {
+								newStateObj[key] = await execTransitionFunction(currentTransition.to[key], stateObj[key], ctx);
+							} else {
+								newStateObj[key] = currentTransition.to[key];
+							}
+						}
+						to = FSM.compositState.build(newStateObj);
+					}
+				}
+
+				ctx.to = to;
+
+
+				const rules = currentTransition.rules || [];
+				const error = executeTransitionRules(rules, ctx);
+				if (error) {
+					const newError = new Error(`Invalid transition: &quot;${transitionName}&quot;. Reason: ${error.message}`);
+					newError.inner = error;
+					throw newError;
+				}
+
 				const beforeHandler = `before${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;
 				const afterHandler = `after${transitionName[0].toUpperCase()}${transitionName.substring(1)}`;
 

@@ -1,6 +1,6 @@
 {
   "name": "@trigo/fsm",
-  "version": "3.1.0",
+  "version": "3.3.1",
   "description": "FSM - Finite State Machine",
   "main": "index.js",
   "scripts": {
@@ -10,12 +10,11 @@
   "author": "Christian Hubinger",
   "license": "ISC",
   "devDependencies": {
-    "@trigo/eslint-config-trigo": "^3.3.0",
     "bluebird": "^3.5.0",
     "chai": "^4.0.2",
     "esdoc": "^0.5.2",
     "eslint": "^4.1.1",
-    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-config-trigo": "^4.2.4",
     "eslint-plugin-import": "^2.6.1",
     "eslint-plugin-mocha": "^4.11.0",
     "mocha": "^3.4.2",

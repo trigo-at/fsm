@@ -77,6 +77,14 @@ describe(&apos;parseTransition&apos;, () =&gt; {
 		expect(() =&gt; parseTrasition({ name: &apos;t1&apos;, from: &apos;a&apos;, to: { s1: &apos;a:1&apos; } })).to.throw(/Invalid state value!/);
 		expect(() =&gt; parseTrasition({ name: &apos;t2&apos;, from: &apos;a&apos;, to: { s1: &apos;a|1&apos; } })).to.throw(/Invalid state value!/);
 	});
+
+	it(&apos;&quot;to&quot; can be a function&apos;, () =&gt; {
+		parseTrasition({ name: &apos;t&apos;, from: &apos;a&apos;, to: () =&gt; {} });
+	});
+
+	it(&apos;&quot;to&quot; substate can be a function&apos;, () =&gt; {
+		parseTrasition({ name: &apos;t&apos;, from: { s1: &apos;a&apos;, s2: &apos;b&apos; }, to: { s1: &apos;a&apos;, s2: () =&gt; {} } });
+	});
 });
 </code></pre>
 

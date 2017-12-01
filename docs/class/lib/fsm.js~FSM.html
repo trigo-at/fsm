@@ -39,13 +39,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FSM from &apos;<span><a href="file/lib/fsm.js.html#lineNumber25">@trigo/fsm/lib/fsm.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import FSM from &apos;<span><a href="file/lib/fsm.js.html#lineNumber27">@trigo/fsm/lib/fsm.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/fsm.js.html#lineNumber25">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/fsm.js.html#lineNumber27">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -347,17 +347,18 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-allTransitions">allTransitions</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+          <span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html#instance-method-allTransitions">allTransitions</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>&gt;</span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description"><p>Get all transititons that are defined for the state machine in the format</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">{
-   t1: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-   t2: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-   t3: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+<pre><code class="lang-javascript"><code class="source-code prettyprint">[
+ { name: &apos;a-to-b&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
+ { name: &apos;no:op&apos;, from: &apos;a&apos;, to: &apos;*&apos; },
+ { name: &apos;b-to-c&apos;, from: &apos;b&apos;, to: &apos;c&apos; },
+]
 }</code>
 </code></pre>
 </div>
@@ -515,7 +516,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber33">source</a></span></span>
     </span>
   </h3>
 
@@ -575,7 +576,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber42">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber44">source</a></span></span>
     </span>
   </h3>
 
@@ -652,7 +653,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber80">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber82">source</a></span></span>
     </span>
   </h3>
 
@@ -802,7 +803,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber292">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber294">source</a></span></span>
     </span>
   </h3>
 
@@ -859,7 +860,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber134">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber136">source</a></span></span>
     </span>
   </h3>
 
@@ -916,7 +917,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber145">source</a></span></span>
     </span>
   </h3>
 
@@ -960,7 +961,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber118">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
@@ -1020,7 +1021,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber262">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber264">source</a></span></span>
     </span>
   </h3>
 
@@ -1073,15 +1074,18 @@ permutations of the given states. &apos;state:s2|substate:sub1&apos;
 </code></pre></td>
     </tr>
 <tr data-ice="property" data-depth="1">
-      <td data-ice="name" data-depth="1">transition.form</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+      <td data-ice="name" data-depth="1">transition.to</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>defines the state that is created after the transition<br><br>
 Supported syntax:</p>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">&apos;*&apos; =&gt; do not change source state
 &apos;state1&apos; =&gt; sets target state to &apos;state1&apos;
 { state: &apos;s1&apos; } =&gt; sets the property &quot;state&quot; of the current state
-to &quot;s1&quot; eg. patches the existing state object representation</code>
+to &quot;s1&quot; eg. patches the existing state object representation
+async (state, ctx) -&gt; String =&gt; stets state from result of the function
+{ state: async (state, ctx) -&gt; String } =&gt; stets substate from result of the function
+the result of the function mus be a vaild state string value</code>
 </code></pre>
 </td>
     </tr>
@@ -1127,11 +1131,11 @@ to &quot;s1&quot; eg. patches the existing state object representation</code>
     
     
     
-    <span data-ice="name">allTransitions</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></span>
+    <span data-ice="name">allTransitions</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>&gt;</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber166">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber169">source</a></span></span>
     </span>
   </h3>
 
@@ -1139,10 +1143,11 @@ to &quot;s1&quot; eg. patches the existing state object representation</code>
   
   
   <div data-ice="description"><p>Get all transititons that are defined for the state machine in the format</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">{
-   t1: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-   t2: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
-   t3: { from: &apos;a&apos;, to: &apos;b&apos;, ...},
+<pre><code class="lang-javascript"><code class="source-code prettyprint">[
+ { name: &apos;a-to-b&apos;, from: &apos;a&apos;, to: &apos;b&apos; },
+ { name: &apos;no:op&apos;, from: &apos;a&apos;, to: &apos;*&apos; },
+ { name: &apos;b-to-c&apos;, from: &apos;b&apos;, to: &apos;c&apos; },
+]
 }</code>
 </code></pre>
 </div>
@@ -1157,7 +1162,7 @@ to &quot;s1&quot; eg. patches the existing state object representation</code>
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>&gt;</td>
           <td class="return-desc" data-ice="returnDescription"><p>transitions</p>
 </td>
         </tr>
@@ -1194,7 +1199,7 @@ to &quot;s1&quot; eg. patches the existing state object representation</code>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber229">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber228">source</a></span></span>
     </span>
   </h3>
 
@@ -1275,7 +1280,7 @@ to &quot;s1&quot; eg. patches the existing state object representation</code>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber108">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber110">source</a></span></span>
     </span>
   </h3>
 
@@ -1349,7 +1354,7 @@ states of the state machine</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber195">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber193">source</a></span></span>
     </span>
   </h3>
 
@@ -1421,7 +1426,7 @@ states of the state machine</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber152">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/fsm.js.html#lineNumber154">source</a></span></span>
     </span>
   </h3>
 

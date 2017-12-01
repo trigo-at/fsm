@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/fsm.rest-api.specs.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/composit-state.js~CompositState.html">CompositState</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/fsm.js~FSM.html">FSM</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/fsm.rest-api.specs.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+
+/* eslint-env node, mocha */
+/* eslint no-unused-expressions: 0, one-var-declaration-per-line: 0, one-var: 0, no-empty: 0  */
+
+const bb = require(&apos;bluebird&apos;);
+const FSM = require(&apos;./fsm&apos;);
+const { expect } = require(&apos;chai&apos;);
+
+describe(&apos;FSM&apos;, () =&gt; {
+	describe(&apos;transition REST API&apos;, () =&gt; {
+		const data = {
+			resId: &apos;42&apos;,
+			_embedded: {
+				event: {
+					resId: &apos;22&apos;,
+				},
+			},
+		};
+
+		let fsm, cfg;
+		let savedContext;
+		beforeEach(() =&gt; {
+			cfg = {
+				initialState: &apos;a&apos;,
+				transitions: [{
+					name: &apos;t1&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/trans&apos;,
+						method: &apos;patch&apos;,
+					},
+				}, {
+					name: &apos;t2&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/{resId}/trans/{subId}&apos;,
+						method: &apos;patch&apos;,
+						params: {
+							resId: &apos;data.resId&apos;,
+							subId: &apos;data._embedded.event.resId&apos;,
+						},
+					},
+				}, {
+					name: &apos;t3&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+				}, {
+					name: &apos;t4&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/{entity}/{resId}/trans/{subId}&apos;,
+						method: &apos;patch&apos;,
+						params: {
+							resId: &apos;data.resId&apos;,
+							subId: &apos;data._embedded.event.resId&apos;,
+						},
+					},
+				}, {
+					name: &apos;t5&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/trans&apos;,
+						method: &apos;patch&apos;,
+					},
+					rules: [
+						() =&gt; {},
+						() =&gt; {},
+					],
+				}, {
+					name: &apos;t6&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/trans&apos;,
+						method: &apos;patch&apos;,
+					},
+					rules: [
+						() =&gt; {},
+						() =&gt; { throw new Error(&apos;some error&apos;); },
+					],
+				}, {
+					name: &apos;t7&apos;,
+					from: &apos;*&apos;,
+					to: &apos;a&apos;,
+					api: {
+						path: &apos;/entity/trans&apos;,
+						method: &apos;patch&apos;,
+					},
+					rules: [
+						(ctx) =&gt; { savedContext = ctx; },
+					],
+				}],
+				saveState: () =&gt; {},
+				willChangeState: () =&gt; bb.delay(5),
+				data,
+			};
+		});
+
+		it(&apos;exposes &quot;restApi()&quot; function&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			expect(fsm.restApi).to.be.a(&apos;function&apos;);
+		});
+
+		it(&apos;filters transitions without &quot;api&quot; property&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t1).to.exist;
+			expect(r.t2).to.exist;
+			expect(r.t3).not.to.exist;
+		});
+
+		it(&apos;returns parsed api object&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t1).to.eql({
+				href: &apos;/entity/trans&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+
+		it(&apos;returns &quot;self&quot; when declared&apos;, async () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					self: {
+						path: &apos;/entity/{resId}&apos;,
+					},
+					params: {
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+			const r = fsm.restApi();
+			expect(r.self).to.eql({
+				href: &apos;/entity/42&apos;,
+				method: &apos;get&apos;,
+			});
+		});
+
+		it(&apos;can mix global &amp; transition local params in same route&apos;, () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					data: {
+						entity: &apos;events&apos;,
+					},
+					self: {
+						path: &apos;/{entity}/{resId}&apos;,
+					},
+					params: {
+						entity: &apos;api.data.entity&apos;,
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+
+			const r = fsm.restApi();
+			expect(r.t4).to.eql({
+				href: &apos;/events/42/trans/22&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+
+
+		it(&apos;can declare static params data in &quot;api.data&quot; object&apos;, () =&gt; {
+			fsm = new FSM(Object.assign({}, cfg, {
+				api: {
+					data: {
+						entity: &apos;events&apos;,
+					},
+					self: {
+						path: &apos;/{entity}/{resId}&apos;,
+					},
+					params: {
+						entity: &apos;api.data.entity&apos;,
+						resId: &apos;data.resId&apos;,
+					},
+				},
+			}));
+
+			const r = fsm.restApi();
+			expect(r.self).to.eql({
+				href: &apos;/events/42&apos;,
+				method: &apos;get&apos;,
+			});
+		});
+
+		it(&apos;should return the restApi object if all rules are satisfied&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t5).to.eql({
+				href: &apos;/entity/trans&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+
+		it(&apos;should return a restApi object with a error message if not all rules are satisfied&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			const r = fsm.restApi();
+			expect(r.t6).to.eql({
+				href: &apos;/entity/trans&apos;,
+				method: &apos;patch&apos;,
+				error: {
+					message: &apos;some error&apos;,
+				},
+			});
+		});
+
+		it(&apos;should pass the context of the fsm to the rules functions&apos;, async () =&gt; {
+			fsm = new FSM(cfg);
+			fsm.restApi();
+			expect(savedContext.data).to.eql(data);
+		});
+
+		it(&apos;should execute the rules functions on an fsm without a data object without any error&apos;, async () =&gt; {
+			const testCfg = {
+				initialState: &apos;a&apos;,
+				transitions: [
+					{
+						name: &apos;t&apos;,
+						from: &apos;*&apos;,
+						to: &apos;a&apos;,
+						api: {
+							path: &apos;/entity/trans&apos;,
+							method: &apos;patch&apos;,
+						},
+						rules: [
+							(ctx) =&gt; { savedContext = ctx; },
+						],
+					},
+				],
+				saveState: () =&gt; {},
+				willChangeState: () =&gt; bb.delay(5),
+			};
+
+			fsm = new FSM(testCfg);
+			const r = fsm.restApi();
+			expect(savedContext.data).to.be.undefined;
+			expect(r.t).to.eql({
+				href: &apos;/entity/trans&apos;,
+				method: &apos;patch&apos;,
+			});
+		});
+	});
+});
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
